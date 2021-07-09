@@ -1,4 +1,5 @@
 # Analiza wydajności metod akceleracji obliczeń w środowiskach języka JavaScript na podstawie wybranych algorytmów przetwarzania obrazów.
+# skupienie się na aspekcie badawczym, autorska implementacja algorytmów
 
 ## Środowiska
 * Przeglądarka internetowa, różne silniki
