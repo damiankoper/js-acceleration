@@ -1,5 +1,14 @@
-# Analiza wydajności metod akceleracji obliczeń w środowiskach języka JavaScript na podstawie wybranych algorytmów przetwarzania obrazów.
-# skupienie się na aspekcie badawczym, autorska implementacja algorytmów
+# Autorska implementacja algorytmów transformacji Hougha dla wybranych metod akceleracji obliczeń w środowiskach języka JavaScript.
+
+Hough - czyt. [haf]
+![image](https://user-images.githubusercontent.com/28621467/125512384-e99a4a4c-be7c-4c28-9cd8-6d10d82bdf83.png)
+
+## Warianty transformacji Hough'a
+* SHT - standard
+* GHT - generalized
+* Jedna z tych (w zależności od czasu):
+  * RHT - randomized
+  * PHT - probabilistic 
 
 ## Środowiska
 * Przeglądarka internetowa, różne silniki
@@ -30,24 +39,7 @@
   * gpu.js
 * Hybrydy w zależności od wyników i algorytmów (w zależności od czasu)
 
-## Algorytmy
-* Transformacja Hougha
-* Floyd-Steinberg dithering
-* ... w zależności od czasu więcej
-* Wyszukiwanie wzorca w tekście - dla porównania jako algorytm trudny do masowego zrównoleglenia w tym modelu wykonania (WebGL).
-
-## Zakres prac
-* Analiza literatury
-* Opracowanie metody pomiaru wydajności z automatycznym wysyłaniem wyników
-  * Środowiska:
-    * Przeglądarka - strona internetowa
-    * Node - paczka npm'owa odpalana np: `npx js-acc-benchmark`
-    * Deno - skrypt (do doprecyzowania)
-* Implementacja algorytmów dla wskazanych metod
-* Przeprowadzenie pomiarów w możliwie dużej skali (hostowana strona, paczka npm'owa)
-* Opracowanie wyników
-
 ## Z czym nie miałem styczności (albo małą)
-* WASM
+* WASM + SIMD
 * Deno
 * Moduły Cpp w Node
