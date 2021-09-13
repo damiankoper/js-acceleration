@@ -11,5 +11,14 @@
     "[markdown]": {
         "editor.wordWrap": "wordWrapColumn",
         "editor.wordWrapColumn": 80
-    }
+    },
+    "plantuml.diagramsRoot": "docs/src/diagrams/src",
+    "plantuml.exportOutDir": "docs/src/diagrams/out",
+    "plantuml.exportSubFolder": false,
+    "latex-workshop.latex.outDir": "../out",
+    "[latex]": {
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 80,
+        "editor.formatOnSave": false
+      }
 }
