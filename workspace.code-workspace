@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "packages/js-sequential"
+		}
+	],
+	"settings": {
+		"latex-workshop.latex.outDir": "../out"
+	}
+}
