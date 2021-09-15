@@ -18,7 +18,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
   },
-  plugins: ["@typescript-eslint", "prettier", "import", "promise"],
+  plugins: ["@typescript-eslint", "prettier", "node", "import", "promise"],
   rules: {
     "prettier/prettier": "warn",
     "@typescript-eslint/explicit-module-boundary-types": "off",

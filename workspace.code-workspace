@@ -5,6 +5,12 @@
 		},
 		{
 			"path": "packages/js-sequential"
+		},
+		{
+			"path": "packages/meta"
+		},
+		{
+			"path": "packages/test-simple"
 		}
 	],
 	"settings": {

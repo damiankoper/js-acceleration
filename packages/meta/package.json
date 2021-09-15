@@ -1,5 +1,5 @@
 {
-  "name": "js-sequential",
+  "name": "meta",
   "version": "0.0.0",
   "description": "",
   "author": "damiankoper <kopernickk@gmail.com>",
@@ -27,8 +27,5 @@
   },
   "bugs": {
     "url": "https://github.com/damiankoper/js-acceleration/issues"
-  },
-  "dependencies": {
-    "meta": "*"
   }
 }

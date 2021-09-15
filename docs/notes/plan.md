@@ -18,7 +18,9 @@
    * Warianty
      * SHT - Standard Hough transform (analitycznie opisane kształty)
        * PTLM - Point to line mapping
-     * GHT - General Hough Transform (dowolne kształty) <- ogarnąć
+       * Schemat blokowy
+       * Złożoność obliczeniowa / pamięciowa
+     * GHT - General Hough Transform (dowolne kształty) <- TODO: ogarnąć
      * CHT - Circle Hough Transform
      * PHT - Probabilistic Hough Transform
      * RHT - Random Hough Transform
@@ -42,7 +44,8 @@
      * Node (V8)
      * Dino (V8)
 4. Metody akceleracji
-   * TypedArray - optymalizacja silnika
+   * TypedArray - optymalizacja silnika - domyślnie optymalizowane
+   * Usprawnienie obliczeń (nie akceleracja) e.g. lookup table dla sin/cos
    * WASM
      * asm.js
      * C++ to WASM
@@ -75,9 +78,15 @@
     * Skala testów
 6. Wymagania i opis środowiska pomiarowego
    * Wspólny format danych
+   * Założenia testów
+     * 30 - rozkład normalny
+     * pomiary tylko samego Hough'a, eliminacja składowej stałej
    * Przeglądarka
    * Serwer
 7. Opis zaimplementowanych algorytmów
+   * Przetwarzanie wstępne i I/O właściwego algorytmu 
+     * input [,[0|1]] i parametry
+     * output lista wykryć
    * {SHT,GHT,CHT}
      * Przeglądarka
        * Bez optymalizacji (+ małe modyfikacje z TypedArray)
@@ -90,10 +99,10 @@
        * threads
        * C++ modules
    * ... w zależności od czasu i objętości
-8. Wyniki pomiarów lokalnych
+9. Wyniki pomiarów lokalnych
    * Wnioski
-9. Wyniki pomiarów masowych
+10. Wyniki pomiarów masowych
    * Wnioski
-10. Podsumowanie
+11. Podsumowanie
    * Wnioski z pomiarów
    * Możliwości dalszych badań i rozwoju

@@ -7,7 +7,7 @@
     "allowJs": true,
     "declaration": true,
     "declarationDir": "dist",
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
   },
-  "files": ["src/main.ts"]
+  "files": ["src/index.ts","src/shims.d.ts"]
 }
