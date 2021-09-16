@@ -7,4 +7,4 @@ const SHTSequential: SHT = function (
   return [];
 };
 
-export { SHTSequential };
+export { SHTSequential, SHTOptions, SHTResult };
