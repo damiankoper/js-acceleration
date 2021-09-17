@@ -4,7 +4,7 @@
 Autorska implementacja algorytmów transformacji Hough'a dla wybranych metod akceleracji obliczeń w środowiskach języka JavaScript.
 
 ## Temat w języku angielskim
-???(Proprietary/Own)??? implementation of Hough transformation algorithms for selected calculation acceleration methods in JavaScript language environments.
+???(Proprietary/Own)??? implementation of Hough transform algorithms for selected calculation acceleration methods in JavaScript language environments.
 
 ## Aspekt badawczy
 1. Propozycja implementacji algorytmów transformacji Hough'a dla wybranych metod akceleracji obliczeń w środowiskach języka JavaScript skupiona na silniku V8.
