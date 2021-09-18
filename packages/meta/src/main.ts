@@ -22,7 +22,15 @@ export interface SHTOptions {
   };
 }
 
+export interface HTResults<HTResult> {
+  results: HTResult[];
+  hSpace?: {
+    data: Uint32Array;
+    width: number;
+  };
+}
+
 export type SHT = (
   binaryImage: ArrayBuffer,
   options: SHTOptions
-) => SHTResult[];
+) => HTResults<SHTResult>;

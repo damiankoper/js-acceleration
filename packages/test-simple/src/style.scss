@@ -1,8 +1,9 @@
 .row {
     display: flex;
+    align-items: flex-end;
 
-    img {
-        margin-right: 16px
+    canvas {
+        margin-left: 16px
     }
 
 }
