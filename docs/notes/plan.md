@@ -8,7 +8,9 @@
        * Wykrywanie ruchu
        * ...
      * Analiza jako intensywny obliczeniowo, często dający się zrównoleglić problem obliczeniowy
-     * Duża i rosnąca rola środowisk webowych
+   * Duża i rosnąca rola środowisk webowych
+     * [środowiska rzadko jednak używane do intensywnych obliczeń](https://stackoverflow.com/questions/31412537/numpy-like-package-for-node)
+     * community niezainteresowane, jednak trochę bibliotek jest (TensorFlow.js)
    * Cel badań i zawartość pracy
 2. Transformacja Hough'a
    * Opis
@@ -24,6 +26,9 @@
      * CHT - Circle Hough Transform
      * PHT - Probabilistic Hough Transform
      * RHT - Random Hough Transform
+   * Wpływ przetwarzania wstępnego na jakość detekcji
+     * Wykrywanie krawędzi
+     * Morfologia
    * Ograniczenia
    * Zastosowania
 3. Technologie i środowiska webowe:
