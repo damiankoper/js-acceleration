@@ -22,6 +22,9 @@
        * PTLM - Point to line mapping
        * Schemat blokowy
        * Złożoność obliczeniowa / pamięciowa
+       * Różne modyfikacje:
+         * tworzenie przestrzeni parametrycznej
+         * głosowanie - np "An Optimizing Line Finder Using a Hough Transform Algorithm"
      * GHT - General Hough Transform (dowolne kształty) <- TODO: ogarnąć
      * CHT - Circle Hough Transform
      * PHT - Probabilistic Hough Transform
@@ -29,6 +32,9 @@
    * Wpływ przetwarzania wstępnego na jakość detekcji
      * Wykrywanie krawędzi
      * Morfologia
+   * Przetwarzanie wyników
+     * Klasteryzacja wyników
+     * Głosowanie z filtrem
    * Ograniczenia
    * Zastosowania
 3. Technologie i środowiska webowe:
@@ -104,9 +110,9 @@
        * threads
        * C++ modules
    * ... w zależności od czasu i objętości
-9. Wyniki pomiarów lokalnych
+8. Wyniki pomiarów lokalnych
    * Wnioski
-10. Wyniki pomiarów masowych
+9.  Wyniki pomiarów masowych
    * Wnioski
 11. Podsumowanie
    * Wnioski z pomiarów

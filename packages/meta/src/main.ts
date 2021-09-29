@@ -7,19 +7,15 @@ export interface SHTOptions {
   /** Input image width */
   width: number;
 
-  resolution?: {
-    /** Diagonal resolution (pixels) */
+  sampling?: {
+    /** Diagonal sampling (pixels) */
     rho?: number;
-    /** Angular resolution (degrees) */
+    /** Angular sampling (degrees) */
     theta?: number;
   };
 
-  votingThreshold?: {
-    /** Diagonal threshold (pixels) */
-    rho?: number;
-    /** Angular threshold (degrees) */
-    theta?: number;
-  };
+  /** Value in range [0, 1] */
+  votingThreshold?: number;
 }
 
 export interface HTResults<HTResult> {

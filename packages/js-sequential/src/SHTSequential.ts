@@ -11,35 +11,42 @@ const SHTSequential: SHT = function (
   const height = binaryImage.length / width;
 
   // Defaults
-  const resolution = Object.assign({ rho: 1, theta: 0.5 }, options.resolution);
-  const votingThreshold = Object.assign(
-    { rho: 1, theta: 1 },
-    options.votingThreshold
-  );
+  const sampling = Object.assign({ rho: 1, theta: 1 }, options.sampling);
 
-  const hsWidth = Math.round(180 / resolution.theta);
-  const hsHeight = Math.sqrt(width ** 2 + height ** 2) / resolution.rho;
+  const hsWidth = Math.round(360 / sampling.theta);
+  const hsHeight = Math.sqrt(width ** 2 + height ** 2) / sampling.rho;
   const houghSpace = new Uint32Array(hsWidth * hsHeight);
+
+  let maxValue = 0;
 
   for (let y = 0; y < height; y++)
     for (let x = 0; x < width; x++)
       if (binaryImage[y * width + x] === 1)
         for (let hx = 0; hx < hsWidth; hx++) {
-          const hTheta = (hx * resolution.theta * Math.PI) / 180;
-          const ySpace = x * Math.cos(hTheta) + y * Math.sin(hTheta);
+          const hTheta = (hx * sampling.theta * Math.PI) / 180;
+          const ySpace =
+            (x * Math.cos(hTheta) + y * Math.sin(hTheta)) / sampling.rho;
 
-          houghSpace[Math.round(ySpace) * hsWidth + hx]++;
+          if (ySpace >= 0) {
+            const offset = Math.round(ySpace) * hsWidth + hx;
+            const value = houghSpace[offset] + 1;
+            maxValue = Math.max(maxValue, value);
+            houghSpace[offset] = value;
+          }
         }
 
-  // Simple voting
-  /* 
+  const votingThreshold = options.votingThreshold || 0.75;
+
   for (let hy = 0; hy < hsHeight; hy++)
     for (let hx = 0; hx < hsWidth; hx++) {
-      houghSpace[hy * hsHeight + hx];
+      const offset = hy * hsWidth + hx;
+      if (houghSpace[offset] / maxValue > votingThreshold) {
+        results.push({
+          rho: hy * sampling.rho,
+          theta: hx * sampling.theta,
+        });
+      }
     }
- */
-
-  console.log(houghSpace);
 
   return {
     results,

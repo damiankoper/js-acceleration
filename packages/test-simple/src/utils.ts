@@ -49,7 +49,6 @@ export function renderSHTResults(
   height: number
 ) {
   const resultCtx = resultsCanvas.getContext("2d");
-  results.results.push({ rho: 250, theta: 45 });
   resultCtx.strokeStyle = "red";
   results.results.forEach((result) => {
     const x = result.rho * Math.cos((result.theta * Math.PI) / 180);
