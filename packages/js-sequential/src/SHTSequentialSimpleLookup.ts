@@ -1,8 +1,6 @@
 import { SHT, SHTOptions, SHTResult, HTResults } from "meta";
 
-// TODO: rename resolution -> sampling
-
-const SHTSequential: SHT = function (
+const SHTSequentialSimpleLookup: SHT = function (
   binaryImage: Int8Array,
   options: SHTOptions
 ): HTResults<SHTResult> {
@@ -12,10 +10,22 @@ const SHTSequential: SHT = function (
 
   // Defaults
   const sampling = Object.assign({ rho: 1, theta: 1 }, options.sampling);
+  const votingThreshold = options.votingThreshold || 0.75;
 
   const hsWidth = Math.round(360 / sampling.theta);
-  const hsHeight = Math.sqrt(width ** 2 + height ** 2) / sampling.rho;
+  const hsHeight = Math.round(
+    Math.sqrt(width ** 2 + height ** 2) / sampling.rho
+  );
   const houghSpace = new Uint32Array(hsWidth * hsHeight);
+  const lookupSize = hsWidth * sampling.theta;
+  const sinLookup = new Float32Array(lookupSize);
+  const cosLookup = new Float32Array(lookupSize);
+
+  const samplingThetaRad = (sampling.theta * Math.PI) / 180;
+  for (let i = 0; i < lookupSize; i++) {
+    sinLookup[i] = Math.sin(i * samplingThetaRad);
+    cosLookup[i] = Math.cos(i * samplingThetaRad);
+  }
 
   let maxValue = 0;
 
@@ -23,19 +33,16 @@ const SHTSequential: SHT = function (
     for (let x = 0; x < width; x++)
       if (binaryImage[y * width + x] === 1)
         for (let hx = 0; hx < hsWidth; hx++) {
-          const hTheta = (hx * sampling.theta * Math.PI) / 180;
-          const ySpace =
-            (x * Math.cos(hTheta) + y * Math.sin(hTheta)) / sampling.rho;
+          const hTheta = hx;
+          const ySpace = x * cosLookup[hTheta] + y * sinLookup[hTheta];
 
           if (ySpace >= 0) {
-            const offset = Math.round(ySpace) * hsWidth + hx;
+            const offset = Math.round(ySpace / sampling.rho) * hsWidth + hx;
             const value = houghSpace[offset] + 1;
             maxValue = Math.max(maxValue, value);
             houghSpace[offset] = value;
           }
         }
-
-  const votingThreshold = options.votingThreshold || 0.75;
 
   for (let hy = 0; hy < hsHeight; hy++)
     for (let hx = 0; hx < hsWidth; hx++) {
@@ -57,4 +64,4 @@ const SHTSequential: SHT = function (
   };
 };
 
-export { SHTSequential };
+export { SHTSequentialSimpleLookup };

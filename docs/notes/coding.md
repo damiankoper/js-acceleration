@@ -6,3 +6,5 @@
   * Pobieranie pixeli poprzez rysowanie na canvas jest niedokładne, ponieważ obraz jest wygładzany, opcja `context.imageSmoothingEnabled` temu zapobiega
 * Memory requirement of the accumulator array is reduced to 59% when the image center, instead of corner, is used as the origin.
 * Math.max i Math.min crashują przy dużych tablicach - przepełnienie stosu, wartości są argumentami funkcji
+* Rozdział na tyle pakietów, żeby mieć swobodę w konfiguracji i budowaniu kodu - np Workery
+* Trzeba pamiętać o isolated-origin - domena + headery
