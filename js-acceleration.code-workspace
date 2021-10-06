@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "packages/test-simple"
+		},
+		{
+			"path": "packages/benchmark"
 		}
 	],
 	"settings": {
