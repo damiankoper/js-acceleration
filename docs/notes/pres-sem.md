@@ -4,7 +4,7 @@
 
 1. Slajd tytułowy
 2. Interpretacja tematu prezentacji - {Hough, akceleracja} w środowiskach JS
-3. Plan - transformacja Hougha, 
+3. Plan - transformacja Hougha, warianty, metody akceleracji z przykładami dla Hough'a
 4. Rozpoznawanie cech obrazu - uczenie głębokie, CNN
 5. Rozpoznawanie cech obrazu - opis parametryczny
 6. Patent Paula V C Hough'a - równanie zbocze-przecięcie
@@ -19,7 +19,7 @@
 15. GHT
 16. Akumulator - odpowiedni rozmiar
 17. Głosowanie - odporność na szum
-18. Ograniczenia i zastosowania
+18. Ograniczenia i zastosowania - projekt z RiPO
 19. JavaScript - język i model asynchroniczności
 20. Środowiska JS
 21. Metody akceleracji
