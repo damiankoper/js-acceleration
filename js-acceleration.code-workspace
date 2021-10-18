@@ -3,6 +3,9 @@
 		{
 			"path": "."
 		},
+        {
+			"path": "packages/seminar-pres"
+		},
 		{
 			"path": "packages/js-sequential"
 		},
