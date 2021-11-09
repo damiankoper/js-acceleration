@@ -20,6 +20,7 @@
 16. Akumulator - odpowiedni rozmiar
 17. Głosowanie - odporność na szum
 18. Ograniczenia i zastosowania - projekt z RiPO
+    --- here
 19. JavaScript - język i model asynchroniczności
 20. Środowiska JS
 21. Metody akceleracji
@@ -28,12 +29,11 @@
 24. WASM - asm.js i native WASM
 25. SIMD w WASM
 26. Usprawnienie SHT - SIMD
-27. Workery w przeglądarce i wątki w node
+27. Workery w przeglądarce, procesy i wątki(Workery) w node
 28. Moduły C++
 29. WebGL - GPU
 30. Usprawnienie SHT - WebGL
 31. Ograniczenia w zależności od typu algorytmu - nawet intensywny obliczeniowo
 32. Współdzielona pamięć i wyścigi
-33. Hybrydy - Workery + SIMD
-34. Podsumowanie
-35. Slajd tytułowy
+33. Podsumowanie
+34. Slajd tytułowy

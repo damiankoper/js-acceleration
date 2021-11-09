@@ -61,6 +61,7 @@
      * asm.js
      * C++ to WASM
      * WASM + SIMD
+       * -O3 emscripten wersji sekwencyjnej kontra manualna implementacja
    * Wielowątkowość
      * Rozwiązanie natywne
    * Modułu C++
