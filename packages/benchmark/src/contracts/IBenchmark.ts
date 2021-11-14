@@ -1,4 +1,5 @@
 import { ISimpleEvent } from "strongly-typed-events";
+import { BenchmarkResultType, IBenchmarkResult } from "./IBenchmarkResult";
 
 export interface StartConfig {
   /** Whether not to skip first samples based on CoV */
@@ -37,9 +38,17 @@ export interface IBenchmark {
   onSample: ISimpleEvent<unknown>;
   onTeardown: ISimpleEvent<unknown>;
 
-  runIteractions(config: GeneralConfig | StartConfig | IterationConfig);
-  runTimeIterations(config: GeneralConfig | StartConfig | TimeConfig);
+  runIteractions(
+    config: GeneralConfig | StartConfig | IterationConfig
+  ): IBenchmarkResult<BenchmarkResultType.ITERATIONS>;
+  runTimeIterations(
+    config: GeneralConfig | StartConfig | TimeConfig
+  ): IBenchmarkResult<BenchmarkResultType.TIME_ITERATIONS>;
 
-  runExtractedIteractions(config: GeneralConfig | IterationConfig);
-  runExtractedTimeIterations(config: GeneralConfig | TimeConfig);
+  runExtractedIteractions(
+    config: GeneralConfig | IterationConfig
+  ): IBenchmarkResult<BenchmarkResultType.EXTRACTED_ITERATIONS>;
+  runExtractedTimeIterations(
+    config: GeneralConfig | TimeConfig
+  ): IBenchmarkResult<BenchmarkResultType.EXTRACTED_TIME_ITERATIONS>;
 }

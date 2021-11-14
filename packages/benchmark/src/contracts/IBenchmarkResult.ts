@@ -5,9 +5,9 @@ export enum BenchmarkResultType {
   EXTRACTED_TIME_ITERATIONS,
 }
 
-export interface IBenchmarkResult {
+export interface IBenchmarkResult<T = BenchmarkResultType> {
   name: string;
-  type: BenchmarkResultType;
+  type: T;
 
   mean: number;
   /** Variation */
