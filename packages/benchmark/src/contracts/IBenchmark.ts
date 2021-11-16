@@ -10,45 +10,73 @@ export interface StartConfig {
   covWindow?: number;
 }
 
+export const startConfigDefaults = (): StartConfig => ({
+  coldStart: true,
+  cov: 0.1,
+  covWindow: 5,
+});
+
 export interface IterationConfig {
   /** Min sample count to run */
   samples?: number;
 }
 
+export const iterationConfigDefaults = (): IterationConfig => ({
+  samples: 5,
+});
+
 export interface TimeConfig {
-  /** Min/max sample count to run */
+  /** Min sample count to run */
   minSamples?: number;
+  /** Min sample count to run */
   maxSamples?: number;
 
-  /** Min/max time of sample */
+  /** Min time of sample */
   minTime?: number;
+  /** Max time of sample */
   maxTime?: number;
 }
+
+export const timeConfigDefaults = (): TimeConfig => ({
+  minSamples: 0,
+  maxSamples: 0,
+  minTime: 0,
+  maxTime: 30000,
+});
 
 export interface GeneralConfig {
   /** Benchmark name used in identifying results */
   name?: string;
-  /** Min count in single run to compute averate time */
+  /** Min count in single run to compute average time */
   count?: number;
 }
 
+export const generalConfigDefaults = (): GeneralConfig => ({
+  name: `benchmark-${new Date().getTime()}`,
+  count: 1,
+});
+
 export interface IBenchmark {
   onSetup: ISimpleEvent<unknown>;
-  onCycle: ISimpleEvent<unknown>;
   onSample: ISimpleEvent<unknown>;
   onTeardown: ISimpleEvent<unknown>;
 
-  runIteractions(
-    config: GeneralConfig | StartConfig | IterationConfig
+  /**
+   * Restores initial state of test
+   */
+  reset(): void;
+
+  runIterations(
+    config: GeneralConfig & StartConfig & IterationConfig
   ): IBenchmarkResult<BenchmarkResultType.ITERATIONS>;
   runTimeIterations(
-    config: GeneralConfig | StartConfig | TimeConfig
+    config: GeneralConfig & StartConfig & TimeConfig
   ): IBenchmarkResult<BenchmarkResultType.TIME_ITERATIONS>;
 
-  runExtractedIteractions(
-    config: GeneralConfig | IterationConfig
+  runExtractedIterations(
+    config: GeneralConfig & IterationConfig
   ): IBenchmarkResult<BenchmarkResultType.EXTRACTED_ITERATIONS>;
   runExtractedTimeIterations(
-    config: GeneralConfig | TimeConfig
+    config: GeneralConfig & TimeConfig
   ): IBenchmarkResult<BenchmarkResultType.EXTRACTED_TIME_ITERATIONS>;
 }

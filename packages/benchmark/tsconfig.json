@@ -10,7 +10,8 @@
     "moduleResolution": "Node",
     "types": [
       "jest",
-      "node"
+      "node",
+      "chrome"
     ]
   },
   "files": [
