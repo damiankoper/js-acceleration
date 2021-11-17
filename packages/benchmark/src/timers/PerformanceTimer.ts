@@ -5,7 +5,7 @@ export class PerformanceTimer implements ITimer {
   private t = Infinity;
 
   public static isAvailable(): boolean {
-    return !!performance;
+    return !!global?.performance;
   }
 
   public start() {
