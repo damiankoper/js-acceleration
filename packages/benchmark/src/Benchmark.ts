@@ -8,11 +8,11 @@ import {
   StartConfig,
   startConfigDefaults,
   TimeConfig,
+  timeConfigDefaults,
 } from "./contracts/IBenchmark";
 import {
   BasicMetrics,
   BenchmarkResultType,
-  ExtendedMetrics,
   IBenchmarkResult,
 } from "./contracts/IBenchmarkResult";
 import { IBenchmarkSampleResult } from "./contracts/IBenchmarkSampleResult";
@@ -20,7 +20,6 @@ import { ITimer } from "./contracts/ITimer";
 import { ChromeTimer } from "./timers/ChromeTimer";
 import { NodeHRTimer } from "./timers/NodeHRTimer";
 import { PerformanceTimer } from "./timers/PerformanceTimer";
-
 import * as ss from "simple-statistics";
 
 export class Benchmark implements IBenchmark {
@@ -34,7 +33,6 @@ export class Benchmark implements IBenchmark {
     /** INFINITY */ 1.95996398454,
   ];
 
-  private totalTime = 0;
   private samples: IBenchmarkSampleResult[] = [];
 
   private _onSetup = new SimpleEventDispatcher();
@@ -58,8 +56,11 @@ export class Benchmark implements IBenchmark {
 
   public reset(): void {
     this.timer = this.getTimer();
-    this.totalTime = 0;
     this.samples = [];
+  }
+
+  public getSamples(): IBenchmarkSampleResult[] {
+    return [...this.samples];
   }
 
   public runIterations(
@@ -73,11 +74,8 @@ export class Benchmark implements IBenchmark {
       iterationConfigDefaults(),
       config
     );
-
-    let s = config.samples;
-
-    // single sample
-    while (s--) {
+    // TODO: cold start
+    while (this.samples.length < config.samples) {
       this.runSample(config);
     }
 
@@ -88,7 +86,36 @@ export class Benchmark implements IBenchmark {
     config: GeneralConfig & StartConfig & TimeConfig
   ): IBenchmarkResult<BenchmarkResultType.TIME_ITERATIONS> {
     this.reset();
-    throw new Error("Method not implemented.");
+    config = Object.assign(
+      {},
+      generalConfigDefaults(),
+      startConfigDefaults(),
+      timeConfigDefaults(),
+      config
+    );
+
+    // TODO: cold start
+    while (this.shouldRunSample(config)) {
+      this.runSample(config);
+    }
+
+    return this.getResult(BenchmarkResultType.TIME_ITERATIONS, config);
+  }
+
+  private shouldRunSample(config: TimeConfig) {
+    const samples = this.samples.length;
+    const totalTime = this.samples.reduce((a, b) => a + b.totalTime, 0);
+
+    const samplesExceeded = samples >= config.maxSamples;
+    const timeExceeded = totalTime >= config.maxTime;
+    const minSamplesReached = samples >= config.minSamples;
+    const minTimeReached = totalTime >= config.minTime;
+
+    return (
+      (timeExceeded && !minSamplesReached) ||
+      (samplesExceeded && !minTimeReached) ||
+      (!samplesExceeded && !timeExceeded)
+    );
   }
 
   public runExtractedIterations(
@@ -123,8 +150,7 @@ export class Benchmark implements IBenchmark {
     }
     const t = this.timer.stop();
 
-    this.totalTime += t;
-    this.samples.push({ count: nTotal, time: t / nTotal });
+    this.samples.push({ count: nTotal, time: t / nTotal, totalTime: t });
   }
 
   private getResult<T extends BenchmarkResultType>(

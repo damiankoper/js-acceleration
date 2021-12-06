@@ -1,5 +1,6 @@
 import { ISimpleEvent } from "strongly-typed-events";
 import { BenchmarkResultType, IBenchmarkResult } from "./IBenchmarkResult";
+import { IBenchmarkSampleResult } from "./IBenchmarkSampleResult";
 
 export interface StartConfig {
   /** Whether not to skip first samples based on CoV */
@@ -65,6 +66,8 @@ export interface IBenchmark {
    * Restores initial state of test
    */
   reset(): void;
+
+  getSamples(): IBenchmarkSampleResult[];
 
   runIterations(
     config: GeneralConfig & StartConfig & IterationConfig
