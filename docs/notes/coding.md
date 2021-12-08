@@ -8,3 +8,6 @@
 * Math.max i Math.min crashują przy dużych tablicach - przepełnienie stosu, wartości są argumentami funkcji
 * Rozdział na tyle pakietów, żeby mieć swobodę w konfiguracji i budowaniu kodu - np Workery
 * Trzeba pamiętać o isolated-origin - domena + headery
+* Pokazać na wykresach t(n) steadyState dla pierwszego wykonania + pierwszych paru
+  * dodatkowo CoV dla paru moving okien
+* flaga --jitless zapewnia mniejszy CoV kosztem czasu wykonania

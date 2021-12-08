@@ -4,7 +4,7 @@ import { IBenchmarkSampleResult } from "./IBenchmarkSampleResult";
 
 export interface StartConfig {
   /** Whether not to skip first samples based on CoV */
-  coldStart?: boolean;
+  steadyState?: boolean;
   /** Max acceptable coefficient of variation of steady state */
   cov?: number;
   /** Number of iterations to compute CoV of */
@@ -12,7 +12,7 @@ export interface StartConfig {
 }
 
 export const startConfigDefaults = (): StartConfig => ({
-  coldStart: true,
+  steadyState: false,
   cov: 0.1,
   covWindow: 5,
 });

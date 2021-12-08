@@ -34,6 +34,7 @@ export class Benchmark implements IBenchmark {
   ];
 
   private samples: IBenchmarkSampleResult[] = [];
+  private steadyStateReached = false;
 
   private _onSetup = new SimpleEventDispatcher();
   private _onSample = new SimpleEventDispatcher();
@@ -74,7 +75,13 @@ export class Benchmark implements IBenchmark {
       iterationConfigDefaults(),
       config
     );
-    // TODO: cold start
+
+    while (!this.steadyStateReached) {
+      this.runSample(config);
+      this.steadyStateReached = this.isSteadyState(config);
+      if (this.steadyStateReached) this.samples = [];
+    }
+
     while (this.samples.length < config.samples) {
       this.runSample(config);
     }
@@ -94,7 +101,12 @@ export class Benchmark implements IBenchmark {
       config
     );
 
-    // TODO: cold start
+    while (!this.steadyStateReached) {
+      this.runSample(config);
+      this.steadyStateReached = this.isSteadyState(config);
+      if (this.steadyStateReached) this.samples = [];
+    }
+
     while (this.shouldRunSample(config)) {
       this.runSample(config);
     }
@@ -144,7 +156,6 @@ export class Benchmark implements IBenchmark {
 
     // single sample
     this.timer.start();
-    // TODO handle coldStart here on globally(run) ?
     while (n--) {
       this.fn();
     }
@@ -164,7 +175,7 @@ export class Benchmark implements IBenchmark {
     const size = times.length;
     const sem = basicMetrics.stdev / Math.sqrt(size);
     const moe = sem * this.tTable[Math.min(size - 1, this.tTable.length) - 1];
-    const rme = (moe / basicMetrics.mean) * 100 || 0;
+    const rme = moe / basicMetrics.mean || 0;
 
     return {
       ...basicMetrics,
@@ -185,6 +196,19 @@ export class Benchmark implements IBenchmark {
       var: variance,
       stdev,
     };
+  }
+
+  private isSteadyState(config: StartConfig): boolean {
+    if (config.steadyState) {
+      if (this.samples.length < config.covWindow) return false;
+      const samples = this.samples.slice(-config.covWindow);
+      const { mean, stdev } = this.getBasicMetrics(samples.map((s) => s.time));
+      const cov = stdev / mean;
+      console.log(cov);
+
+      return cov <= config.cov;
+    }
+    return true;
   }
 
   private validateConfig(
