@@ -2,12 +2,12 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
-    "module": "ESNext",
-    "target": "es5",
+    "module": "esnext",
+    "target": "esnext",
     "allowJs": true,
     "declaration": true,
     "declarationDir": "dist",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "types": [
       "jest",
       "node",
