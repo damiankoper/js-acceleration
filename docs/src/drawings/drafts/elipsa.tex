@@ -1,0 +1,30 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Article %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[tikz, margin=5mm]{standalone}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{tkz-euclide}
+
+\begin{document}
+\begin{tikzpicture}
+
+    \tkzInit[xmax=6,ymax=3,xmin=0,ymin=-3]
+    \tkzGrid[]
+    \tkzAxeXY
+    \tkzDefPoints{3/0/O,6/0/B,3/2/A}
+    \tkzDrawPoints(O,A,B)
+    \tkzLabelPoints(O,A,B)
+    \tkzMarkAngle[size=0.5](B,O,A)
+    \tkzLabelAngle(B,O,A){$\alpha$}
+    \tkzDrawSegments[thick](O,A)
+    \tkzLabelSegments[thick](O,A){$a$}
+    \tkzDrawSegments[thick](O,B)
+    \tkzLabelSegments[thick](O,B){$b$}
+
+
+    \draw[thick] (3,0) ellipse (3cm and 2cm);
+
+    \node at (3, 2.5) {${\frac{(x\cos{\alpha}+{y\sin{\alpha})}^2}{a^2}}+{\frac{(x\sin{\alpha}+{y\cos{\alpha})}^2}{b^2}}=1$};
+
+    \node[below] at (3,-3.5) {$x=3,\ y=0,\ a=2,\ b=3,\ \alpha=90^{\circ}$};
+
+\end{tikzpicture}
+\end{document}

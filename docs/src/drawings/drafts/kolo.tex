@@ -1,0 +1,156 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Article %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[tikz, margin=5mm]{standalone}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{tkz-euclide}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+    \tkzInit[xmax=8,ymax=5,xmin=-2,ymin=-5]
+    \tkzGrid[]
+    \tkzAxeXY
+    \tkzDefPoints{3/0/O,3/2/C}
+    \tkzDefCircle[through](O,C)
+    \tkzGetLength{rOC}
+    \tkzDrawCircle[dashed](O,C)
+    \tkzDrawPoints(O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzGetLength{rOB}
+    \tkzDefCircle[through](B,O)
+    \tkzDrawPoints(B)
+    \tkzDrawCircle(B,O)
+
+
+\end{tikzpicture}
+
+
+\begin{tikzpicture}
+
+    \tkzInit[xmax=8,ymax=5,xmin=-2,ymin=-5]
+    \tkzGrid[]
+    \tkzAxeXY
+    \tkzDefPoints{3/0/O,3/2/C}
+    \tkzDefCircle[through](O,C)
+    \tkzGetLength{rOC}
+    \tkzDrawCircle(O,C)
+    \tkzDrawPoints(O)
+
+
+\end{tikzpicture}
+
+\begin{tikzpicture}
+
+    \tkzInit[xmax=6,ymax=3,xmin=0,ymin=-3]
+    \tkzGrid[]
+    \tkzAxeXY
+    \tkzDefPoints{3/0/O,3/2/C}
+    \tkzDefCircle[through](O,C)
+    \tkzGetLength{rOC}
+    \tkzDrawCircle(O,C)
+    \tkzLabelCircle[R](O,\tkzLengthResult pt+0.5cm)(90){$(x-a)^2+(y-b)^2=r^2$}
+    \tkzDefRandPointOn[circle=center O radius \rOC pt]
+    \tkzGetPoint{B}
+    \tkzLabelPoints(O,B)%
+    \tkzDrawPoints(O)
+    \tkzDrawSegments[dashed](O,B)
+    \tkzLabelSegments(O,B){$r$}
+
+
+    \node[below] at (3,-3.5) {$a=3,\ b=0,\ r=2$};
+
+\end{tikzpicture}
+\end{document}

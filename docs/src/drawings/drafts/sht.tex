@@ -1,0 +1,17 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Article %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[tikz, margin=5mm]{standalone}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{tkz-euclide}
+
+\begin{document}
+\begin{tikzpicture}
+
+    \tkzInit[xmax=6,ymax=3,xmin=0,ymin=-3]
+    \tkzGrid[]
+    \tkzAxeXY
+    \draw[gray, thick] (-1,-2) -- (5,4) node [midway, right, color=black] {$y = mx + c$};
+    \node[below] at (3,-3.5) {$m=1,\ c=-1$};
+
+
+\end{tikzpicture}
+\end{document}
