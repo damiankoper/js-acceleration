@@ -17,6 +17,7 @@
 		}
 	],
 	"settings": {
-		"latex-workshop.latex.outDir": "../out"
+		"latex-workshop.latex.outDir": "../out",
+        "jest.disabledWorkspaceFolders": ["js-acceleration", "js-sequential", "meta", "test-simple"]
 	}
 }

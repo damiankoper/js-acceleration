@@ -11,3 +11,6 @@
 * Pokazać na wykresach t(n) steadyState dla pierwszego wykonania + pierwszych paru
   * dodatkowo CoV dla paru moving okien
 * flaga --jitless zapewnia mniejszy CoV kosztem czasu wykonania
+* Różnica pomiędzy P-Core a E-Core 0.15 vs 0.25
+* jest transpiluje w locie i jest wolniej 
+* prezentacja trybów benchmarkowania jako macierzy t.i/extracted.non

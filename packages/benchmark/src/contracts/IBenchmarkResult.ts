@@ -1,8 +1,6 @@
 export enum BenchmarkResultType {
   ITERATIONS,
   TIME_ITERATIONS,
-  EXTRACTED_ITERATIONS,
-  EXTRACTED_TIME_ITERATIONS,
 }
 
 export interface BasicMetrics {

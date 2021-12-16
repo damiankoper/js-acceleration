@@ -1,4 +1,3 @@
-import { ISimpleEvent } from "strongly-typed-events";
 import { BenchmarkResultType, IBenchmarkResult } from "./IBenchmarkResult";
 import { IBenchmarkSampleResult } from "./IBenchmarkSampleResult";
 
@@ -49,21 +48,17 @@ export interface GeneralConfig {
   /** Benchmark name used in identifying results */
   name?: string;
   /** Min count in single run to compute average time */
-  count?: number;
+  microRuns?: number;
 }
 
 export const generalConfigDefaults = (): GeneralConfig => ({
-  name: `benchmark-${new Date().getTime()}`,
-  count: 1,
+  name: `benchmark_${new Date().getTime()}`,
+  microRuns: 1,
 });
 
 export interface IBenchmark {
-  onSetup: ISimpleEvent<unknown>;
-  onSample: ISimpleEvent<unknown>;
-  onTeardown: ISimpleEvent<unknown>;
-
   /**
-   * Restores initial state of test
+   * Sets/restores initial state of test
    */
   reset(): void;
 
@@ -75,11 +70,4 @@ export interface IBenchmark {
   runTimeIterations(
     config: GeneralConfig & StartConfig & TimeConfig
   ): IBenchmarkResult<BenchmarkResultType.TIME_ITERATIONS>;
-
-  runExtractedIterations(
-    config: GeneralConfig & IterationConfig
-  ): IBenchmarkResult<BenchmarkResultType.EXTRACTED_ITERATIONS>;
-  runExtractedTimeIterations(
-    config: GeneralConfig & TimeConfig
-  ): IBenchmarkResult<BenchmarkResultType.EXTRACTED_TIME_ITERATIONS>;
 }

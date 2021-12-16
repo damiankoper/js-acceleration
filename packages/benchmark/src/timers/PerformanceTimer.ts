@@ -13,14 +13,6 @@ export class PerformanceTimer implements ITimer {
   public performance?: Performance = getPerformance();
   private t = Infinity;
 
-  public constructor() {
-    if (window) this.performance = window.performance;
-    else if (global && require) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      this.performance = require("perf_hooks").performance;
-    }
-  }
-
   public static isAvailable(): boolean {
     return !!getPerformance();
   }
