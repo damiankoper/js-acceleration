@@ -1,3 +1,5 @@
+import { IBenchmarkSampleResult } from "./IBenchmarkSampleResult";
+
 export enum BenchmarkResultType {
   ITERATIONS,
   TIME_ITERATIONS,
@@ -25,4 +27,5 @@ export interface IBenchmarkResult<T = BenchmarkResultType>
     ExtendedMetrics {
   name: string;
   type: T;
+  samples: IBenchmarkSampleResult[];
 }

@@ -63,7 +63,11 @@ export class Benchmark extends BenchmarkBase implements IBenchmark {
     while (!this.steadyStateReached && config.steadyState) {
       this.runSample(config);
       this.steadyStateReached = this.isSteadyState(config);
-      if (this.steadyStateReached) this.samples = [];
+      if (this.steadyStateReached) {
+        this.samples = [];
+        this.totalMicroRuns = 0;
+        this.totalTime = 0;
+      }
     }
   }
 
@@ -87,9 +91,9 @@ export class Benchmark extends BenchmarkBase implements IBenchmark {
     const t = timer.stop();
 
     this.totalTime += t;
-    this.totalCount += microRunsTotal;
+    this.totalMicroRuns += microRunsTotal;
     this.samples.push({
-      count: microRunsTotal,
+      microRuns: microRunsTotal,
       time: t / microRunsTotal,
       totalTime: t,
     });

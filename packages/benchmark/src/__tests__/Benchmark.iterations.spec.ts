@@ -8,22 +8,24 @@ describe("Benchmark iterations", () => {
   });
 
   it("should test for loop iterations with startup", () => {
-    const results = ben.runIterations({ samples: 30, microRuns: 100 });
+    const results = ben.runIterations({ samples: 30, microRuns: 20 });
 
     expect(results).toBeDefined();
-    console.log(results.mean / 1000, ben.getSamples().length);
+    const microRuns = results.samples.reduce((a, b) => a + b.microRuns, 0);
+    expect(microRuns).toBeGreaterThanOrEqual(results.samples.length + 20);
   });
 
   it("should test for loop iterations with steady state", () => {
     const results = ben.runIterations({
-      samples: 50,
-      microRuns: 50,
+      samples: 30,
+      microRuns: 20,
       steadyState: true,
       cov: 0.01,
-      covWindow: 100,
+      covWindow: 10,
     });
 
     expect(results).toBeDefined();
-    console.log(results, ben.getSamples().length);
+    const microRuns = results.samples.reduce((a, b) => a + b.microRuns, 0);
+    expect(microRuns).toBeGreaterThanOrEqual(results.samples.length + 20);
   });
 });

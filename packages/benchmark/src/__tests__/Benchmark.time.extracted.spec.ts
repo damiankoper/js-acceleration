@@ -9,14 +9,14 @@ describe("Benchmark time extracted", () => {
 
   it("should test for loop time extracted", () => {
     const results = ben.runTimeIterations({
-      minTime: 500,
-      maxTime: 2000,
-      minSamples: 5,
-      maxSamples: 6000,
-      microRuns: 100,
+      minTime: 200,
+      minSamples: 30,
+      microRuns: 20,
     });
 
     expect(results).toBeDefined();
-    console.log(results, ben.getSamples().length);
+    const microRuns = results.samples.reduce((a, b) => a + b.microRuns, 0);
+    expect(microRuns).toBeGreaterThanOrEqual(results.samples.length + 20);
+    console.log(results);
   });
 });

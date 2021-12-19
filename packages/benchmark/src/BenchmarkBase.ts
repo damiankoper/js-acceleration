@@ -30,7 +30,7 @@ export class BenchmarkBase {
   protected samples: IBenchmarkSampleResult[] = [];
   protected steadyStateReached = false;
   protected totalTime = 0;
-  protected totalCount = 0;
+  protected totalMicroRuns = 0;
 
   public constructor(fn: () => void) {
     this.fn = fn;
@@ -41,7 +41,7 @@ export class BenchmarkBase {
     this.timer = this.getTimer();
     this.steadyStateReached = false;
     this.totalTime = 0;
-    this.totalCount = 0;
+    this.totalMicroRuns = 0;
     this.samples = [];
   }
 
@@ -57,8 +57,10 @@ export class BenchmarkBase {
   protected validateConfig(
     config: GeneralConfig & StartConfig & TimeConfig & IterationConfig
   ) {
-    if (config.samples && config.samples <= 2)
+    if (config.samples && config.samples < 2)
       throw new Error("Benchmark requires at least two samples");
+    if (config.microRuns && config.microRuns < 1)
+      throw new Error("Benchmark requires at least one microrun");
   }
 
   protected getTimer(): new () => ITimer {
@@ -86,9 +88,12 @@ export class BenchmarkBase {
 
   protected adjustMicroRuns(config: GeneralConfig & TimeConfig) {
     const samples = this.samples.length;
-    const timePerMicroRun = this.totalTime / this.totalCount;
+    const timePerMicroRun = Math.max(
+      this.totalTime / this.totalMicroRuns,
+      Number.EPSILON
+    );
     const samplesLeft = Math.max(config.minSamples - samples, 1);
-    const timeLeft = Math.max(config.minTime - this.totalTime, 1);
+    const timeLeft = Math.max(config.minTime - this.totalTime, 0);
     config.microRuns = Math.ceil(timeLeft / samplesLeft / timePerMicroRun);
   }
 
@@ -112,6 +117,7 @@ export class BenchmarkBase {
       sem,
       moe,
       rme,
+      samples: [...this.samples],
     };
   }
 

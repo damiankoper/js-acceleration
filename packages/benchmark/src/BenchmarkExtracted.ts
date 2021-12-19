@@ -14,6 +14,8 @@ import {
 import { BenchmarkBase } from "./BenchmarkBase";
 
 export class BenchmarkExtracted extends BenchmarkBase implements IBenchmark {
+  private nameCounter = 0;
+
   public runIterations(
     config: GeneralConfig & IterationConfig
   ): IBenchmarkResult<BenchmarkResultType.ITERATIONS> {
@@ -60,8 +62,8 @@ export class BenchmarkExtracted extends BenchmarkBase implements IBenchmark {
     const t = fn({ timer: this.timer, config });
 
     this.totalTime += t;
-    this.totalCount += nTotal;
-    this.samples.push({ count: nTotal, time: t / nTotal, totalTime: t });
+    this.totalMicroRuns += nTotal;
+    this.samples.push({ microRuns: nTotal, time: t / nTotal, totalTime: t });
   }
 
   private createFunction(
@@ -79,7 +81,7 @@ export class BenchmarkExtracted extends BenchmarkBase implements IBenchmark {
         let @tt = @t.stop();
         return @tt;
       }
-    )`.replace(/@/g, config.name || "");
+    )`.replace(/@/g, config.name + (this.nameCounter++).toString());
     const fn = Function(template);
 
     return fn();
