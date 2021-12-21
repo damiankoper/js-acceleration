@@ -14,9 +14,6 @@
 		},
 		{
 			"path": "packages/benchmark"
-		},
-		{
-			"path": "packages/deno-test"
 		}
 	],
 	"settings": {
@@ -26,7 +23,7 @@
 			"js-sequential",
 			"meta",
 			"test-simple",
-			"deno-test"
+			"test-simple-server"
 		]
 	}
 }

@@ -46,13 +46,15 @@ const config = {
     },
   },
 
+  ignoreWarnings: [
+    {
+      module: /PerformanceTimer/,
+      message: /require function/,
+    },
+  ],
+
   experiments: { outputModule: true },
   externalsType: "module",
-  externals: {
-    perf_hooks: "perf_hooks",
-    "simple-statistics": "simple-statistics",
-    "strongly-typed-events": "strongly-typed-events",
-  },
   optimization: {
     minimize: false,
   },

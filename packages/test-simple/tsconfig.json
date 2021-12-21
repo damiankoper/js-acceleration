@@ -9,5 +9,5 @@
     "declarationDir": "dist",
     "moduleResolution": "Node",
   },
-  "files": ["src/index.ts","src/shims.d.ts"]
+  "files": ["src/index.ts"]
 }
