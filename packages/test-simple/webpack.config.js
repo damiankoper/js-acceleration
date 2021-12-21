@@ -63,6 +63,7 @@ const config = {
       zlib: false,
       assert: false,
       stream: false,
+      perf_hooks: false,
     },
   },
 };

@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@types/offscreencanvas": "^2019.6.3",
+    "benchmark": "^0.0.0",
     "css-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
     "js-sequential": "*",

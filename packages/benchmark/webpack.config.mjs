@@ -53,6 +53,9 @@ const config = {
     "simple-statistics": "simple-statistics",
     "strongly-typed-events": "strongly-typed-events",
   },
+  optimization: {
+    minimize: false,
+  },
 };
 
 export default () => {

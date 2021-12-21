@@ -64,10 +64,11 @@ export class BenchmarkBase {
   }
 
   protected getTimer(): new () => ITimer {
-    const timers = [ChromeTimer, NodeHRTimer, PerformanceTimer]
+    const timers = [ChromeTimer, PerformanceTimer]
       .filter((t) => t.isAvailable())
       .sort((t1, t2) => t2.resolution - t1.resolution);
-    return timers[0];
+    if (timers.length) return timers[0];
+    else throw new Error("No available timers!");
   }
 
   protected shouldRunSample(config: TimeConfig) {

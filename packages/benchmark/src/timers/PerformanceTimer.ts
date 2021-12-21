@@ -22,6 +22,6 @@ export class PerformanceTimer implements ITimer {
   }
 
   public stop(): number {
-    return this.t - this.performance.now();
+    return this.performance.now() - this.t;
   }
 }
