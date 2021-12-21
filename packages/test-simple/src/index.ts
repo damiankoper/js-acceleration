@@ -5,7 +5,7 @@ import "./style.scss";
 (async () => {
   {
     const { processedData, imageData, resultsCanvas, spaceCanvas } =
-      await getImageData("sht_seq", "/sudoku.jpg");
+      await getImageData("sht_seq", "/sudoku_threshold.jpg");
 
     const t1 = performance.now();
     const results = SHTSequentialSimple(processedData, {
@@ -24,7 +24,7 @@ import "./style.scss";
   }
   {
     const { processedData, imageData, resultsCanvas, spaceCanvas } =
-      await getImageData("sht_seq_lookup", "/sudoku.jpg");
+      await getImageData("sht_seq_lookup", "/sudoku_threshold.jpg");
 
     const t1 = performance.now();
     const results = SHTSequentialSimpleLookup(processedData, {

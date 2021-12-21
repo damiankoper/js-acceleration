@@ -84,11 +84,14 @@ export class Benchmark extends BenchmarkBase implements IBenchmark {
     let microRuns = microRunsTotal;
 
     const timer = new this.timer();
+
+    this.setup();
     timer.start();
     while (microRuns--) {
       this.fn();
     }
     const t = timer.stop();
+    this.teardown();
 
     this.totalTime += t;
     this.totalMicroRuns += microRunsTotal;

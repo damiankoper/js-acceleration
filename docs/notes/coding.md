@@ -14,3 +14,5 @@
 * Różnica pomiędzy P-Core a E-Core 0.15 vs 0.25
 * jest transpiluje w locie i jest wolniej 
 * prezentacja trybów benchmarkowania jako macierzy t.i/extracted.non
+* WAŻNE:
+  * Brak możliwości ekstrakcji funkcji z innego modułu - w procesie budowanie jest umieszczana globalnie, a to oznacza, że jest optymalizowana

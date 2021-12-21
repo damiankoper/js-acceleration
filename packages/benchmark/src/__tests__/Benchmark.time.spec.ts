@@ -17,7 +17,6 @@ describe("Benchmark time", () => {
     expect(results).toBeDefined();
     const microRuns = results.samples.reduce((a, b) => a + b.microRuns, 0);
     expect(microRuns).toBeGreaterThanOrEqual(results.samples.length + 20);
-    console.log(results);
   });
 
   it("should test for loop time with steady state", () => {

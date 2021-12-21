@@ -18,6 +18,8 @@ import * as ss from "simple-statistics";
 
 export class BenchmarkBase {
   protected fn: () => void;
+  protected setup: () => void;
+  protected teardown: () => void;
   protected timer: new () => ITimer;
   protected readonly tTable = [
     /** T-table for 95% confidence */
@@ -32,8 +34,14 @@ export class BenchmarkBase {
   protected totalTime = 0;
   protected totalMicroRuns = 0;
 
-  public constructor(fn: () => void) {
+  public constructor(
+    fn: () => void,
+    setup: () => void = () => undefined,
+    teardown: () => void = () => undefined
+  ) {
     this.fn = fn;
+    this.setup = setup;
+    this.teardown = teardown;
     this.timer = this.getTimer();
   }
 
@@ -64,7 +72,7 @@ export class BenchmarkBase {
   }
 
   protected getTimer(): new () => ITimer {
-    const timers = [ChromeTimer, PerformanceTimer]
+    const timers = [ChromeTimer, NodeHRTimer, PerformanceTimer]
       .filter((t) => t.isAvailable())
       .sort((t1, t2) => t2.resolution - t1.resolution);
     if (timers.length) return timers[0];

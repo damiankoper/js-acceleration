@@ -28,4 +28,31 @@ describe("Benchmark iterations", () => {
     const microRuns = results.samples.reduce((a, b) => a + b.microRuns, 0);
     expect(microRuns).toBeGreaterThanOrEqual(results.samples.length + 20);
   });
+
+  it("should exec setup and teardown per sample", () => {
+    const samples = 30;
+    let setupCount = 0;
+    let teardownCount = 0;
+    const ben = new Benchmark(
+      function () {
+        for (let index = 0; index < 2000; index++) {
+          Function.prototype();
+        }
+      },
+      function () {
+        setupCount++;
+      },
+      function () {
+        teardownCount++;
+      }
+    );
+
+    const results = ben.runIterations({
+      samples,
+    });
+
+    expect(results).toBeDefined();
+    expect(setupCount).toEqual(samples);
+    expect(teardownCount).toEqual(samples);
+  });
 });

@@ -14,10 +14,19 @@
 		},
 		{
 			"path": "packages/benchmark"
+		},
+		{
+			"path": "packages/deno-test"
 		}
 	],
 	"settings": {
 		"latex-workshop.latex.outDir": "../out",
-        "jest.disabledWorkspaceFolders": ["js-acceleration", "js-sequential", "meta", "test-simple"]
+		"jest.disabledWorkspaceFolders": [
+			"js-acceleration",
+			"js-sequential",
+			"meta",
+			"test-simple",
+			"deno-test"
+		]
 	}
 }
