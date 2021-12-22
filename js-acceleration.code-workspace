@@ -1,29 +1,40 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "packages/js-sequential"
-		},
-		{
-			"path": "packages/meta"
-		},
-		{
-			"path": "packages/test-simple"
-		},
-		{
-			"path": "packages/benchmark"
-		}
-	],
-	"settings": {
-		"latex-workshop.latex.outDir": "../out",
-		"jest.disabledWorkspaceFolders": [
-			"js-acceleration",
-			"js-sequential",
-			"meta",
-			"test-simple",
-			"test-simple-server"
-		]
-	}
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "packages/benchmark"
+        },
+        {
+            "path": "packages/meta"
+        },
+        {
+            "path": "packages/js-sequential"
+        },
+        {
+            "path": "packages/cpp-sequential"
+        },
+        {
+            "path": "packages/test-simple"
+        },
+    ],
+    "settings": {
+        "latex-workshop.latex.outDir": "../out",
+        "jest.disabledWorkspaceFolders": [
+            "js-acceleration",
+            "js-sequential",
+            "meta",
+            "test-simple",
+            "test-simple-server",
+            "cpp-sequential"
+        ],
+        "files.associations": {
+            "*.bash": "shellscript",
+            "cmath": "cpp",
+            "array": "cpp",
+            "string": "cpp",
+            "string_view": "cpp"
+        }
+    }
 }

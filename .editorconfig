@@ -8,3 +8,7 @@ charset = utf-8
 
 [*.{js,ts,py}]
 indent_size = 2
+
+
+[*.{cpp,h}]
+indent_size = 2
