@@ -18,7 +18,8 @@
     "url": "git+https://github.com/damiankoper/js-acceleration.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "prebuild": "cmake -S . -B build",
+    "build": "cmake --build ./build --config Release --target all -j 4"
   },
   "bugs": {
     "url": "https://github.com/damiankoper/js-acceleration/issues"

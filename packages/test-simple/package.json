@@ -29,7 +29,7 @@
   "bugs": {
     "url": "https://github.com/damiankoper/js-acceleration/issues"
   },
-  "dependencies": {
+  "devDependencies": {
     "@types/offscreencanvas": "^2019.6.3",
     "benchmark": "^0.0.0",
     "css-loader": "^6.2.0",
@@ -38,6 +38,23 @@
     "meta": "*",
     "sass": "^1.40.0",
     "sass-loader": "^12.1.0",
-    "style-loader": "^3.2.1"
+    "style-loader": "^3.2.1",
+    "ts-loader": "^9.2.5",
+    "webpack": "^5.52.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.1.1",
+    "prettier": "^2.3.2",
+    "fork-ts-checker-webpack-plugin": "^6.3.3",
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "@webpack-cli/generators": "^2.3.0",
+    "eslint": "^7.32.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-import-resolver-webpack": "^0.13.1",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "typescript": "^4.4.3"
   }
 }

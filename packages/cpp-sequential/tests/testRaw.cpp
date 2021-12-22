@@ -3,13 +3,13 @@
 
 int main() {
 
-  std::vector<unsigned char> testImage({0, 0, 0, 0, 0, 0, 0, //
+  std::vector<unsigned char> testImage({1, 0, 0, 0, 0, 0, 0, //
                                         0, 0, 0, 0, 0, 0, 0, //
                                         0, 0, 0, 0, 0, 0, 0, //
                                         1, 1, 1, 1, 1, 1, 1, //
                                         0, 0, 0, 0, 0, 0, 0, //
-                                        0, 0, 0, 0, 0, 0, 0, //
-                                        0, 0, 0, 0, 0, 0, 0});
+                                        0, 0, 0, 0, 0, 1, 1, //
+                                        0, 0, 0, 0, 0, 1, 1});
 
   SHTResults results = SHTSequentialSimpleLookup(testImage, {6, {0.5, 8}});
 
