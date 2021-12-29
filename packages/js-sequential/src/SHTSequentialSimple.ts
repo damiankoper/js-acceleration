@@ -12,8 +12,8 @@ const SHTSequentialSimple: SHT = function (
   const sampling = Object.assign({ rho: 1, theta: 1 }, options.sampling);
   const votingThreshold = options.votingThreshold || 0.75;
 
-  const hsWidth = Math.round(360 / sampling.theta);
-  const hsHeight = Math.round(
+  const hsWidth = Math.ceil(360 / sampling.theta);
+  const hsHeight = Math.ceil(
     Math.sqrt(width ** 2 + height ** 2) / sampling.rho
   );
   const houghSpace = new Uint32Array(hsWidth * hsHeight);

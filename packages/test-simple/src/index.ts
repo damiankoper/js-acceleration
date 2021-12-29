@@ -10,6 +10,7 @@ import "./style.scss";
     const t1 = performance.now();
     const results = SHTSequentialSimple(processedData, {
       width: imageData.width,
+      sampling: { rho: 1, theta: 0.25 },
     });
     const t2 = performance.now() - t1;
     console.log(t2);
@@ -29,6 +30,7 @@ import "./style.scss";
     const t1 = performance.now();
     const results = SHTSequentialSimpleLookup(processedData, {
       width: imageData.width,
+      sampling: { rho: 1, theta: 0.25 },
     });
     const t2 = performance.now() - t1;
     console.log(t2);

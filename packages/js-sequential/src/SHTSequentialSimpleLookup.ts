@@ -12,17 +12,16 @@ const SHTSequentialSimpleLookup: SHT = function (
   const sampling = Object.assign({ rho: 1, theta: 1 }, options.sampling);
   const votingThreshold = options.votingThreshold || 0.75;
 
-  const hsWidth = Math.round(360 / sampling.theta);
-  const hsHeight = Math.round(
+  const hsWidth = Math.ceil(360 / sampling.theta);
+  const hsHeight = Math.ceil(
     Math.sqrt(width ** 2 + height ** 2) / sampling.rho
   );
   const houghSpace = new Uint32Array(hsWidth * hsHeight);
-  const lookupSize = hsWidth * sampling.theta;
-  const sinLookup = new Float32Array(lookupSize);
-  const cosLookup = new Float32Array(lookupSize);
+  const sinLookup = new Float32Array(hsWidth);
+  const cosLookup = new Float32Array(hsWidth);
 
   const samplingThetaRad = (sampling.theta * Math.PI) / 180;
-  for (let i = 0; i < lookupSize; i++) {
+  for (let i = 0; i < hsWidth; i++) {
     sinLookup[i] = Math.sin(i * samplingThetaRad);
     cosLookup[i] = Math.cos(i * samplingThetaRad);
   }
