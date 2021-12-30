@@ -16,7 +16,7 @@
             "path": "packages/cpp-sequential"
         },
         {
-            "path": "packages/js-cpp-sequential"
+            "path": "packages/node-cpp-sequential"
         },
         {
             "path": "packages/wasm-sequential"
@@ -34,7 +34,7 @@
             "test-simple",
             "test-simple-server",
             "cpp-sequential",
-            "js-cpp-sequential",
+            "node-cpp-sequential",
             "wasm-sequential"
         ],
         "files.associations": {

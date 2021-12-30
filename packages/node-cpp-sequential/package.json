@@ -11,7 +11,7 @@
         "build": "npx -y node-gyp rebuild"
     },
     "gypfile": true,
-    "name": "js-cpp-sequential",
+    "name": "node-cpp-sequential",
     "version": "0.0.0",
     "author": "",
     "license": "ISC",

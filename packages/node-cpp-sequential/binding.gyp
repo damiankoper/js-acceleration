@@ -1,7 +1,7 @@
 {
   'targets': [
     {
-      'target_name': 'js-cpp-sequential-native',
+      'target_name': 'node-cpp-sequential-native',
       'sources': [ 'src/js_cpp_sequential.cc' ],
       'include_dirs': [
         "<!@(node -p \"require('node-addon-api').include_dir\")", 
