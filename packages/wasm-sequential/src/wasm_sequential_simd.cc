@@ -1,6 +1,6 @@
 #pragma GCC diagnostic ignored "-Wreturn-type-c-linkage"
-#include "SHTSequentialSimple.h"
-#include "SHTSequentialSimpleLookup.h"
+#include <SHTSequentialSimple.h>
+#include <SHTSequentialSimpleLookup.h>
 #include <emscripten.h>
 #include <emscripten/bind.h>
 #include <stdio.h>

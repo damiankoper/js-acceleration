@@ -5,14 +5,15 @@
             "includePath": [
                 "~/.node-gyp/16.5.0/include/node",
                 "${workspaceFolder}/../../node_modules/node-addon-api/**",
-                "${workspaceFolder}/../../packages/cpp-sequential/include"   ,
-                "${workspaceFolder}/../../../emsdk/upstream/emscripten/system/include"       
+                "${workspaceFolder}/../../packages/cpp-sequential/include",
+                "${workspaceFolder}/../../../emsdk/upstream/emscripten/system/include",
+                "${workspaceFolder}/../../../emsdk/upstream/lib/clang/14.0.0/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu17",
             "cppStandard": "gnu++14",
-            "intelliSenseMode": "linux-gcc-x64",
+            "intelliSenseMode": "linux-gcc-x64"
         }
     ],
     "version": 4

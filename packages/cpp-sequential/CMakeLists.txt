@@ -4,11 +4,12 @@ project(cpp-sequential VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
+include_directories(include)
+
 add_library(sht-sequential 
     src/SHTSequentialSimple.cpp 
     src/SHTSequentialSimpleLookup.cpp
 )
-
 add_executable(sht-test-raw tests/testRaw.cpp)
 target_link_libraries(sht-test-raw sht-sequential)
 

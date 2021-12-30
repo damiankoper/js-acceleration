@@ -2,8 +2,8 @@
 #include <iostream>
 #include <math.h>
 
-SHTResults SHTSequentialSimple(std::vector<uint8_t> binaryImage,
-                               SHTOptions options) {
+SHTResults SHTSequentialSimple(const std::vector<uint8_t> binaryImage,
+                               const SHTOptions options) {
   std::vector<SHTResult> results;
   uint32_t width = options.width;
   uint32_t height = (binaryImage.size() / width);
