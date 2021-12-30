@@ -66,18 +66,18 @@ factory().then((instance) => {
   .then((instance) => {
     let t = performance.now()
     let results = instance.SHTSequentialSimple(testImage, options)
+    console.log("SHTSequentialSimpleSIMD:".padEnd(38), performance.now() - t);
     
     //console.log("SHTSequentialSimpleSIMD:".padEnd(38), results.results.size())
-    //console.log([...unpackVector(results.results)])
-    console.log("SHTSequentialSimpleSIMD:".padEnd(38), performance.now() - t);
+   //console.log([...unpackVector(results.results)])
     results.results.delete()
     results.hSpace.data.delete()
 
     t = performance.now()
     results = instance.SHTSequentialSimpleLookup(testImage, options)
+    console.log("SHTSequentialSimpleLookupSIMD:".padEnd(38), performance.now() - t);
     //console.log("SHTSequentialSimpleLookupSIMD:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
-    console.log("SHTSequentialSimpleLookupSIMD:".padEnd(38), performance.now() - t);
     results.results.delete()
     results.hSpace.data.delete()
   });

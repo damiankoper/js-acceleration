@@ -49,6 +49,6 @@ emcc \
     -s MODULARIZE \
     -msimd128 \
     -s ALLOW_MEMORY_GROWTH=1 \
-    -O3
-
+    -O3 
+    
 wasm2wat build/wasmSequentialSIMD.wasm > build/wasmSequentialSIMD.wat

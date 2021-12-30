@@ -29,9 +29,7 @@ SHTResults SHTSequentialSimple(const std::vector<uint8_t> binaryImage,
           if (ySpace >= 0) {
             uint32_t offset =
                 round(ySpace / options.sampling.rho) * hsWidth + hx;
-            uint32_t value = houghSpace[offset] + 1;
-            maxValue = std::max(maxValue, value);
-            houghSpace[offset] = value;
+            maxValue = std::max(maxValue, ++houghSpace[offset]);
           }
         }
 

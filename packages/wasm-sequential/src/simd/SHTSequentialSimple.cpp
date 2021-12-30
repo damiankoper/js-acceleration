@@ -19,43 +19,46 @@ SHTResults SHTSequentialSimple(const std::vector<uint8_t> binaryImage,
 
   uint32_t maxValue = 0;
 
-  double samplingThetaRad = options.sampling.theta * M_PI / 180;
-  v128_t vecSamplingThetaRad = wasm_v128_load64_splat(&samplingThetaRad);
-  v128_t vecSamplingRho = wasm_v128_load64_splat(&options.sampling.rho);
-  double hsWidthD = (double)hsWidth;
-  v128_t vecHSWidth = wasm_v128_load64_splat(&hsWidthD);
+  float samplingThetaRad = (float)options.sampling.theta * M_PI / 180;
+  v128_t vecSamplingThetaRad = wasm_v128_load32_splat(&samplingThetaRad);
+  float samplingRhoF = (float)options.sampling.rho;
+  v128_t vecSamplingRho = wasm_v128_load32_splat(&samplingRhoF);
+  float hsWidthF = (float)hsWidth;
+  v128_t vecHSWidth = wasm_v128_load32_splat(&hsWidthF);
 
-  double vDOps[2] = {0, 0};
-  v128_t zeros = wasm_v128_load(vDOps);
+  float vFOps[4] = {0, 0, 0, 0};
+  v128_t zeros = wasm_v128_load(vFOps);
 
   for (uint32_t y = 0; y < height; y++) {
     for (uint32_t x = 0; x < width; x++) {
       if (binaryImage[y * width + x] == 1) {
-        for (int hx = 0; hx < hsWidth; hx += 2) {
-          vDOps[0] = hx, vDOps[1] = hx + 1;
-          v128_t vecHX = wasm_v128_load(vDOps);
-          v128_t vecHTheta = wasm_f64x2_mul(vecHX, vecSamplingThetaRad);
-          wasm_v128_store(vDOps, vecHTheta);
-          vDOps[0] = x * cos(vDOps[0]) + y * sin(vDOps[0]);
-          vDOps[1] = x * cos(vDOps[1]) + y * sin(vDOps[1]);
-          v128_t vecYSpace = wasm_v128_load(vDOps);
-          v128_t vecYSpaceValid = wasm_f64x2_ge(vecYSpace, zeros);
-          vecYSpace = wasm_f64x2_div(vecYSpace, vecSamplingRho);
-          vecYSpace = wasm_f64x2_nearest(vecYSpace);
-          vecYSpace = wasm_f64x2_mul(vecYSpace, vecHSWidth);
-          vecYSpace = wasm_f64x2_add(vecYSpace, vecHX);
-          wasm_v128_store(vDOps, vecYSpace);
-          uint32_t offset_1 = (uint32_t)vDOps[0], offset_2 = (uint32_t)vDOps[1];
-          wasm_v128_store(vDOps, vecYSpaceValid);
-          if (vDOps[0]) {
-            uint32_t value = houghSpace[offset_1] + 1;
-            maxValue = std::max(maxValue, value);
-            houghSpace[offset_1] = value;
-          }
-          if (hx + 1 < hsWidth && vDOps[1]) {
-            uint32_t value = houghSpace[offset_2] + 1;
-            maxValue = std::max(maxValue, value);
-            houghSpace[offset_2] = value;
+        for (uint32_t hx = 0; hx < hsWidth; hx += 4) {
+          vFOps[0] = hx, vFOps[1] = hx + 1;
+          vFOps[2] = hx + 2, vFOps[3] = hx + 3;
+          v128_t vecHX = wasm_v128_load(vFOps);
+          v128_t vecHTheta = wasm_f32x4_mul(vecHX, vecSamplingThetaRad);
+          wasm_v128_store(vFOps, vecHTheta);
+
+          vFOps[0] = x * cos(vFOps[0]) + y * sin(vFOps[0]);
+          vFOps[1] = x * cos(vFOps[1]) + y * sin(vFOps[1]);
+          vFOps[2] = x * cos(vFOps[2]) + y * sin(vFOps[2]);
+          vFOps[3] = x * cos(vFOps[3]) + y * sin(vFOps[3]);
+
+          v128_t vecYSpace = wasm_v128_load(vFOps);
+          v128_t vecYSpaceValid = wasm_f32x4_ge(vecYSpace, zeros);
+          vecYSpace = wasm_f32x4_div(vecYSpace, vecSamplingRho);
+          vecYSpace = wasm_f32x4_nearest(vecYSpace);
+          vecYSpace = wasm_f32x4_mul(vecYSpace, vecHSWidth);
+          vecYSpace = wasm_f32x4_add(vecYSpace, vecHX);
+
+          uint32_t ySpaceValid[4];
+          wasm_v128_store(ySpaceValid, vecYSpaceValid);
+          wasm_v128_store(vFOps, vecYSpace);
+
+          for (uint32_t i = 0; i < 4 && hx + i < hsWidth; i++) {
+            if ((bool)ySpaceValid[i]) {
+              maxValue = std::max(maxValue, ++houghSpace[vFOps[i]]);
+            }
           }
         }
       }
@@ -79,8 +82,8 @@ SHTResults SHTSequentialSimple(const std::vector<uint8_t> binaryImage,
       for (size_t i = 0; i < 4; i++) {
         if (vIOps[i] / (double)maxValue > options.votingThreshold) {
           results.push_back({
-              hy * options.sampling.rho,   // rho
-              hx * options.sampling.theta, // theta
+              hy * options.sampling.rho,         // rho
+              (hx + i) * options.sampling.theta, // theta
           });
         }
       }
