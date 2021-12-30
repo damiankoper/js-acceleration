@@ -19,6 +19,9 @@
             "path": "packages/js-cpp-sequential"
         },
         {
+            "path": "packages/wasm-sequential"
+        },
+        {
             "path": "packages/test-simple"
         },
     ],
@@ -31,7 +34,8 @@
             "test-simple",
             "test-simple-server",
             "cpp-sequential",
-            "js-cpp-sequential"
+            "js-cpp-sequential",
+            "wasm-sequential"
         ],
         "files.associations": {
             "*.bash": "shellscript",
