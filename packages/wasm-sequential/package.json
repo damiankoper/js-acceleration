@@ -18,9 +18,14 @@
     "url": "git+https://github.com/damiankoper/js-acceleration.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "node test/index.js",
+    "build": "bash build.sh"
   },
   "bugs": {
     "url": "https://github.com/damiankoper/js-acceleration/issues"
+  },
+  "dependencies": {
+    "cpp-sequential": "^0.0.0",
+    "meta": "^0.0.0"
   }
 }

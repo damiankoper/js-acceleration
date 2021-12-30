@@ -18,3 +18,4 @@
   * Brak możliwości ekstrakcji funkcji z innego modułu - w procesie budowanie jest umieszczana globalnie, a to oznacza, że jest optymalizowana
   * udowodnić/wspomnieć, czy budowanie TS->JS + lib nie wpływa na strukturę wydajności
 * w cpp stosuję te same konwencje (nazwy itd) co w JS
+* wasm kompilator wyrównuje strukturę do 8b = double
