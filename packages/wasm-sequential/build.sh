@@ -13,9 +13,10 @@ emcc \
     node_modules/cpp-sequential/src/SHTSequentialSimple.cpp \
     -Inode_modules/cpp-sequential/include \
     --bind \
-    -o build/wasmSequential.js \
+    -o build/wasmSequential.cjs \
     -s MODULARIZE \
     -s ALLOW_MEMORY_GROWTH=1 \
+    -s FILESYSTEM=0 \
     -O3
     
 
@@ -29,10 +30,11 @@ emcc \
     node_modules/cpp-sequential/src/SHTSequentialSimple.cpp \
     -Inode_modules/cpp-sequential/include \
     --bind \
-    -o build/wasmSequentialImplicitSIMD.js \
+    -o build/wasmSequentialImplicitSIMD.cjs \
     -s MODULARIZE \
     -msimd128 \
     -s ALLOW_MEMORY_GROWTH=1 \
+    -s FILESYSTEM=0 \
     -O3 
 
 wasm2wat build/wasmSequentialImplicitSIMD.wasm > build/wasmSequentialImplicitSIMD.wat
@@ -45,10 +47,27 @@ emcc \
     src/simd/SHTSequentialSimpleLookup.cpp \
     -Inode_modules/cpp-sequential/include \
     --bind \
-    -o build/wasmSequentialSIMD.js \
+    -o build/wasmSequentialSIMD.cjs \
     -s MODULARIZE \
     -msimd128 \
     -s ALLOW_MEMORY_GROWTH=1 \
+    -s FILESYSTEM=0 \
     -O3 
     
 wasm2wat build/wasmSequentialSIMD.wasm > build/wasmSequentialSIMD.wat
+
+### asm.cjs
+
+emcc \
+    src/wasm_sequential.cc \
+    node_modules/cpp-sequential/src/SHTSequentialSimpleLookup.cpp \
+    node_modules/cpp-sequential/src/SHTSequentialSimple.cpp \
+    -Inode_modules/cpp-sequential/include \
+    --bind \
+    -o build/asmSequential.cjs \
+    -s MODULARIZE \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -s FILESYSTEM=0 \
+    -s WASM=0 \
+    -O3
+    

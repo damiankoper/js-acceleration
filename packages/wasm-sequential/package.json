@@ -5,7 +5,7 @@
   "author": "damiankoper <kopernickk@gmail.com>",
   "homepage": "https://github.com/damiankoper/js-acceleration#readme",
   "license": "ISC",
-  "main": "lib/wasm-sequential.js",
+  "type": "module",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -19,13 +19,34 @@
   },
   "scripts": {
     "test": "node test/test.js",
-    "build": "bash build.sh"
+    "prebuild": "bash build.sh",
+    "build": "webpack --mode=production --node-env=production",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production --node-env=production",
+    "watch": "webpack --watch"
   },
   "bugs": {
     "url": "https://github.com/damiankoper/js-acceleration/issues"
   },
   "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.31.1",
+    "@typescript-eslint/parser": "^4.31.1",
+    "@webpack-cli/generators": "^2.3.0",
     "cpp-sequential": "^0.0.0",
-    "meta": "^0.0.0"
+    "eslint": "^7.32.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-import-resolver-webpack": "^0.13.1",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "exports-loader": "^3.1.0",
+    "fork-ts-checker-webpack-plugin": "^6.3.3",
+    "meta": "^0.0.0",
+    "prettier": "^2.3.2",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.4.3",
+    "webpack": "^5.52.1",
+    "webpack-cli": "^4.8.0"
   }
 }

@@ -30,3 +30,13 @@ export type SHT = (
   binaryImage: ArrayBuffer,
   options: SHTOptions
 ) => HTResults<SHTResult>;
+
+export type SHTSequentialSimple = (
+  binaryImage: Int8Array,
+  options: SHTOptions
+) => HTResults<SHTResult>;
+
+export type SHTSequentialSimpleLookup = (
+  binaryImage: Int8Array,
+  options: SHTOptions
+) => HTResults<SHTResult>;
