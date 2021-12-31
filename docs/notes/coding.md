@@ -23,3 +23,10 @@
   * ALLOW_MEMORY_GROWTH=1 wymagany dla nieograniczonych danych
 * symlinki stworzone przez lernę pozwalają unikać relatywnych ścieżek w górę 
 * simd lepiej f16 - i tak nie zabraknie precyzji - zaokrąglany do całości
+* tylko jedna konfiguracja wasm działająca jako ESM
+  * single file
+  * environment=web
+  * export_es6
+* simd wrapper może dokładać narzut zależny liniowo od rozmiaru akumulatora - konsekwencja jednolitego interfejsu we wszystkich 
+* trzeba przeanalizować optymalizacje kodu dla cold start w devtoolsach - performance
+* *llvm vectorize passes przy analizie vektoryzacji przy implicit SIMD

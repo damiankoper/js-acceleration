@@ -1,11 +1,103 @@
-export const wasmSequential = {
-  //
-};
+import {
+  HTResults,
+  SHTOptions,
+  SHTResult,
+  SHTSequentialSimple,
+  SHTSequentialSimpleLookup,
+} from "meta";
+import factory from "../build/wasmSequential.mjs";
+import factoryImplicitSIMD from "../build/wasmSequentialImplicitSIMD.mjs";
+import factorySIMD from "../build/wasmSequentialSIMD.mjs";
+import factoryAsm from "../build/asmSequential.mjs";
 
-export const wasmSequentialImplicitSIMD = {
-  //
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function* unpackVector<T>(vector: any): Generator<T, void, unknown> {
+  for (let i = 0; i < vector.size(); i++) {
+    yield vector.get(i);
+  }
+}
 
-export const wasmSequentialSIMD = {
-  //
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ModuleFactory = (Module?: any) => Promise<any>;
+
+interface Module {
+  SHTSequentialSimple: SHTSequentialSimple;
+  SHTSequentialSimpleLookup: SHTSequentialSimpleLookup;
+}
+
+export class WasmWrapper implements Module {
+  readonly defaultSHTOptions: Partial<SHTOptions> = {
+    sampling: { rho: 1, theta: 1 },
+    votingThreshold: 0.75,
+  };
+
+  public moduleRaw: Module | null;
+  moduleFactory: ModuleFactory;
+  constructor(moduleFactory: ModuleFactory) {
+    this.moduleFactory = moduleFactory;
+  }
+
+  public async init() {
+    this.moduleRaw = await this.moduleFactory();
+  }
+
+  public SHTSequentialSimple(
+    binaryImage: Uint8Array,
+    options: SHTOptions
+  ): HTResults<SHTResult> {
+    const module = this.valdate();
+    const results = module.SHTSequentialSimple(
+      binaryImage,
+      this.mergeDefaultOptions(options)
+    );
+    return this.transformResults(results);
+  }
+
+  public SHTSequentialSimpleLookup(
+    binaryImage: Uint8Array,
+    options: SHTOptions
+  ): HTResults<SHTResult> {
+    const module = this.valdate();
+    const results = module.SHTSequentialSimpleLookup(
+      binaryImage,
+      this.mergeDefaultOptions(options)
+    );
+    return this.transformResults(results);
+  }
+
+  private valdate(): Module {
+    if (this.moduleRaw) {
+      return this.moduleRaw;
+    } else
+      throw new Error(
+        "WASM module not initiated. Run WasmWrapper.init() method."
+      );
+  }
+
+  private transformResults(results: HTResults<SHTResult>) {
+    return {
+      results: [...unpackVector<SHTResult>(results.results)],
+      hSpace: {
+        data: new Uint32Array(unpackVector<number>(results.hSpace.data)),
+        width: results.hSpace.width,
+      },
+    };
+  }
+
+  private mergeDefaultOptions(options: SHTOptions): SHTOptions {
+    return {
+      width: options.width,
+      sampling: {
+        ...this.defaultSHTOptions.sampling,
+        ...options.sampling,
+      },
+      votingThreshold:
+        options.votingThreshold || this.defaultSHTOptions.votingThreshold,
+    };
+  }
+}
+
+export const wasmSequential = new WasmWrapper(factory);
+export const wasmSequentialImplicitSIMD = new WasmWrapper(factoryImplicitSIMD);
+export const wasmSequentialSIMD = new WasmWrapper(factorySIMD);
+export const asmSequential = new WasmWrapper(factoryAsm);

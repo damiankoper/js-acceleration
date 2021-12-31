@@ -25,8 +25,8 @@ SHTOptions getSHTOptions(Napi::Object &optionsBind) {
   return options;
 }
 
-std::vector<uint8_t> getTestImage(Napi::Int8Array testImageBind) {
-  int8_t *buff_data = testImageBind.Data();
+std::vector<uint8_t> getTestImage(Napi::Uint8Array testImageBind) {
+  uint8_t *buff_data = testImageBind.Data();
   size_t element_length = testImageBind.ElementLength();
   std::vector<uint8_t> testImage;
   testImage.assign(buff_data, buff_data + element_length);
@@ -62,7 +62,7 @@ Napi::Object getResultBind(napi_env env, SHTResults results) {
 
 Napi::Object SHTSequentialSimpleBind(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
-  auto testImageBind = info[0].As<Napi::Int8Array>();
+  auto testImageBind = info[0].As<Napi::Uint8Array>();
   auto testImage = getTestImage(testImageBind);
   auto optionsBind = info[1].As<Napi::Object>();
   SHTOptions options = getSHTOptions(optionsBind);
@@ -73,7 +73,7 @@ Napi::Object SHTSequentialSimpleBind(const Napi::CallbackInfo &info) {
 
 Napi::Object SHTSequentialSimpleLookupBind(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
-  auto testImageBind = info[0].As<Napi::Int8Array>();
+  auto testImageBind = info[0].As<Napi::Uint8Array>();
   auto testImage = getTestImage(testImageBind);
   auto optionsBind = info[1].As<Napi::Object>();
   SHTOptions options = getSHTOptions(optionsBind);

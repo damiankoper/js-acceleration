@@ -32,11 +32,11 @@ export type SHT = (
 ) => HTResults<SHTResult>;
 
 export type SHTSequentialSimple = (
-  binaryImage: Int8Array,
+  binaryImage: Uint8Array,
   options: SHTOptions
 ) => HTResults<SHTResult>;
 
 export type SHTSequentialSimpleLookup = (
-  binaryImage: Int8Array,
+  binaryImage: Uint8Array,
   options: SHTOptions
 ) => HTResults<SHTResult>;

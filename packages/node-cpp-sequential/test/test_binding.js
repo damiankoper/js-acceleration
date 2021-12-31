@@ -1,6 +1,6 @@
 const { SHTSequentialSimple, SHTSequentialSimpleLookup } = require("../dist/binding.js");
 const assert = require("assert");
-const testImage = new Int8Array([
+const testImage = new Uint8Array([
   0, 0, 0, 0, 0, 0, 0, //
   0, 0, 0, 0, 0, 0, 0, //
   0, 0, 0, 0, 0, 0, 0, //

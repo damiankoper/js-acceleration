@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const factorySIMD = require("../build/wasmSequentialSIMD.cjs");
-const factory = require("../build/wasmSequential.cjs");
-const factoryImplicitSIMD = require("../build/wasmSequentialImplicitSIMD.cjs");
+import factorySIMD from "../build/wasmSequentialSIMD.mjs";
+import factory from "../build/wasmSequential.mjs";
+import factoryImplicitSIMD from "../build/wasmSequentialImplicitSIMD.mjs";
 
 function* unpackVector(vector) {
   for (let i = 0; i < vector.size(); i++) {
@@ -10,7 +9,7 @@ function* unpackVector(vector) {
 }
 
 /* eslint-disable prettier/prettier */
-const testImage = new Int8Array([
+const testImage = new Uint8Array([
   0, 0, 0, 0, 0, 0, 0, //
   0, 0, 0, 0, 0, 0, 0, //
   0, 0, 0, 0, 0, 0, 0, //
@@ -28,7 +27,7 @@ const options = {
   sampling: { rho: 1, theta: 1 },
   votingThreshold: 13 / 14,
 };
-console.log(factory);
+
 factory()
   .then((instance) => {
     /*     instance.SHTSequentialSimple(testImage, options)
@@ -53,7 +52,9 @@ factory()
 
     return null;
   })
-  .then(factoryImplicitSIMD)
+  .catch(() => null);
+
+factoryImplicitSIMD()
   .then((instance) => {
     let t = performance.now();
     let results = instance.SHTSequentialSimple(testImage, options);

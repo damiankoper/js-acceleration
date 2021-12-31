@@ -22,7 +22,7 @@ export async function getImageData(prefix: string, imageName: string) {
   ctx.drawImage(jsSeqImg, 0, 0);
 
   const imageData = ctx.getImageData(0, 0, jsSeqImg.width, jsSeqImg.height);
-  const processedData = new Uint8ClampedArray(imageData.data.length / 4);
+  const processedData = new Uint8Array(imageData.data.length / 4);
   for (let i = 0; i < imageData.data.length; i++) {
     processedData[i] = Math.round(
       Math.max(

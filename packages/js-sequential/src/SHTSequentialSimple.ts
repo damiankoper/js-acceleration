@@ -1,7 +1,7 @@
 import { SHT, SHTOptions, SHTResult, HTResults } from "meta";
 
 const SHTSequentialSimple: SHT = function (
-  binaryImage: Int8Array,
+  binaryImage: Uint8Array,
   options: SHTOptions
 ): HTResults<SHTResult> {
   const results: SHTResult[] = [];
