@@ -28,8 +28,6 @@ export const iterationConfigDefaults = (): IterationConfig => ({
 export interface TimeConfig {
   /** Min sample count to run */
   minSamples?: number;
-  /** Min sample count to run */
-  maxSamples?: number;
 
   /** Min time of sample */
   minTime?: number;
@@ -39,7 +37,6 @@ export interface TimeConfig {
 
 export const timeConfigDefaults = (): TimeConfig => ({
   minSamples: 0,
-  maxSamples: 0,
   minTime: 0,
   maxTime: 30000,
 });
@@ -70,4 +67,11 @@ export interface IBenchmark {
   runTimeIterations(
     config: GeneralConfig & StartConfig & TimeConfig
   ): IBenchmarkResult<BenchmarkResultType.TIME_ITERATIONS>;
+
+  runIterationsAsync(
+    config: GeneralConfig & StartConfig & IterationConfig
+  ): Promise<IBenchmarkResult<BenchmarkResultType.ITERATIONS>>;
+  runTimeIterationsAsync(
+    config: GeneralConfig & StartConfig & TimeConfig
+  ): Promise<IBenchmarkResult<BenchmarkResultType.TIME_ITERATIONS>>;
 }

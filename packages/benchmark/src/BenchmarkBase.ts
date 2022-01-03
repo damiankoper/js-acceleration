@@ -85,16 +85,11 @@ export class BenchmarkBase {
     const samples = this.samples.length;
     const totalTime = this.totalTime;
 
-    const samplesExceeded = samples >= config.maxSamples;
-    const timeExceeded = totalTime >= config.maxTime;
-    const minSamplesReached = samples >= config.minSamples;
     const minTimeReached = totalTime >= config.minTime;
+    const maxTimeReached = totalTime >= config.maxTime;
+    const minSamplesReached = samples >= config.minSamples;
 
-    return (
-      (timeExceeded && !minSamplesReached) ||
-      (samplesExceeded && !minTimeReached) ||
-      (!samplesExceeded && !timeExceeded)
-    );
+    return (!minSamplesReached || !minTimeReached) && !maxTimeReached;
   }
 
   protected adjustMicroRuns(config: GeneralConfig & TimeConfig) {
@@ -105,7 +100,10 @@ export class BenchmarkBase {
     );
     const samplesLeft = Math.max(config.minSamples - samples, 1);
     const timeLeft = Math.max(config.minTime - this.totalTime, 0);
-    config.microRuns = Math.ceil(timeLeft / samplesLeft / timePerMicroRun);
+    config.microRuns = Math.max(
+      Math.ceil(timeLeft / samplesLeft / timePerMicroRun),
+      1
+    );
   }
 
   protected getResult<T extends BenchmarkResultType>(
