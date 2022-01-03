@@ -16,8 +16,10 @@ import { NodeHRTimer } from "./timers/NodeHRTimer";
 import { PerformanceTimer } from "./timers/PerformanceTimer";
 import * as ss from "simple-statistics";
 
+export type BenchmarkFn = (() => void) | (() => Promise<void>);
+
 export class BenchmarkBase {
-  protected fn: () => void;
+  protected fn: BenchmarkFn;
   protected setup: () => void;
   protected teardown: () => void;
   protected timer: new () => ITimer;
@@ -35,7 +37,7 @@ export class BenchmarkBase {
   protected totalMicroRuns = 0;
 
   public constructor(
-    fn: () => void,
+    fn: BenchmarkFn,
     setup: () => void = () => undefined,
     teardown: () => void = () => undefined
   ) {

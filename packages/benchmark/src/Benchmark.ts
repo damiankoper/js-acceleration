@@ -19,6 +19,28 @@ export class Benchmark extends BenchmarkBase implements IBenchmark {
   public runIterations(
     config: GeneralConfig & StartConfig & IterationConfig
   ): IBenchmarkResult<BenchmarkResultType.ITERATIONS> {
+    config = this.initIterations(config);
+    this.waitForSteadyState(config);
+    while (this.samples.length < config.samples) {
+      this.runSample(config);
+    }
+    return this.getResult(BenchmarkResultType.ITERATIONS, config);
+  }
+
+  public async runIterationsAsync(
+    config: GeneralConfig & StartConfig & IterationConfig
+  ): Promise<IBenchmarkResult<BenchmarkResultType.ITERATIONS>> {
+    config = this.initIterations(config);
+    await this.waitForSteadyStateAsync(config);
+    while (this.samples.length < config.samples) {
+      await this.runSampleAsync(config);
+    }
+    return this.getResult(BenchmarkResultType.ITERATIONS, config);
+  }
+
+  private initIterations(
+    config: GeneralConfig & StartConfig & IterationConfig
+  ) {
     this.init(config);
     config = Object.assign(
       {},
@@ -27,19 +49,34 @@ export class Benchmark extends BenchmarkBase implements IBenchmark {
       iterationConfigDefaults(),
       config
     );
-
-    this.waitForSteadyState(config);
-
-    while (this.samples.length < config.samples) {
-      this.runSample(config);
-    }
-
-    return this.getResult(BenchmarkResultType.ITERATIONS, config);
+    return config;
   }
 
   public runTimeIterations(
     config: GeneralConfig & StartConfig & TimeConfig
   ): IBenchmarkResult<BenchmarkResultType.TIME_ITERATIONS> {
+    config = this.initTimeIterations(config);
+    this.waitForSteadyState(config);
+    while (this.shouldRunSample(config)) {
+      this.runSample(config);
+      this.adjustMicroRuns(config);
+    }
+    return this.getResult(BenchmarkResultType.TIME_ITERATIONS, config);
+  }
+
+  public async runTimeIterationsAsync(
+    config: GeneralConfig & StartConfig & TimeConfig
+  ): Promise<IBenchmarkResult<BenchmarkResultType.TIME_ITERATIONS>> {
+    config = this.initTimeIterations(config);
+    await this.waitForSteadyStateAsync(config);
+    while (this.shouldRunSample(config)) {
+      await this.runSampleAsync(config);
+      this.adjustMicroRuns(config);
+    }
+    return this.getResult(BenchmarkResultType.TIME_ITERATIONS, config);
+  }
+
+  private initTimeIterations(config: GeneralConfig & StartConfig & TimeConfig) {
     this.init(config);
     config = Object.assign(
       {},
@@ -48,26 +85,29 @@ export class Benchmark extends BenchmarkBase implements IBenchmark {
       timeConfigDefaults(),
       config
     );
-
-    this.waitForSteadyState(config);
-
-    while (this.shouldRunSample(config)) {
-      this.runSample(config);
-      this.adjustMicroRuns(config);
-    }
-
-    return this.getResult(BenchmarkResultType.TIME_ITERATIONS, config);
+    return config;
   }
 
   private waitForSteadyState(config: GeneralConfig & StartConfig) {
     while (!this.steadyStateReached && config.steadyState) {
       this.runSample(config);
-      this.steadyStateReached = this.isSteadyState(config);
-      if (this.steadyStateReached) {
-        this.samples = [];
-        this.totalMicroRuns = 0;
-        this.totalTime = 0;
-      }
+      this.checkSteadyState(config);
+    }
+  }
+
+  private async waitForSteadyStateAsync(config: GeneralConfig & StartConfig) {
+    while (!this.steadyStateReached && config.steadyState) {
+      await this.runSampleAsync(config);
+      this.checkSteadyState(config);
+    }
+  }
+
+  private checkSteadyState(config: GeneralConfig & StartConfig) {
+    this.steadyStateReached = this.isSteadyState(config);
+    if (this.steadyStateReached) {
+      this.samples = [];
+      this.totalMicroRuns = 0;
+      this.totalTime = 0;
     }
   }
 
@@ -80,19 +120,43 @@ export class Benchmark extends BenchmarkBase implements IBenchmark {
   }
 
   private runSample(config: GeneralConfig) {
-    const microRunsTotal = config.microRuns;
-    let microRuns = microRunsTotal;
+    const sampleSetup = this.setupSample(config);
+    const { timer, microRunsTotal } = sampleSetup;
+    let { microRuns } = sampleSetup;
 
-    const timer = new this.timer();
-
-    this.setup();
     timer.start();
     while (microRuns--) {
       this.fn();
     }
     const t = timer.stop();
-    this.teardown();
 
+    this.teardownSample(t, microRunsTotal);
+  }
+
+  private async runSampleAsync(config: GeneralConfig) {
+    const sampleSetup = this.setupSample(config);
+    const { timer, microRunsTotal } = sampleSetup;
+    let { microRuns } = sampleSetup;
+
+    timer.start();
+    while (microRuns--) {
+      await this.fn();
+    }
+    const t = timer.stop();
+
+    this.teardownSample(t, microRunsTotal);
+  }
+
+  private setupSample(config: GeneralConfig) {
+    const microRunsTotal = config.microRuns;
+    const microRuns = microRunsTotal;
+    const timer = new this.timer();
+    this.setup();
+    return { timer, microRuns, microRunsTotal };
+  }
+
+  private teardownSample(t: number, microRunsTotal: number) {
+    this.teardown();
     this.totalTime += t;
     this.totalMicroRuns += microRunsTotal;
     this.samples.push({
