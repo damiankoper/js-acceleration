@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { SHTSequentialSimple, SHTSequentialSimpleLookup } from "js-sequential";
+import { SHTSimple, SHTSimpleLookup } from "js-workers";
 import {
   wasmSequential,
   wasmSequentialImplicitSIMD,
@@ -14,12 +16,46 @@ import "./style.scss";
   const options = {
     sampling,
     votingThreshold,
+    concurrency: 1,
   };
   await wasmSequential.init();
   await wasmSequentialImplicitSIMD.init();
   await wasmSequentialSIMD.init();
 
   const configs = [
+    {
+      id: "sht_workers_lookup",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        SHTSimpleLookup(processedData, {
+          width: imageData.width,
+          ...options,
+        }),
+    },
+    {
+      id: "sht_workers_lookup",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        SHTSimpleLookup(processedData, {
+          width: imageData.width,
+          ...options,
+        }),
+    },
+    {
+      id: "sht_workers_lookup",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        SHTSimpleLookup(processedData, {
+          width: imageData.width,
+          ...options,
+        }),
+    },
+    {
+      id: "sht_workers",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        SHTSimple(processedData, {
+          width: imageData.width,
+          ...options,
+        }),
+    },
+
     {
       id: "sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
@@ -90,7 +126,8 @@ import "./style.scss";
     const { processedData, imageData, resultsCanvas, spaceCanvas } =
       await getImageData(config.id, "/sudoku_threshold.jpg");
     const t1 = performance.now();
-    const results = config.fn(processedData, imageData);
+
+    const results = await config.fn(processedData, imageData);
     const t2 = performance.now() - t1;
     console.log(t2);
     const h1 = document.querySelector("#" + config.id);

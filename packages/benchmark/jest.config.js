@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   moduleFileExtensions: ["js", "json", "ts"],
   modulePaths: ["."],
   moduleDirectories: ["src", "node_modules"],
@@ -11,6 +11,6 @@ module.exports = {
   transformIgnorePatterns: ["node_modules"],
   maxWorkers: "50%",
   coverageDirectory: "./coverage",
-  testEnvironment: "node",
+  testEnvironment: "jsdom",
   setupFilesAfterEnv: [],
 };

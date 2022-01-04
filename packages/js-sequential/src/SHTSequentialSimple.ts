@@ -29,10 +29,9 @@ const SHTSequentialSimple: SHT = function (
           const ySpace = x * Math.cos(hTheta) + y * Math.sin(hTheta);
 
           if (ySpace >= 0) {
-            const offset = Math.round(ySpace / sampling.rho) * hsWidth + hx;
-            const value = houghSpace[offset] + 1;
-            maxValue = Math.max(maxValue, value);
-            houghSpace[offset] = value;
+            const offset = ((ySpace / sampling.rho + 0.5) << 0) * hsWidth + hx;
+            maxValue =
+              maxValue < ++houghSpace[offset] ? houghSpace[offset] : maxValue;
           }
         }
 

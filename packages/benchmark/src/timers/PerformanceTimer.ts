@@ -1,11 +1,6 @@
 import { ITimer } from "../contracts/ITimer";
-
 function getPerformance() {
-  if (typeof window !== "undefined") return window.performance;
-  else if (typeof global !== "undefined") {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    return require("perf_hooks").performance;
-  }
+  return performance;
 }
 
 export class PerformanceTimer implements ITimer {

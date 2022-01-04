@@ -18,6 +18,10 @@ export interface SHTOptions {
   votingThreshold?: number;
 }
 
+export interface SHTParallelOptions extends SHTOptions {
+  concurrency?: number;
+}
+
 export interface HTResults<HTResult> {
   results: HTResult[];
   hSpace?: {
@@ -26,17 +30,12 @@ export interface HTResults<HTResult> {
   };
 }
 
-export type SHT = (
-  binaryImage: ArrayBuffer,
-  options: SHTOptions
+export type SHT<O extends SHTOptions = SHTOptions> = (
+  binaryImage: Uint8Array,
+  options: O
 ) => HTResults<SHTResult>;
 
-export type SHTSequentialSimple = (
+export type SHTAsync<O extends SHTOptions = SHTOptions> = (
   binaryImage: Uint8Array,
-  options: SHTOptions
-) => HTResults<SHTResult>;
-
-export type SHTSequentialSimpleLookup = (
-  binaryImage: Uint8Array,
-  options: SHTOptions
-) => HTResults<SHTResult>;
+  options: O
+) => Promise<HTResults<SHTResult>>;

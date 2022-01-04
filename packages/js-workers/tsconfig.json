@@ -7,7 +7,12 @@
     "allowJs": true,
     "declaration": true,
     "declarationDir": "dist",
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "./types"
+  ]
   },
-  "files": ["src/main.ts"]
+  "files": ["src/main.ts","types/shims.d.ts"]
 }

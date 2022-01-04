@@ -16,7 +16,6 @@ const config = {
     library: {
       type: "module",
     },
-    environment: { module: true },
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin({
@@ -28,31 +27,35 @@ const config = {
   module: {
     rules: [
       {
+        test: /\.worker\.(js|ts)$/,
+        loader: "worker-loader",
+        options: {
+          inline: "no-fallback",
+        },
+      },
+
+      {
         test: /\.(ts|tsx)$/i,
         loader: "ts-loader",
         exclude: ["/node_modules/"],
         options: {
           // disable type checker - we will use it in fork plugin
           transpileOnly: false,
-          configFile: resolve(__dirname, "./tsconfig.build.json"),
         },
       },
+
+      {
+        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+        type: "asset",
+      },
+
+      // Add your rules for custom modules here
+      // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
-    fallback: {
-      perf_hooks: false,
-    },
   },
-
-  ignoreWarnings: [
-    {
-      module: /PerformanceTimer/,
-      message: /require function/,
-    },
-  ],
-
   experiments: { outputModule: true },
   externalsType: "module",
   optimization: {

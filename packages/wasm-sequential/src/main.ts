@@ -1,10 +1,4 @@
-import {
-  HTResults,
-  SHTOptions,
-  SHTResult,
-  SHTSequentialSimple,
-  SHTSequentialSimpleLookup,
-} from "meta";
+import { HTResults, SHT, SHTOptions, SHTResult } from "meta";
 import factory from "../build/wasmSequential.mjs";
 import factoryImplicitSIMD from "../build/wasmSequentialImplicitSIMD.mjs";
 import factorySIMD from "../build/wasmSequentialSIMD.mjs";
@@ -21,8 +15,8 @@ function* unpackVector<T>(vector: any): Generator<T, void, unknown> {
 type ModuleFactory = (Module?: any) => Promise<any>;
 
 interface Module {
-  SHTSequentialSimple: SHTSequentialSimple;
-  SHTSequentialSimpleLookup: SHTSequentialSimpleLookup;
+  SHTSequentialSimple: SHT;
+  SHTSequentialSimpleLookup: SHT;
 }
 
 export class WasmWrapper implements Module {

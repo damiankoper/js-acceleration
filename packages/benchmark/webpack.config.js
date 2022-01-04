@@ -4,31 +4,21 @@
 import { resolve, dirname } from "path";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import { fileURLToPath } from "url";
-import HtmlWebpackPlugin from "html-webpack-plugin";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const isProduction = process.env.NODE_ENV === "production";
 
 const config = {
-  entry: "./src/index.ts",
-  devtool: "cheap-module-source-map",
+  entry: "./src/main.ts",
   output: {
     path: resolve(__dirname, "dist"),
-  },
-  devServer: {
-    open: true,
-    host: "localhost",
-    static: { directory: resolve(__dirname, "static") },
-    headers: {
-      "Cross-Origin-Opener-Policy": "same-origin",
-      "Cross-Origin-Embedder-Policy": "require-corp",
+    library: {
+      type: "module",
     },
+    environment: { module: true },
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: "index.html",
-    }),
     new ForkTsCheckerWebpackPlugin({
       eslint: {
         files: "./src/**/*.{ts,tsx,js,jsx}", // required - same as command `eslint ./src/**/*.{ts,tsx,js,jsx} --ext .ts,.tsx,.js,.jsx`
@@ -43,32 +33,28 @@ const config = {
         exclude: ["/node_modules/"],
         options: {
           // disable type checker - we will use it in fork plugin
-          transpileOnly: true,
+          transpileOnly: false,
+          configFile: resolve(__dirname, "./tsconfig.build.json"),
         },
       },
-      {
-        test: /\.s[ac]ss$/i,
-        use: ["style-loader", "css-loader", "sass-loader"],
-      },
-      {
-        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-        type: "asset",
-      },
-
-      // Add your rules for custom modules here
-      // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
-    fallback: {
-      buffer: false,
-      util: false,
-      zlib: false,
-      assert: false,
-      stream: false,
-      perf_hooks: false,
+    fallback: {},
+  },
+
+  ignoreWarnings: [
+    {
+      module: /PerformanceTimer/,
+      message: /require function/,
     },
+  ],
+
+  experiments: { outputModule: true },
+  externalsType: "module",
+  optimization: {
+    minimize: false,
   },
 };
 

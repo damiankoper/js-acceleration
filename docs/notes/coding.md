@@ -29,4 +29,12 @@
   * export_es6
 * simd wrapper może dokładać narzut zależny liniowo od rozmiaru akumulatora - konsekwencja jednolitego interfejsu we wszystkich 
 * trzeba przeanalizować optymalizacje kodu dla cold start w devtoolsach - performance
-* *llvm vectorize passes przy analizie vektoryzacji przy implicit SIMD
+* llvm vectorize passes przy analizie vektoryzacji przy implicit SIMD
+* Workers:
+  * przyczyny wolniejszego działania
+    * nierównomierne rozłożenie sinusoidy
+    * dla równego rozłożenia sin lepiej całe rho niż theta
+*  dziki rounding przyspiesza https://gist.github.com/Olical/1162452
+* przez obiekt 20x wolniej https://stackoverflow.com/questions/37982072/web-worker-20x-worse-performance
+
+* czy w WASM różnica z dzikim zaokrąglaniem da inny wynik - porównać WAT?
