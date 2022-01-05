@@ -1,5 +1,5 @@
-#include "SHTSequentialSimple.h"
-#include "SHTSequentialSimpleLookup.h"
+#include "SHTSimple.h"
+#include "SHTSimpleLookup.h"
 #include "napi.h"
 #include <cstdint>
 
@@ -60,34 +60,34 @@ Napi::Object getResultBind(napi_env env, SHTResults results) {
   return resultBind;
 }
 
-Napi::Object SHTSequentialSimpleBind(const Napi::CallbackInfo &info) {
+Napi::Object SHTSimpleBind(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
   auto testImageBind = info[0].As<Napi::Uint8Array>();
   auto testImage = getTestImage(testImageBind);
   auto optionsBind = info[1].As<Napi::Object>();
   SHTOptions options = getSHTOptions(optionsBind);
-  SHTResults results = SHTSequentialSimple(testImage, options);
+  SHTResults results = SHTSimple(testImage, options);
 
   return getResultBind(env, results);
 }
 
-Napi::Object SHTSequentialSimpleLookupBind(const Napi::CallbackInfo &info) {
+Napi::Object SHTSimpleLookupBind(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
   auto testImageBind = info[0].As<Napi::Uint8Array>();
   auto testImage = getTestImage(testImageBind);
   auto optionsBind = info[1].As<Napi::Object>();
   SHTOptions options = getSHTOptions(optionsBind);
-  SHTResults results = SHTSequentialSimpleLookup(testImage, options);
+  SHTResults results = SHTSimpleLookup(testImage, options);
 
   return getResultBind(env, results);
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
-  exports.Set(Napi::String::New(env, "SHTSequentialSimple"),
-              Napi::Function::New(env, SHTSequentialSimpleBind));
+  exports.Set(Napi::String::New(env, "SHTSimple"),
+              Napi::Function::New(env, SHTSimpleBind));
 
-  exports.Set(Napi::String::New(env, "SHTSequentialSimpleLookup"),
-              Napi::Function::New(env, SHTSequentialSimpleLookupBind));
+  exports.Set(Napi::String::New(env, "SHTSimpleLookup"),
+              Napi::Function::New(env, SHTSimpleLookupBind));
   return exports;
 }
 

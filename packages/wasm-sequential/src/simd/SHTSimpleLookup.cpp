@@ -1,10 +1,10 @@
-#include "../include/SHTSequentialSimpleLookup.h"
+#include "../include/SHTSimpleLookup.h"
 #include <iostream>
 #include <math.h>
 #include <wasm_simd128.h>
 
-SHTResults SHTSequentialSimpleLookup(const std::vector<uint8_t> binaryImage,
-                                     const SHTOptions options) {
+SHTResults SHTSimpleLookup(const std::vector<uint8_t> binaryImage,
+                           const SHTOptions options) {
   std::vector<SHTResult> results;
   uint32_t width = options.width;
   uint32_t height = (int)(binaryImage.size() / width);

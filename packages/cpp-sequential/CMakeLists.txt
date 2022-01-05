@@ -6,12 +6,12 @@ enable_testing()
 
 include_directories(include)
 
-add_library(sht-sequential 
-    src/SHTSequentialSimple.cpp 
-    src/SHTSequentialSimpleLookup.cpp
+add_library(sht 
+    src/SHTSimple.cpp 
+    src/SHTSimpleLookup.cpp
 )
 add_executable(sht-test-raw tests/testRaw.cpp)
-target_link_libraries(sht-test-raw sht-sequential)
+target_link_libraries(sht-test-raw sht)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

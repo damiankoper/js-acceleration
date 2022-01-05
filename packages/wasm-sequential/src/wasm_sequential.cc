@@ -1,6 +1,6 @@
 #pragma GCC diagnostic ignored "-Wreturn-type-c-linkage"
-#include "SHTSequentialSimple.h"
-#include "SHTSequentialSimpleLookup.h"
+#include "SHTSimple.h"
+#include "SHTSimpleLookup.h"
 #include <emscripten.h>
 #include <emscripten/bind.h>
 #include <stdio.h>
@@ -8,19 +8,18 @@
 extern "C" {
 
 EMSCRIPTEN_KEEPALIVE
-SHTResults SHTSequentialSimpleBind(emscripten::val binaryImageBind,
-                                   SHTOptions options) {
+SHTResults SHTSimpleBind(emscripten::val binaryImageBind, SHTOptions options) {
   auto testImage =
       emscripten::convertJSArrayToNumberVector<uint8_t>(binaryImageBind);
-  return SHTSequentialSimple(testImage, options);
+  return SHTSimple(testImage, options);
 }
 
 EMSCRIPTEN_KEEPALIVE
-SHTResults SHTSequentialSimpleLookupBind(emscripten::val binaryImageBind,
-                                         SHTOptions options) {
+SHTResults SHTSimpleLookupBind(emscripten::val binaryImageBind,
+                               SHTOptions options) {
   auto testImage =
       emscripten::convertJSArrayToNumberVector<uint8_t>(binaryImageBind);
-  return SHTSequentialSimpleLookup(testImage, options);
+  return SHTSimpleLookup(testImage, options);
 }
 }
 
@@ -44,7 +43,6 @@ EMSCRIPTEN_BINDINGS(wasm_sequential) {
   emscripten::value_object<SHTResults>("SHTResults")
       .field("results", &SHTResults::results)
       .field("hSpace", &SHTResults::hSpace);
-  emscripten::function("SHTSequentialSimple", &SHTSequentialSimpleBind);
-  emscripten::function("SHTSequentialSimpleLookup",
-                       &SHTSequentialSimpleLookupBind);
+  emscripten::function("SHTSimple", &SHTSimpleBind);
+  emscripten::function("SHTSimpleLookup", &SHTSimpleLookupBind);
 }

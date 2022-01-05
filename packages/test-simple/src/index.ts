@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { SHTSequentialSimple, SHTSequentialSimpleLookup } from "js-sequential";
-import { SHTSimple, SHTSimpleLookup } from "js-workers";
+import * as sequential from "js-sequential";
+import * as workers from "js-workers";
 import {
   wasmSequential,
   wasmSequentialImplicitSIMD,
   wasmSequentialSIMD,
+  asmSequential,
 } from "wasm-sequential";
 import { getImageData, renderSHTResults } from "./utils";
 import "./style.scss";
@@ -15,12 +16,13 @@ import "./style.scss";
 
   const options = {
     sampling,
-    votingThreshold, 
+    votingThreshold,
     concurrency: 1,
   };
   await wasmSequential.init();
   await wasmSequentialImplicitSIMD.init();
   await wasmSequentialSIMD.init();
+  await asmSequential.init();
 
   // TODO: refactor remove sequential
   // TODO: node workers
@@ -30,7 +32,7 @@ import "./style.scss";
     {
       id: "sht_workers_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        SHTSimpleLookup(processedData, {
+        workers.SHTSimpleLookup(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -38,7 +40,7 @@ import "./style.scss";
     {
       id: "sht_workers_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        SHTSimpleLookup(processedData, {
+        workers.SHTSimpleLookup(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -46,7 +48,7 @@ import "./style.scss";
     {
       id: "sht_workers_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        SHTSimpleLookup(processedData, {
+        workers.SHTSimpleLookup(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -54,7 +56,7 @@ import "./style.scss";
     {
       id: "sht_workers",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        SHTSimple(processedData, {
+        workers.SHTSimple(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -63,7 +65,7 @@ import "./style.scss";
     {
       id: "sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        SHTSequentialSimple(processedData, {
+        sequential.SHTSimple(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -71,7 +73,7 @@ import "./style.scss";
     {
       id: "sht_seq_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        SHTSequentialSimpleLookup(processedData, {
+        sequential.SHTSimpleLookup(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -79,7 +81,7 @@ import "./style.scss";
     {
       id: "wasm_sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        wasmSequential.SHTSequentialSimple(processedData, {
+        wasmSequential.SHTSimple(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -87,7 +89,7 @@ import "./style.scss";
     {
       id: "wasm_sht_seq_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        wasmSequential.SHTSequentialSimpleLookup(processedData, {
+        wasmSequential.SHTSimpleLookup(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -95,7 +97,7 @@ import "./style.scss";
     {
       id: "wasm_implicit_simd_sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        wasmSequentialImplicitSIMD.SHTSequentialSimple(processedData, {
+        wasmSequentialImplicitSIMD.SHTSimple(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -103,7 +105,7 @@ import "./style.scss";
     {
       id: "wasm_implicit_simd_sht_seq_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        wasmSequentialImplicitSIMD.SHTSequentialSimpleLookup(processedData, {
+        wasmSequentialImplicitSIMD.SHTSimpleLookup(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -111,7 +113,7 @@ import "./style.scss";
     {
       id: "wasm_simd_sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        wasmSequentialSIMD.SHTSequentialSimple(processedData, {
+        wasmSequentialSIMD.SHTSimple(processedData, {
           width: imageData.width,
           ...options,
         }),
@@ -119,7 +121,23 @@ import "./style.scss";
     {
       id: "wasm_simd_sht_seq_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
-        wasmSequentialSIMD.SHTSequentialSimpleLookup(processedData, {
+        wasmSequentialSIMD.SHTSimpleLookup(processedData, {
+          width: imageData.width,
+          ...options,
+        }),
+    },
+    {
+      id: "asm_sht_seq",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        asmSequential.SHTSimple(processedData, {
+          width: imageData.width,
+          ...options,
+        }),
+    },
+    {
+      id: "asm_sht_seq_lookup",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        asmSequential.SHTSimpleLookup(processedData, {
           width: imageData.width,
           ...options,
         }),

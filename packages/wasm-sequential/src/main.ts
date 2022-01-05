@@ -15,8 +15,8 @@ function* unpackVector<T>(vector: any): Generator<T, void, unknown> {
 type ModuleFactory = (Module?: any) => Promise<any>;
 
 interface Module {
-  SHTSequentialSimple: SHT;
-  SHTSequentialSimpleLookup: SHT;
+  SHTSimple: SHT;
+  SHTSimpleLookup: SHT;
 }
 
 export class WasmWrapper implements Module {
@@ -35,24 +35,24 @@ export class WasmWrapper implements Module {
     this.moduleRaw = await this.moduleFactory();
   }
 
-  public SHTSequentialSimple(
+  public SHTSimple(
     binaryImage: Uint8Array,
     options: SHTOptions
   ): HTResults<SHTResult> {
     const module = this.valdate();
-    const results = module.SHTSequentialSimple(
+    const results = module.SHTSimple(
       binaryImage,
       this.mergeDefaultOptions(options)
     );
     return this.transformResults(results);
   }
 
-  public SHTSequentialSimpleLookup(
+  public SHTSimpleLookup(
     binaryImage: Uint8Array,
     options: SHTOptions
   ): HTResults<SHTResult> {
     const module = this.valdate();
-    const results = module.SHTSequentialSimpleLookup(
+    const results = module.SHTSimpleLookup(
       binaryImage,
       this.mergeDefaultOptions(options)
     );

@@ -8,7 +8,7 @@
         "<!@(node -p \"require('cpp-sequential').include_dir\")"
       ],
       'libraries': [ 
-        "-lsht-sequential", 
+        "-lsht", 
         "-L<!@(node -p \"require('cpp-sequential').library_dir\")"
       ],
       'cflags!': [ '-fno-exceptions' ],

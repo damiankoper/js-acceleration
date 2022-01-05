@@ -1,2 +1,2 @@
-export * from "./SHTSequentialSimple";
-export * from "./SHTSequentialSimpleLookup";
+export * from "./SHTSimple";
+export * from "./SHTSimpleLookup";

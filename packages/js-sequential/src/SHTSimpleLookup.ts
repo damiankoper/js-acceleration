@@ -1,6 +1,6 @@
 import { SHT, SHTOptions, SHTResult, HTResults } from "meta";
 
-const SHTSequentialSimpleLookup: SHT = function (
+const SHTSimpleLookup: SHT = function (
   binaryImage: Uint8Array,
   options: SHTOptions
 ): HTResults<SHTResult> {
@@ -62,4 +62,4 @@ const SHTSequentialSimpleLookup: SHT = function (
   };
 };
 
-export { SHTSequentialSimpleLookup };
+export { SHTSimpleLookup };

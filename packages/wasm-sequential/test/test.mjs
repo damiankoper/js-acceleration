@@ -30,23 +30,23 @@ const options = {
 
 factory()
   .then((instance) => {
-    /*     instance.SHTSequentialSimple(testImage, options)
-  instance.SHTSequentialSimple(testImage, options)
-  instance.SHTSequentialSimple(testImage, options) */
+    /*     instance.SHTSimple(testImage, options)
+  instance.SHTSimple(testImage, options)
+  instance.SHTSimple(testImage, options) */
 
     let t = performance.now();
-    let results = instance.SHTSequentialSimple(testImage, options);
-    //console.log("SHTSequentialSimple:".padEnd(38), results.results.size())
+    let results = instance.SHTSimple(testImage, options);
+    //console.log("SHTSimple:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
-    console.log("SHTSequentialSimple:".padEnd(38), performance.now() - t);
+    console.log("SHTSimple:".padEnd(38), performance.now() - t);
     results.results.delete();
     results.hSpace.data.delete();
 
     t = performance.now();
-    results = instance.SHTSequentialSimpleLookup(testImage, options);
-    //console.log("SHTSequentialSimpleLookup:".padEnd(38), results.results.size())
+    results = instance.SHTSimpleLookup(testImage, options);
+    //console.log("SHTSimpleLookup:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
-    console.log("SHTSequentialSimpleLookup:".padEnd(38), performance.now() - t);
+    console.log("SHTSimpleLookup:".padEnd(38), performance.now() - t);
     results.results.delete();
     results.hSpace.data.delete();
 
@@ -57,22 +57,19 @@ factory()
 factoryImplicitSIMD()
   .then((instance) => {
     let t = performance.now();
-    let results = instance.SHTSequentialSimple(testImage, options);
-    //console.log("SHTSequentialSimpleImplicitSIMD:".padEnd(38), results.results.size())
+    let results = instance.SHTSimple(testImage, options);
+    //console.log("SHTSimpleImplicitSIMD:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
-    console.log(
-      "SHTSequentialSimpleImplicitSIMD:".padEnd(38),
-      performance.now() - t
-    );
+    console.log("SHTSimpleImplicitSIMD:".padEnd(38), performance.now() - t);
     results.results.delete();
     results.hSpace.data.delete();
 
     t = performance.now();
-    results = instance.SHTSequentialSimpleLookup(testImage, options);
-    //console.log("SHTSequentialSimpleLookupImplicitSIMD:".padEnd(38), results.results.size())
+    results = instance.SHTSimpleLookup(testImage, options);
+    //console.log("SHTSimpleLookupImplicitSIMD:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
     console.log(
-      "SHTSequentialSimpleLookupImplicitSIMD:".padEnd(38),
+      "SHTSimpleLookupImplicitSIMD:".padEnd(38),
       performance.now() - t
     );
     results.results.delete();
@@ -83,21 +80,18 @@ factoryImplicitSIMD()
   .then(factorySIMD)
   .then((instance) => {
     let t = performance.now();
-    let results = instance.SHTSequentialSimple(testImage, options);
-    console.log("SHTSequentialSimpleSIMD:".padEnd(38), performance.now() - t);
+    let results = instance.SHTSimple(testImage, options);
+    console.log("SHTSimpleSIMD:".padEnd(38), performance.now() - t);
 
-    //console.log("SHTSequentialSimpleSIMD:".padEnd(38), results.results.size())
+    //console.log("SHTSimpleSIMD:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
     results.results.delete();
     results.hSpace.data.delete();
 
     t = performance.now();
-    results = instance.SHTSequentialSimpleLookup(testImage, options);
-    console.log(
-      "SHTSequentialSimpleLookupSIMD:".padEnd(38),
-      performance.now() - t
-    );
-    //console.log("SHTSequentialSimpleLookupSIMD:".padEnd(38), results.results.size())
+    results = instance.SHTSimpleLookup(testImage, options);
+    console.log("SHTSimpleLookupSIMD:".padEnd(38), performance.now() - t);
+    //console.log("SHTSimpleLookupSIMD:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
     results.results.delete();
     results.hSpace.data.delete();

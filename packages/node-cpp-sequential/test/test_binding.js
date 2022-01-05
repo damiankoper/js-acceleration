@@ -1,4 +1,4 @@
-const { SHTSequentialSimple, SHTSequentialSimpleLookup } = require("../dist/binding.js");
+const { SHTSimple, SHTSimpleLookup } = require("../dist/binding.js");
 const assert = require("assert");
 const testImage = new Uint8Array([
   0, 0, 0, 0, 0, 0, 0, //
@@ -12,7 +12,7 @@ const testImage = new Uint8Array([
   0, 0, 0, 0, 0, 0, 0, //
 ]);
 
-[SHTSequentialSimple,SHTSequentialSimpleLookup].forEach(fn => {
+[SHTSimple,SHTSimpleLookup].forEach(fn => {
 
   assert(fn, "The expected function is undefined");
 

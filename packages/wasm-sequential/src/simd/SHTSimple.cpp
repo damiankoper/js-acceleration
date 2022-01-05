@@ -1,10 +1,10 @@
-#include <../../cpp-sequential/include/SHTSequentialSimple.h>
+#include <../../cpp-sequential/include/SHTSimple.h>
 #include <iostream>
 #include <math.h>
 #include <wasm_simd128.h>
 
-SHTResults SHTSequentialSimple(const std::vector<uint8_t> binaryImage,
-                               const SHTOptions options) {
+SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
+                     const SHTOptions options) {
   std::vector<SHTResult> results;
   uint32_t width = options.width;
   uint32_t height = (binaryImage.size() / width);

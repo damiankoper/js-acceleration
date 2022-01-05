@@ -1,4 +1,4 @@
-#include "../include/SHTSequentialSimpleLookup.h"
+#include "../include/SHTSimpleLookup.h"
 #include <iostream>
 
 int main() {
@@ -15,8 +15,7 @@ int main() {
       0, 0, 0, 0, 0, 0, 0, //
   });
 
-  SHTResults results =
-      SHTSequentialSimpleLookup(testImage, {7, {0.5, 0.5}, 13. / 14.});
+  SHTResults results = SHTSimpleLookup(testImage, {7, {0.5, 0.5}, 13. / 14.});
 
   size_t s = results.hSpace.data.size();
   size_t w = results.hSpace.width;

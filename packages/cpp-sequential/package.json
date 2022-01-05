@@ -18,7 +18,7 @@
     "url": "git+https://github.com/damiankoper/js-acceleration.git"
   },
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf dist build",
     "prebuild": "cmake -S . -B build",
     "build": "cmake --build ./build --config Release --target all -j 4"
   },
