@@ -1,28 +1,29 @@
 #include "../include/SHTSimpleLookup.h"
-#include <iostream>
-#include <math.h>
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 SHTResults SHTSimpleLookup(const std::vector<uint8_t> binaryImage,
                            const SHTOptions options) {
   std::vector<SHTResult> results;
   uint32_t width = options.width;
-  uint32_t height = (int)(binaryImage.size() / width);
+  uint32_t height = binaryImage.size() / width;
 
   // Defaults handled in the structure definitions
   float samplingRho = options.sampling.rho;
   float samplingTheta = options.sampling.theta;
 
-  uint32_t hsWidth = ceil(360 / samplingTheta);
-  uint32_t hsHeight = ceil(sqrt(width * width + height * height) / samplingRho);
+  uint32_t hsWidth = std::ceil(360 / samplingTheta);
+  uint32_t hsHeight =
+      std::ceil(std::sqrt(width * width + height * height) / samplingRho);
 
   std::vector<uint32_t> houghSpace(hsWidth * hsHeight);
   std::vector<float> sinLookup(hsWidth);
   std::vector<float> cosLookup(hsWidth);
 
-  float samplingThetaRad = samplingTheta * M_PI / 180;
+  float samplingThetaRad = samplingTheta * (float)M_PI / 180;
   for (uint32_t i = 0; i < hsWidth; i++) {
-    sinLookup[i] = sin(i * samplingThetaRad);
-    cosLookup[i] = cos(i * samplingThetaRad);
+    sinLookup[i] = std::sin(i * samplingThetaRad);
+    cosLookup[i] = std::cos(i * samplingThetaRad);
   }
 
   uint32_t maxValue = 0;
@@ -35,7 +36,7 @@ SHTResults SHTSimpleLookup(const std::vector<uint8_t> binaryImage,
           float ySpace = x * cosLookup[hTheta] + y * sinLookup[hTheta];
 
           if (ySpace >= 0) {
-            uint32_t offset = round(ySpace / samplingRho) * hsWidth + hx;
+            uint32_t offset = std::round(ySpace / samplingRho) * hsWidth + hx;
             maxValue = std::max(maxValue, ++houghSpace[offset]);
           }
         }

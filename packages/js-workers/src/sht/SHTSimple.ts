@@ -1,5 +1,5 @@
 import { SHTParallelOptions, SHTResult, HTResults, SHTAsync } from "meta";
-import { SHTSimpleKernel } from "./workers/SHTSimple.types";
+import { SHTSimpleKernel } from "../workers/SHTSimple.types";
 import * as Comlink from "comlink";
 
 const pool: Comlink.Remote<SHTSimpleKernel>[] = [];

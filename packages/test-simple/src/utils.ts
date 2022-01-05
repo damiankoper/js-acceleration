@@ -89,13 +89,15 @@ export function renderSHTResults(
     });
     const normalized = data.map((n) => (n / max) * 255);
 
-    const imageData = spaceCtx.createImageData(width, height);
-    for (let i = 0; i < normalized.length; i++) {
-      imageData.data[i * 4] = normalized[i]; // R
-      imageData.data[i * 4 + 1] = normalized[i]; // G
-      imageData.data[i * 4 + 2] = normalized[i]; // B
-      imageData.data[i * 4 + 3] = 255; // A
+    if (height) {
+      const imageData = spaceCtx.createImageData(width, height);
+      for (let i = 0; i < normalized.length; i++) {
+        imageData.data[i * 4] = normalized[i]; // R
+        imageData.data[i * 4 + 1] = normalized[i]; // G
+        imageData.data[i * 4 + 2] = normalized[i]; // B
+        imageData.data[i * 4 + 3] = 255; // A
+      }
+      spaceCtx.putImageData(imageData, 0, 0);
     }
-    spaceCtx.putImageData(imageData, 0, 0);
   }
 }

@@ -38,3 +38,11 @@
 * przez obiekt 20x wolniej https://stackoverflow.com/questions/37982072/web-worker-20x-worse-performance
 
 * czy w WASM różnica z dzikim zaokrąglaniem da inny wynik - porównać WAT?
+* gupi webpack nie transpilije workerów poprawnie jeśli inicjujemy je np:
+```ts
+import worker_threads from "worker_threads";
+new worker_threads.Worker(...)
+// zamiast
+import {Worker} from "worker_threads";
+new Worker(...)
+```

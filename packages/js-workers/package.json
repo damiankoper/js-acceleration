@@ -5,10 +5,11 @@
   "author": "damiankoper <kopernickk@gmail.com>",
   "homepage": "https://github.com/damiankoper/js-acceleration#readme",
   "license": "ISC",
-  "main": "dist/main.mjs",
-  "types": "dist/main.d.ts",
   "type": "module",
-  "module": "dist/main.mjs",
+  "main": "dist/main.node.mjs",
+  "types": "dist/main.web.d.ts",
+  "module": "dist/main.node.mjs",
+  "browser": "dist/main.web.mjs",
   "directories": {
     "src": "src"
   },
@@ -33,7 +34,6 @@
     "@typescript-eslint/eslint-plugin": "^5.8.1",
     "@typescript-eslint/parser": "^5.8.1",
     "@webpack-cli/generators": "^2.4.1",
-    "comlink": "^4.3.1",
     "eslint": "^8.5.0",
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-import-resolver-webpack": "^0.13.2",
@@ -41,17 +41,19 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^6.0.0",
+    "file-loader": "^6.2.0",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
     "meta": "*",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.4",
+    "url-loader": "^4.1.1",
     "webpack": "^5.65.0",
     "webpack-cli": "^4.9.1",
     "worker-loader": "^3.0.8"
   },
   "dependencies": {
-    "buffer": "^6.0.3"
+    "comlink": "^4.3.1"
   }
 }

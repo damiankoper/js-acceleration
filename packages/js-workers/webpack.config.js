@@ -9,13 +9,15 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const config = {
-  entry: "./src/main.ts",
+const config = () => ({
+  entry: {},
   output: {
+    filename: "[name].mjs",
     path: resolve(__dirname, "dist"),
     library: {
       type: "module",
     },
+    environment: { module: true },
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin({
@@ -27,15 +29,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.worker\.(js|ts)$/,
-        loader: "worker-loader",
-        options: {
-          inline: "no-fallback",
-        },
-      },
-
-      {
-        test: /\.(ts|tsx)$/i,
+        test: /\.tsx?$/i,
         loader: "ts-loader",
         exclude: ["/node_modules/"],
         options: {
@@ -43,14 +37,6 @@ const config = {
           transpileOnly: false,
         },
       },
-
-      {
-        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-        type: "asset",
-      },
-
-      // Add your rules for custom modules here
-      // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
   resolve: {
@@ -61,13 +47,31 @@ const config = {
   optimization: {
     minimize: false,
   },
-};
+});
 
-export default () => {
-  if (isProduction) {
-    config.mode = "production";
-  } else {
-    config.mode = "development";
-  }
-  return config;
-};
+export default [
+  () => {
+    const c = config();
+    c.mode = isProduction ? "production" : "development";
+    c.entry["main.web"] = "./src/main.web.ts";
+    c.target = "web";
+
+    c.module.rules.unshift({
+      test: /\.web\.worker\.(js|ts)$/,
+      loader: "worker-loader",
+      options: {
+        inline: "no-fallback",
+      },
+    });
+    return c;
+  },
+  () => {
+    const c = config();
+    c.mode = isProduction ? "production" : "development";
+    c.entry["main.node"] = "./src/main.node.ts";
+    c.target = "node";
+    c.output.chunkFormat = "module";
+
+    return c;
+  },
+];

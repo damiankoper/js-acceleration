@@ -12,7 +12,14 @@
     "typeRoots": [
       "node_modules/@types",
       "./types"
-  ]
+    ],
+    "types": [
+      "node"
+    ]
   },
-  "files": ["src/main.ts","types/shims.d.ts"]
+  "files": [
+    "src/main.web.ts",
+    "src/main.node.ts",
+    "types/shims.d.ts"
+  ]
 }

@@ -24,7 +24,6 @@ import "./style.scss";
   await wasmSequentialSIMD.init();
   await asmSequential.init();
 
-  // TODO: refactor remove sequential
   // TODO: node workers
   // TODO: deno workers
 
@@ -106,6 +105,38 @@ import "./style.scss";
       id: "wasm_implicit_simd_sht_seq_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequentialImplicitSIMD.SHTSimpleLookup(processedData, {
+          width: imageData.width,
+          ...options,
+        }),
+    },
+    {
+      id: "wasm_simd_sht_seq",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        wasmSequentialSIMD.SHTSimple(processedData, {
+          width: imageData.width,
+          ...options,
+        }),
+    },
+    {
+      id: "wasm_simd_sht_seq_lookup",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        wasmSequentialSIMD.SHTSimpleLookup(processedData, {
+          width: imageData.width,
+          ...options,
+        }),
+    },
+    {
+      id: "wasm_simd_sht_seq",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        wasmSequentialSIMD.SHTSimple(processedData, {
+          width: imageData.width,
+          ...options,
+        }),
+    },
+    {
+      id: "wasm_simd_sht_seq_lookup",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        wasmSequentialSIMD.SHTSimpleLookup(processedData, {
           width: imageData.width,
           ...options,
         }),

@@ -1,6 +1,4 @@
-import * as Comlink from "comlink";
-
-function SHTSimpleKernel(
+export function SHTSimpleLookupKernel(
   hxFrom: number,
   hxTo: number,
   width: number,
@@ -8,16 +6,17 @@ function SHTSimpleKernel(
   binaryImage: Uint8Array,
   hsWidth: number,
   houghSpace: Uint32Array,
-  samplingThetaRad: number,
-  samplingRho: number
+  samplingRho: number,
+  sinLookup: Float32Array,
+  cosLookup: Float32Array
 ): number {
   let maxValue = 0;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       if (binaryImage[y * width + x] === 1) {
         for (let hx = hxFrom; hx < hxTo; hx++) {
-          const hTheta = hx * samplingThetaRad;
-          const ySpace = x * Math.cos(hTheta) + y * Math.sin(hTheta);
+          const hTheta = hx;
+          const ySpace = x * cosLookup[hTheta] + y * sinLookup[hTheta];
 
           if (ySpace >= 0) {
             const offset = ((ySpace / samplingRho + 0.5) << 0) * hsWidth + hx;
@@ -28,9 +27,6 @@ function SHTSimpleKernel(
       }
     }
   }
+
   return maxValue;
 }
-
-Comlink.expose({ run: SHTSimpleKernel });
-
-export default null as unknown;

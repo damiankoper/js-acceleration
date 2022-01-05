@@ -1,18 +1,18 @@
-import { SHTSimple /* , SHTSimpleLookup */ } from "../dist/main.mjs";
+import { SHTSimple /* , SHTSimpleLookup */ } from "../dist/main.node.mjs";
 
 /* eslint-disable prettier/prettier */
 const testImage = new Uint8Array([
-    0, 0, 0, 0, 0, 0, 0, //
-    0, 0, 0, 0, 0, 0, 0, //
-    0, 0, 0, 0, 0, 0, 0, //
-    0, 0, 0, 0, 0, 0, 0, //
-    1, 1, 1, 1, 1, 1, 1, //
-    0, 0, 0, 0, 0, 0, 0, //
-    0, 0, 0, 0, 0, 0, 0, //
-    0, 0, 0, 0, 0, 0, 0, //
-    0, 0, 0, 0, 0, 0, 0, //
-  ]);
-  /* eslint-enable prettier/prettier */
+  0, 0, 0, 0, 0, 0, 0, //
+  0, 0, 0, 0, 0, 0, 0, //
+  0, 0, 0, 0, 0, 0, 0, //
+  0, 0, 0, 0, 0, 0, 0, //
+  1, 1, 1, 1, 1, 1, 1, //
+  0, 0, 0, 0, 0, 0, 0, //
+  0, 0, 0, 0, 0, 0, 0, //
+  0, 0, 0, 0, 0, 0, 0, //
+  0, 0, 0, 0, 0, 0, 0, //
+]);
+/* eslint-enable prettier/prettier */
 
 const options = {
   width: 7,
@@ -20,4 +20,6 @@ const options = {
   votingThreshold: 13 / 14,
 };
 
-SHTSimple(testImage, options);
+(async () => {
+  console.log(await SHTSimple(testImage, options));
+})();
