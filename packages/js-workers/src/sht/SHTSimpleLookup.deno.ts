@@ -1,9 +1,13 @@
-import { SHTResult, HTResults, SHTParallelOptions, SHTAsync } from "meta";
-import { SHTSimpleLookupKernel } from "../workers/SHTSimple.types";
-import { wrap, Remote } from "comlink";
+import {
+  SHTResult,
+  HTResults,
+  SHTParallelOptions,
+  SHTAsync,
+} from "../../../meta/src/main.ts";
+import { SHTSimpleLookupKernel } from "../workers/SHTSimple.types.ts";
 
-const pool: Remote<SHTSimpleLookupKernel>[] = [];
-const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
+const pool: SHTSimpleLookupKernel[] = [];
+const SHTSimpleLookupFactory = (createWorker: () => SHTSimpleLookupKernel) => {
   const SHTSimpleLookup: SHTAsync = async function (
     binaryImage: Uint8Array,
     options: SHTParallelOptions
@@ -18,7 +22,7 @@ const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
     const votingThreshold = options.votingThreshold || 0.75;
     const missingWorkers = Math.max(concurrency - pool.length, 0);
     for (let i = 0; i < missingWorkers; i++) {
-      pool.push(wrap(createWorker()));
+      pool.push(createWorker());
     }
 
     const hsWidth = Math.ceil(360 / sampling.theta);

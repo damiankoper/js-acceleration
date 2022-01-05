@@ -1,10 +1,14 @@
-import { SHTResult, HTResults, SHTParallelOptions, SHTAsync } from "meta";
-import { SHTSimpleLookupKernel } from "../workers/SHTSimple.types";
-import { wrap, Remote } from "comlink";
+import {
+  SHTResult,
+  HTResults,
+  SHTParallelOptions,
+  SHTAsync,
+} from "../../../meta/src/main.ts";
+import { SHTSimpleKernel } from "../workers/SHTSimple.types.ts";
 
-const pool: Remote<SHTSimpleLookupKernel>[] = [];
-const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
-  const SHTSimpleLookup: SHTAsync = async function (
+const pool: SHTSimpleKernel[] = [];
+const SHTSimpleFactory = (createWorker: () => SHTSimpleKernel) => {
+  const SHTSimple: SHTAsync = async function (
     binaryImage: Uint8Array,
     options: SHTParallelOptions
   ): Promise<HTResults<SHTResult>> {
@@ -15,10 +19,10 @@ const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
     // Defaults
     const concurrency = Math.max(options.concurrency || 1, 1);
     const sampling = Object.assign({ rho: 1, theta: 1 }, options.sampling);
-    const votingThreshold = options.votingThreshold || 0.75;
+    const votingThreshold = Math.max(options.votingThreshold || 0.75, 0);
     const missingWorkers = Math.max(concurrency - pool.length, 0);
     for (let i = 0; i < missingWorkers; i++) {
-      pool.push(wrap(createWorker()));
+      pool.push(createWorker());
     }
 
     const hsWidth = Math.ceil(360 / sampling.theta);
@@ -32,17 +36,7 @@ const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
     const sharedImage = new Uint8Array(sharedImageBuffer);
     sharedImage.set(binaryImage);
 
-    const sinLookupBuffer = new SharedArrayBuffer(4 * hsWidth);
-    const cosLookupBuffer = new SharedArrayBuffer(4 * hsWidth);
-    const sinLookup = new Float32Array(sinLookupBuffer);
-    const cosLookup = new Float32Array(cosLookupBuffer);
-
     const samplingThetaRad = (sampling.theta * Math.PI) / 180;
-    for (let i = 0; i < hsWidth; i++) {
-      sinLookup[i] = Math.sin(i * samplingThetaRad);
-      cosLookup[i] = Math.cos(i * samplingThetaRad);
-    }
-
     const jobs: Promise<number>[] = [];
     const batch = Math.ceil(hsWidth / concurrency);
     for (let i = 0; i < concurrency; i++) {
@@ -57,9 +51,8 @@ const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
           sharedImage,
           hsWidth,
           houghSpace,
-          sampling.rho,
-          sinLookup,
-          cosLookup
+          samplingThetaRad,
+          sampling.rho
         )
       );
     }
@@ -85,7 +78,7 @@ const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
     };
   };
 
-  return SHTSimpleLookup;
+  return SHTSimple;
 };
 
-export { SHTSimpleLookupFactory };
+export { SHTSimpleFactory };

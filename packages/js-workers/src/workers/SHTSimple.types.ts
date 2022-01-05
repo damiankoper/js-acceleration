@@ -9,7 +9,7 @@ export type SHTSimpleKernel = {
     houghSpace: Uint32Array,
     samplingThetaRad: number,
     samplingRho: number
-  ) => number;
+  ) => Promise<number>;
 };
 
 export type SHTSimpleLookupKernel = {
@@ -24,5 +24,5 @@ export type SHTSimpleLookupKernel = {
     samplingRho: number,
     sinLookup: Float32Array,
     cosLookup: Float32Array
-  ) => number;
+  ) => Promise<number>;
 };

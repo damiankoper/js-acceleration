@@ -20,6 +20,7 @@
   "files": [
     "src/main.web.ts",
     "src/main.node.ts",
+    "src/main.deno.ts",
     "types/shims.d.ts"
   ]
 }

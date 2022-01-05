@@ -21,6 +21,7 @@
 * wasm kompilator 
   * wyrównuje strukturę do 8b = double
   * ALLOW_MEMORY_GROWTH=1 wymagany dla nieograniczonych danych
+* emscripten stosuje embind do bindowania JS <-> CPP, alternatywą jest operowanie na stercie bezpośrednio i alokacja pamięci z użyciem malloc exportowanego z Cpp
 * symlinki stworzone przez lernę pozwalają unikać relatywnych ścieżek w górę 
 * simd lepiej f16 - i tak nie zabraknie precyzji - zaokrąglany do całości
 * tylko jedna konfiguracja wasm działająca jako ESM
@@ -39,10 +40,10 @@
 
 * czy w WASM różnica z dzikim zaokrąglaniem da inny wynik - porównać WAT?
 * gupi webpack nie transpilije workerów poprawnie jeśli inicjujemy je np:
-```ts
-import worker_threads from "worker_threads";
-new worker_threads.Worker(...)
-// zamiast
-import {Worker} from "worker_threads";
-new Worker(...)
-```
+  ```ts
+  import worker_threads from "worker_threads";
+  new worker_threads.Worker(...)
+  // zamiast
+  import {Worker} from "worker_threads";
+  new Worker(...)
+  ```
