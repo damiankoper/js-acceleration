@@ -18,10 +18,14 @@
     "url": "git+https://github.com/damiankoper/js-acceleration.git"
   },
   "scripts": {
+    "clean": "rimraf dist",
     "prebuild": "cmake -S . -B build",
     "build": "cmake --build ./build --config Release --target all -j 4"
   },
   "bugs": {
     "url": "https://github.com/damiankoper/js-acceleration/issues"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2"
   }
 }

@@ -1,7 +1,6 @@
 **/z-*
 **/*.log
 **/doc
-**/lib
 **/build
 **/.cache
 **/.clangd

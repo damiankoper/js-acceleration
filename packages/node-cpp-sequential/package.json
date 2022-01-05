@@ -7,15 +7,17 @@
     "main": "dist/binding.js",
     "gypfile": false,
     "scripts": {
+        "clean": "rimraf dist build",
         "pretest": "tsc",
         "test": "node --napi-modules ./test/test_binding.js",
         "build": "npx -y node-gyp rebuild"
     },
     "devDependencies": {
         "@types/node": "^17.0.5",
-        "typescript": "^4.5.4",
         "cpp-sequential": "*",
         "meta": "*",
-        "node-addon-api": "^4.2.0"
+        "node-addon-api": "^4.2.0",
+        "rimraf": "^3.0.2",
+        "typescript": "^4.5.4"
     }
 }

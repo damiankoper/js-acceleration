@@ -15,12 +15,16 @@ import "./style.scss";
 
   const options = {
     sampling,
-    votingThreshold,
+    votingThreshold, 
     concurrency: 1,
   };
   await wasmSequential.init();
   await wasmSequentialImplicitSIMD.init();
   await wasmSequentialSIMD.init();
+
+  // TODO: refactor remove sequential
+  // TODO: node workers
+  // TODO: deno workers
 
   const configs = [
     {

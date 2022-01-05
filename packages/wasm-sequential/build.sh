@@ -5,6 +5,8 @@ if [ -z "${EMSCRIPTEN_HOME}" ];
 fi
 source "$EMSCRIPTEN_HOME/emsdk_env.sh" > /dev/null 2>&1
 
+mkdir -p ./build
+
 COMMON_ARGS="-Inode_modules/cpp-sequential/include 
     --bind \
     -s MODULARIZE \
