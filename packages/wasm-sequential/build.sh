@@ -27,7 +27,6 @@ NON_SIMD_ARGS="$COMMON_ARGS \
 
 emcc $(echo $NON_SIMD_ARGS -o build/wasmSequential.mjs)
 emcc $(echo $NON_SIMD_ARGS -o build/wasmSequential.wasm --no-entry)
-
 wasm2wat build/wasmSequential.wasm > build/wasmSequential.wat
 
 ### Implicit SIMD

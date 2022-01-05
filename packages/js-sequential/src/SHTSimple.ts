@@ -11,16 +11,16 @@ const SHTSimple: SHT = function (
   // Defaults
   const sampling = Object.assign({ rho: 1, theta: 1 }, options.sampling);
   const votingThreshold = options.votingThreshold || 0.75;
+  const samplingRho = sampling.rho;
+  const samplingTheta = sampling.theta;
+  const samplingThetaRad = (samplingTheta * Math.PI) / 180;
 
-  const hsWidth = Math.ceil(360 / sampling.theta);
-  const hsHeight = Math.ceil(
-    Math.sqrt(width ** 2 + height ** 2) / sampling.rho
-  );
+  const hsWidth = Math.ceil(360 / samplingTheta);
+  const hsHeight = Math.ceil(Math.sqrt(width ** 2 + height ** 2) / samplingRho);
   const houghSpace = new Uint32Array(hsWidth * hsHeight);
 
   let maxValue = 0;
 
-  const samplingThetaRad = (sampling.theta * Math.PI) / 180;
   for (let y = 0; y < height; y++)
     for (let x = 0; x < width; x++)
       if (binaryImage[y * width + x] === 1)
@@ -29,7 +29,7 @@ const SHTSimple: SHT = function (
           const ySpace = x * Math.cos(hTheta) + y * Math.sin(hTheta);
 
           if (ySpace >= 0) {
-            const offset = ((ySpace / sampling.rho + 0.5) << 0) * hsWidth + hx;
+            const offset = ((ySpace / samplingRho + 0.5) << 0) * hsWidth + hx;
             maxValue =
               maxValue < ++houghSpace[offset] ? houghSpace[offset] : maxValue;
           }
@@ -40,8 +40,8 @@ const SHTSimple: SHT = function (
       const offset = hy * hsWidth + hx;
       if (houghSpace[offset] / maxValue > votingThreshold) {
         results.push({
-          rho: hy * sampling.rho,
-          theta: hx * sampling.theta,
+          rho: hy * samplingRho,
+          theta: hx * samplingTheta,
         });
       }
     }

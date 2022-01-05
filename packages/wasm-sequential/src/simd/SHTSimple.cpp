@@ -80,7 +80,7 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
       vIOps[2] = houghSpace[vIOps[2]], vIOps[3] = houghSpace[vIOps[3]];
 
       for (size_t i = 0; i < 4; i++) {
-        if (vIOps[i] / (double)maxValue > options.votingThreshold) {
+        if (vIOps[i] / (float)maxValue > options.votingThreshold) {
           results.push_back({
               hy * options.sampling.rho,         // rho
               (hx + i) * options.sampling.theta, // theta

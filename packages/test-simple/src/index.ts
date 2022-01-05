@@ -17,7 +17,7 @@ import "./style.scss";
   const options = {
     sampling,
     votingThreshold,
-    concurrency: 1,
+    concurrency: 4,
   };
   await wasmSequential.init();
   await wasmSequentialImplicitSIMD.init();
