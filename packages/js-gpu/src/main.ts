@@ -8,6 +8,7 @@ const houghSpace = gpu.createKernel(
     const rho = this.thread.y;
     const theta = this.thread.x;
     const thetaRad = (theta * Math.PI) / 180;
+    // TODO: lookup version
     const cosTheta = Math.cos(thetaRad);
     const sinTheta = Math.sin(thetaRad);
 
