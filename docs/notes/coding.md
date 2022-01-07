@@ -47,3 +47,8 @@
   import {Worker} from "worker_threads";
   new Worker(...)
   ```
+* ForkTsCheckerWebpackPlugin opcja typescript.mode = write-dts razem z transpileOnly true w ts-loader
+
+
+
+* przyspiszenie obliczeń przez specyfikację problemu , np obliczenie tylko dla określonych kątów nachyleń

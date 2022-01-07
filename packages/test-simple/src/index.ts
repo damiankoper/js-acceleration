@@ -10,6 +10,9 @@ import {
 import { getImageData, renderSHTResults } from "./utils";
 import "./style.scss";
 
+import { xd } from "js-gpu";
+xd();
+
 (async () => {
   const sampling = { rho: 1, theta: 1 };
   const votingThreshold = 0.75;
@@ -24,9 +27,6 @@ import "./style.scss";
   await wasmSequentialSIMD.init();
   await asmSequential.init();
 
-  // TODO: node workers
-  // TODO: deno workers
-
   const configs = [
     {
       id: "sht_workers_lookup",
@@ -36,7 +36,7 @@ import "./style.scss";
           ...options,
         }),
     },
-    {
+    /*  {
       id: "sht_workers_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         workers.SHTSimpleLookup(processedData, {
@@ -172,7 +172,7 @@ import "./style.scss";
           width: imageData.width,
           ...options,
         }),
-    },
+    }, */
   ];
 
   for (const config of configs) {

@@ -9,20 +9,8 @@
     "declarationDir": "dist",
     "moduleResolution": "Node",
     "esModuleInterop": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "./types"
-    ],
-    "types": [
-      "node"
-    ]
   },
   "files": [
-    "src/main.web.ts",
-    "src/main.node.ts",
-    "types/shims.d.ts"
-  ],
-  "exclude": [
-    "*.deno.*.ts"
+    "src/main.ts",
   ]
 }

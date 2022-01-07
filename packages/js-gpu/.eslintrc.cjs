@@ -3,7 +3,6 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true,
   },
   extends: [
     "eslint:recommended",
@@ -23,7 +22,7 @@ module.exports = {
     "prettier/prettier": "warn",
     "@typescript-eslint/explicit-module-boundary-types": "off",
   },
-  ignorePatterns: ["node_modules", "dist", "*.deno.worker.ts", "*.deno.ts"],
+  ignorePatterns: ["node_modules", "dist"],
   settings: {
     "import/resolver": "typescript",
   },

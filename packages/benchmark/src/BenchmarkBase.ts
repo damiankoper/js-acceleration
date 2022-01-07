@@ -74,7 +74,7 @@ export class BenchmarkBase {
   }
 
   protected getTimer(): new () => ITimer {
-    const timers = [/* ChromeTimer, NodeHRTimer, */ PerformanceTimer]
+    const timers = [ChromeTimer, NodeHRTimer, PerformanceTimer]
       .filter((t) => t.isAvailable())
       .sort((t1, t2) => t2.resolution - t1.resolution);
     if (timers.length) return timers[0];

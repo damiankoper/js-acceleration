@@ -24,6 +24,10 @@ const config = () => ({
       eslint: {
         files: "./src/**/*.{ts,tsx,js,jsx}", // required - same as command `eslint ./src/**/*.{ts,tsx,js,jsx} --ext .ts,.tsx,.js,.jsx`
       },
+      typescript: {
+        build: true,
+        mode: "write-dts",
+      },
     }),
   ],
   module: {
@@ -34,7 +38,7 @@ const config = () => ({
         exclude: ["/node_modules/"],
         options: {
           // disable type checker - we will use it in fork plugin
-          transpileOnly: false,
+          transpileOnly: true,
         },
       },
     ],

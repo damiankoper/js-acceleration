@@ -1,15 +1,14 @@
 {
-  "name": "js-workers",
+  "name": "js-gpu",
   "version": "0.0.0",
-  "description": "",
+  "description": "> TODO: description",
   "author": "damiankoper <kopernickk@gmail.com>",
   "homepage": "https://github.com/damiankoper/js-acceleration#readme",
   "license": "ISC",
   "type": "module",
-  "main": "dist/main.node.mjs",
-  "types": "dist/main.web.d.ts",
-  "module": "dist/main.node.mjs",
-  "browser": "dist/main.web.mjs",
+  "main": "dist/main.mjs",
+  "types": "dist/main.d.ts",
+  "module": "dist/main.mjs",
   "directories": {
     "src": "src"
   },
@@ -20,15 +19,15 @@
     "type": "git",
     "url": "git+https://github.com/damiankoper/js-acceleration.git"
   },
+  "bugs": {
+    "url": "https://github.com/damiankoper/js-acceleration/issues"
+  },
   "scripts": {
     "clean": "rimraf dist",
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch"
-  },
-  "bugs": {
-    "url": "https://github.com/damiankoper/js-acceleration/issues"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.8.1",
@@ -43,16 +42,14 @@
     "eslint-plugin-promise": "^6.0.0",
     "file-loader": "^6.2.0",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
-    "meta": "*",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.4",
     "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1",
-    "worker-loader": "^3.0.8"
+    "webpack-cli": "^4.9.1"
   },
   "dependencies": {
-    "comlink": "^4.3.1"
+    "gpu.js": "^2.11.4"
   }
 }

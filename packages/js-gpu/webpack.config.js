@@ -16,7 +16,6 @@ const config = {
     library: {
       type: "module",
     },
-    environment: { module: true },
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin({
@@ -37,24 +36,21 @@ const config = {
         exclude: ["/node_modules/"],
         options: {
           // disable type checker - we will use it in fork plugin
-          transpileOnly: true,
-          configFile: resolve(__dirname, "./tsconfig.build.json"),
+          transpileOnly: false,
         },
       },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+        type: "asset",
+      },
+
+      // Add your rules for custom modules here
+      // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
-    fallback: {},
   },
-
-  ignoreWarnings: [
-    {
-      module: /PerformanceTimer/,
-      message: /require function/,
-    },
-  ],
-
   experiments: { outputModule: true },
   externalsType: "module",
   optimization: {

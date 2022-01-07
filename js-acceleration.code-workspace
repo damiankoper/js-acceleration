@@ -16,6 +16,9 @@
             "path": "packages/js-workers"
         },
         {
+            "path": "packages/js-gpu"
+        },
+        {
             "path": "packages/cpp-sequential"
         },
         {
@@ -34,6 +37,7 @@
             "js-acceleration",
             "js-sequential",
             "js-workers",
+            "js-gpu",
             "meta",
             "test-simple",
             "test-simple-server",
