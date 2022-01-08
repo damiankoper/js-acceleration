@@ -52,3 +52,11 @@
 
 
 * przyspiszenie obliczeń przez specyfikację problemu , np obliczenie tylko dla określonych kątów nachyleń
+
+
+* gpu
+  * ważne odpowiedni kod transpilowany do shaderów (kernela) kod równoważny w TS daje różne wyniki
+  * wymaganiem stały interface we wszystkich metodach akceleracji - dlatego trzeba przekształcić Float32 to uint32
+  * bardzo ważny jest podział dla odpowiednich kątów na y(rho,theta,x) i x(rho,theta,y)
+  * tylko kwadratowy input działa dobrze na gpu??? TODO: błąd???
+  * Delikatne (+/- 1 linia) różnice w wykrywaniu, związek z mniejsza precyzją i sumowaniem błędów
