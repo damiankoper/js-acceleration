@@ -19,7 +19,7 @@
   },
   "scripts": {
     "clean": "rimraf dist build",
-    "prebuild": "cmake -S . -B build",
+    "prebuild": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release",
     "build": "cmake --build ./build --config Release --target all -j 4"
   },
   "bugs": {
