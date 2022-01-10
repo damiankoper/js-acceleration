@@ -145,7 +145,7 @@ import * as gpu from "js-gpu";
 
   for (const config of configs) {
     const { processedData, imageData, resultsCanvas, spaceCanvas } =
-      await getImageData(config.id, "/canny.jpg");
+      await getImageData(config.id, "/sudoku_threshold.jpg");
     let t1 = performance.now();
     let results = await config.fn(processedData, imageData);
     let t2 = performance.now() - t1;

@@ -58,7 +58,7 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
           v128_t vecYSpace = wasm_f32x4_add(vecXCos, vecYSin);
           v128_t vecYSpaceValid = wasm_f32x4_ge(vecYSpace, zeros);
           vecYSpace = wasm_f32x4_div(vecYSpace, vecSamplingRho);
-          vecYSpace = wasm_f32x4_nearest(vecYSpace);
+          vecYSpace = wasm_f32x4_floor(vecYSpace);
           vecYSpace = wasm_f32x4_mul(vecYSpace, vecHSWidth);
           vecYSpace = wasm_f32x4_add(vecYSpace, vecHX);
 
@@ -79,6 +79,8 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
   uint32_t vIOps[4] = {0, 0, 0, 0};
   vecHSWidth = wasm_v128_load32_splat(&hsWidth);
 
+  float maxValueF = (float)maxValue;
+
   for (uint32_t hy = 0; hy < hsHeight; hy++) {
     v128_t vecHY = wasm_v128_load32_splat(&hy);
     vecHY = wasm_i32x4_mul(vecHY, vecHSWidth);
@@ -87,13 +89,11 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
       v128_t vecHX = wasm_v128_load(vIOps);
       vecHX = wasm_i32x4_add(vecHY, vecHX);
       wasm_v128_store(vIOps, vecHX);
-      vIOps[0] = houghSpace[vIOps[0]], vIOps[1] = houghSpace[vIOps[1]],
-      vIOps[2] = houghSpace[vIOps[2]], vIOps[3] = houghSpace[vIOps[3]];
-
-      for (size_t i = 0; i < 4; i++) {
-        if (vIOps[i] / (float)maxValue > options.votingThreshold) {
+      for (size_t i = 0; i < 4 && hx + i < hsWidth; i++) {
+        uint32_t v = houghSpace[vIOps[i]];
+        if (v / maxValueF > options.votingThreshold) {
           results.push_back({
-              hy * options.sampling.rho,         // rho
+              hy * samplingRhoF,                 // rho
               (hx + i) * options.sampling.theta, // theta
           });
         }
