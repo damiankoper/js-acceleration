@@ -22,10 +22,10 @@ export function createSHTSimpleKernel(
     >(
       function (testImage: number[]) {
         const rho =
-          Math.floor(this.thread.x / this.constants.hsWidth) *
+          Math.floor(this.thread.x / this.constants.hsWidth) /
           this.constants.samplingRho;
         const theta =
-          Math.floor(this.thread.x % this.constants.hsWidth) *
+          Math.floor(this.thread.x % this.constants.hsWidth) /
           this.constants.samplingTheta;
 
         const thetaRad = (theta * Math.PI) / 180;

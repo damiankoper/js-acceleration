@@ -22,10 +22,10 @@ export function createSHTSimpleLookupKernel(
     >(
       function (testImage: number[], sinLookup: number[], cosLookup: number[]) {
         const rho =
-          Math.floor(this.thread.x / this.constants.hsWidth) *
+          Math.floor(this.thread.x / this.constants.hsWidth) /
           this.constants.samplingRho;
         const thetaSampled = Math.floor(this.thread.x % this.constants.hsWidth);
-        const theta = thetaSampled * this.constants.samplingTheta;
+        const theta = thetaSampled / this.constants.samplingTheta;
 
         const cosTheta = cosLookup[thetaSampled];
         const sinTheta = sinLookup[thetaSampled];

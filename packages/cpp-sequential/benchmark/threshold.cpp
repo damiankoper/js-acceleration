@@ -21,8 +21,7 @@ std::vector<uint8_t> binaryImage;
 
 static void DoSetup(const benchmark::State &state) {
   int width, height, bpp;
-  rgb_image =
-      stbi_load(imageNames[state.range(0)].c_str(), &width, &height, &bpp, 3);
+  rgb_image = stbi_load(imageNames[0].c_str(), &width, &height, &bpp, 3);
   ::width = width;
   int length = width * height;
 
@@ -38,20 +37,22 @@ static void DoTeardown(const benchmark::State &state) {
 }
 
 static void SHT_Simple(benchmark::State &state) {
+  float f = state.range(0);
   for (auto _ : state)
-    SHTSimple(binaryImage, {width, {1.f, 1.f}, 0.75f});
+    SHTSimple(binaryImage, {width, {1, f}, 0.75f});
 }
 BENCHMARK(SHT_Simple)
-    ->DenseRange(0, 5, 1)
+    ->DenseRange(1, 10, 1)
     ->Setup(DoSetup)
     ->Teardown(DoTeardown);
 
 static void SHT_Simple_Lookup(benchmark::State &state) {
+  float f = state.range(0);
   for (auto _ : state)
-    SHTSimpleLookup(binaryImage, {width, {1.f, 1.f}, 0.75f});
+    SHTSimpleLookup(binaryImage, {width, {1.f, f}, 0.75f});
 }
 BENCHMARK(SHT_Simple_Lookup)
-    ->DenseRange(0, 5, 1)
+    ->DenseRange(1, 10, 1)
     ->Setup(DoSetup)
     ->Teardown(DoTeardown);
 

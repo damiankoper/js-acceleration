@@ -12,15 +12,15 @@ SHTResults SHTSimpleLookup(const std::vector<uint8_t> binaryImage,
   float samplingRho = options.sampling.rho;
   float samplingTheta = options.sampling.theta;
 
-  uint32_t hsWidth = std::ceil(360 / samplingTheta);
+  uint32_t hsWidth = std::ceil(360 * samplingTheta);
   uint32_t hsHeight =
-      std::ceil(std::sqrt(width * width + height * height) / samplingRho);
+      std::ceil(std::sqrt(width * width + height * height) * samplingRho);
 
   std::vector<uint32_t> houghSpace(hsWidth * hsHeight);
   std::vector<float> sinLookup(hsWidth);
   std::vector<float> cosLookup(hsWidth);
 
-  float samplingThetaRad = samplingTheta * (float)M_PI / 180;
+  float samplingThetaRad = M_PI / 180. / samplingTheta;
   for (uint32_t i = 0; i < hsWidth; i++) {
     sinLookup[i] = std::sin(i * samplingThetaRad);
     cosLookup[i] = std::cos(i * samplingThetaRad);
@@ -36,7 +36,7 @@ SHTResults SHTSimpleLookup(const std::vector<uint8_t> binaryImage,
           float ySpace = x * cosLookup[hTheta] + y * sinLookup[hTheta];
 
           if (ySpace >= 0) {
-            uint32_t offset = std::round(ySpace / samplingRho) * hsWidth + hx;
+            uint32_t offset = std::round(ySpace * samplingRho) * hsWidth + hx;
             maxValue = std::max(maxValue, ++houghSpace[offset]);
           }
         }
@@ -46,8 +46,8 @@ SHTResults SHTSimpleLookup(const std::vector<uint8_t> binaryImage,
       uint32_t offset = hy * hsWidth + hx;
       if (houghSpace[offset] / (float)maxValue > options.votingThreshold) {
         results.push_back({
-            hy * samplingRho,   // rho
-            hx * samplingTheta, // theta
+            hy / samplingRho,   // rho
+            hx / samplingTheta, // theta
         });
       }
     }

@@ -11,15 +11,15 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
 
   // Defaults handled in the structure definitions
 
-  uint32_t hsWidth = std::ceil(360 / options.sampling.theta);
-  uint32_t hsHeight = std::ceil(std::sqrt(width * width + height * height) /
+  uint32_t hsWidth = std::ceil(360 * options.sampling.theta);
+  uint32_t hsHeight = std::ceil(std::sqrt(width * width + height * height) *
                                 options.sampling.rho);
 
   std::vector<uint32_t> houghSpace(hsWidth * hsHeight);
 
   uint32_t maxValue = 0;
 
-  float samplingThetaRad = options.sampling.theta * (float)M_PI / 180;
+  float samplingThetaRad = M_PI / 180. / options.sampling.theta;
   v128_t vecSamplingThetaRad = wasm_v128_load32_splat(&samplingThetaRad);
   float samplingRhoF = options.sampling.rho;
   v128_t vecSamplingRho = wasm_v128_load32_splat(&samplingRhoF);
@@ -57,7 +57,7 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
 
           v128_t vecYSpace = wasm_f32x4_add(vecXCos, vecYSin);
           v128_t vecYSpaceValid = wasm_f32x4_ge(vecYSpace, zeros);
-          vecYSpace = wasm_f32x4_div(vecYSpace, vecSamplingRho);
+          vecYSpace = wasm_f32x4_mul(vecYSpace, vecSamplingRho);
           vecYSpace = wasm_f32x4_floor(vecYSpace);
           vecYSpace = wasm_f32x4_mul(vecYSpace, vecHSWidth);
           vecYSpace = wasm_f32x4_add(vecYSpace, vecHX);
@@ -93,8 +93,8 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
         uint32_t v = houghSpace[vIOps[i]];
         if (v / maxValueF > options.votingThreshold) {
           results.push_back({
-              hy * samplingRhoF,                 // rho
-              (hx + i) * options.sampling.theta, // theta
+              hy / samplingRhoF,                 // rho
+              (hx + i) / options.sampling.theta, // theta
           });
         }
       }

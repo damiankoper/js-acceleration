@@ -25,7 +25,8 @@
   "bugs": {
     "url": "https://github.com/damiankoper/js-acceleration/issues"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@types/lodash": "^4.14.178",
     "@typescript-eslint/eslint-plugin": "^5.8.1",
     "@typescript-eslint/parser": "^5.8.1",
     "@webpack-cli/generators": "^2.4.1",
@@ -38,15 +39,15 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "exports-loader": "^3.1.0",
+    "fast-csv": "^4.3.6",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
+    "lodash": "^4.17.21",
     "meta": "*",
     "prettier": "^2.5.1",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.4",
     "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1"
-  },
-  "devDependencies": {
+    "webpack-cli": "^4.9.1",
     "rimraf": "^3.0.2"
   }
 }

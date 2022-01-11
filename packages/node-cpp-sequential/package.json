@@ -18,6 +18,9 @@
         "meta": "*",
         "node-addon-api": "^4.2.0",
         "rimraf": "^3.0.2",
-        "typescript": "^4.5.4"
+        "typescript": "^4.5.4",
+        "@types/lodash": "^4.14.178",
+        "fast-csv": "^4.3.6",
+        "lodash": "^4.17.21"
     }
 }

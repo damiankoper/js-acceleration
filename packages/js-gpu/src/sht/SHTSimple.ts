@@ -21,8 +21,8 @@ const SHTSimple: SHT = function (
   const samplingRho = sampling.rho;
   const samplingTheta = sampling.theta;
 
-  const hsWidth = Math.ceil(360 / samplingTheta);
-  const hsHeight = Math.ceil(Math.sqrt(width ** 2 + height ** 2) / samplingRho);
+  const hsWidth = Math.ceil(360 * samplingTheta);
+  const hsHeight = Math.ceil(Math.sqrt(width ** 2 + height ** 2) * samplingRho);
 
   let maxValue = 0;
 
@@ -52,8 +52,8 @@ const SHTSimple: SHT = function (
       const offset = hy * hsWidth + hx;
       if (houghSpace[offset] / maxValue > votingThreshold) {
         results.push({
-          rho: hy * samplingRho,
-          theta: hx * samplingTheta,
+          rho: hy / samplingRho,
+          theta: hx / samplingTheta,
         });
       }
     }

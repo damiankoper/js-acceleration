@@ -21,9 +21,9 @@ const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
       pool.push(wrap(createWorker()));
     }
 
-    const hsWidth = Math.ceil(360 / sampling.theta);
+    const hsWidth = Math.ceil(360 * sampling.theta);
     const hsHeight = Math.ceil(
-      Math.sqrt(width ** 2 + height ** 2) / sampling.rho
+      Math.sqrt(width ** 2 + height ** 2) * sampling.rho
     );
 
     const houghSpaceBuffer = new SharedArrayBuffer(4 * hsWidth * hsHeight);
@@ -37,7 +37,7 @@ const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
     const sinLookup = new Float32Array(sinLookupBuffer);
     const cosLookup = new Float32Array(cosLookupBuffer);
 
-    const samplingThetaRad = (sampling.theta * Math.PI) / 180;
+    const samplingThetaRad = Math.PI / 180 / sampling.theta;
     for (let i = 0; i < hsWidth; i++) {
       sinLookup[i] = Math.sin(i * samplingThetaRad);
       cosLookup[i] = Math.cos(i * samplingThetaRad);
@@ -70,8 +70,8 @@ const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
         const offset = hy * hsWidth + hx;
         if (houghSpace[offset] / maxValue > votingThreshold) {
           results.push({
-            rho: hy * sampling.rho,
-            theta: hx * sampling.theta,
+            rho: hy / sampling.rho,
+            theta: hx / sampling.theta,
           });
         }
       }

@@ -14,13 +14,13 @@ const SHTSimpleLookup: SHT = function (
   const samplingTheta = sampling.theta;
   const votingThreshold = options.votingThreshold || 0.75;
 
-  const hsWidth = Math.ceil(360 / samplingTheta);
-  const hsHeight = Math.ceil(Math.sqrt(width ** 2 + height ** 2) / samplingRho);
+  const hsWidth = Math.ceil(360 * samplingTheta);
+  const hsHeight = Math.ceil(Math.sqrt(width ** 2 + height ** 2) * samplingRho);
   const houghSpace = new Uint32Array(hsWidth * hsHeight);
   const sinLookup = new Float32Array(hsWidth);
   const cosLookup = new Float32Array(hsWidth);
 
-  const samplingThetaRad = (samplingTheta * Math.PI) / 180;
+  const samplingThetaRad = Math.PI / 180 / samplingTheta;
   for (let i = 0; i < hsWidth; i++) {
     sinLookup[i] = Math.sin(i * samplingThetaRad);
     cosLookup[i] = Math.cos(i * samplingThetaRad);
@@ -36,7 +36,7 @@ const SHTSimpleLookup: SHT = function (
           const ySpace = x * cosLookup[hTheta] + y * sinLookup[hTheta];
 
           if (ySpace >= 0) {
-            const offset = ((ySpace / samplingRho + 0.5) << 0) * hsWidth + hx;
+            const offset = ((ySpace * samplingRho + 0.5) << 0) * hsWidth + hx;
             maxValue =
               maxValue < ++houghSpace[offset] ? houghSpace[offset] : maxValue;
           }
@@ -47,8 +47,8 @@ const SHTSimpleLookup: SHT = function (
       const offset = hy * hsWidth + hx;
       if (houghSpace[offset] / maxValue > votingThreshold) {
         results.push({
-          rho: hy * samplingRho,
-          theta: hx * samplingTheta,
+          rho: hy / samplingRho,
+          theta: hx / samplingTheta,
         });
       }
     }

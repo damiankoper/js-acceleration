@@ -19,7 +19,7 @@ export function SHTSimpleLookupKernel(
           const ySpace = x * cosLookup[hTheta] + y * sinLookup[hTheta];
 
           if (ySpace >= 0) {
-            const offset = ((ySpace / samplingRho + 0.5) << 0) * hsWidth + hx;
+            const offset = ((ySpace * samplingRho + 0.5) << 0) * hsWidth + hx;
             maxValue =
               maxValue < ++houghSpace[offset] ? houghSpace[offset] : maxValue;
           }

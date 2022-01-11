@@ -25,9 +25,9 @@ const SHTSimpleFactory = (createWorker: () => SHTSimpleKernel) => {
       pool.push(createWorker());
     }
 
-    const hsWidth = Math.ceil(360 / sampling.theta);
+    const hsWidth = Math.ceil(360 * sampling.theta);
     const hsHeight = Math.ceil(
-      Math.sqrt(width ** 2 + height ** 2) / sampling.rho
+      Math.sqrt(width ** 2 + height ** 2) * sampling.rho
     );
 
     const houghSpaceBuffer = new SharedArrayBuffer(4 * hsWidth * hsHeight);
@@ -36,7 +36,7 @@ const SHTSimpleFactory = (createWorker: () => SHTSimpleKernel) => {
     const sharedImage = new Uint8Array(sharedImageBuffer);
     sharedImage.set(binaryImage);
 
-    const samplingThetaRad = (sampling.theta * Math.PI) / 180;
+    const samplingThetaRad = Math.PI / 180 / sampling.theta;
     const jobs: Promise<number>[] = [];
     const batch = Math.ceil(hsWidth / concurrency);
     for (let i = 0; i < concurrency; i++) {
@@ -63,8 +63,8 @@ const SHTSimpleFactory = (createWorker: () => SHTSimpleKernel) => {
         const offset = hy * hsWidth + hx;
         if (houghSpace[offset] / maxValue > votingThreshold) {
           results.push({
-            rho: hy * sampling.rho,
-            theta: hx * sampling.theta,
+            rho: hy / sampling.rho,
+            theta: hx / sampling.theta,
           });
         }
       }

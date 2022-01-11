@@ -8,9 +8,9 @@ export interface SHTOptions {
   width: number;
 
   sampling?: {
-    /** Diagonal sampling (pixels) */
+    /** Diagonal sampling (samples per pixel) */
     rho?: number;
-    /** Angular sampling (degrees) */
+    /** Angular sampling (samples per degree) */
     theta?: number;
   };
 

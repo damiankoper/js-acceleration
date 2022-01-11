@@ -63,3 +63,5 @@
 * przy różnych poziomach próbkowania wychodzi problem różnych zaokrągleń
   * wasm_f32x4_nearest robi half to even
   * std::round robi half up
+
+* benchmarki od theta, mają złożoność liniową, benchmark od rho nie ma praktycznego zastosowania, ponieważ rho jako przekątna jest optymalnym rozwiązaniem, a wahania odległości mają większy wpływ na jakość wykrywania niż próbkowanie kąta

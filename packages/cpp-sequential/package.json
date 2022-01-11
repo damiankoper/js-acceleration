@@ -20,12 +20,16 @@
   "scripts": {
     "clean": "rimraf dist build",
     "prebuild": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release",
-    "build": "cmake --build ./build --config Release --target all -j 4"
+    "build": "cmake --build ./build --config Release --target all -j 4",
+    "bench": "npm run build && ./build/threshold --benchmark_repetitions=30 --benchmark_format=csv --benchmark_display_aggregates_only==true > benchmark/results/results.csv && node benchmark/transform.mjs"
   },
   "bugs": {
     "url": "https://github.com/damiankoper/js-acceleration/issues"
   },
   "devDependencies": {
-    "rimraf": "^3.0.2"
+    "@types/lodash": "^4.14.178",
+    "fast-csv": "^4.3.6",
+    "rimraf": "^3.0.2",
+    "lodash": "^4.17.21"
   }
 }

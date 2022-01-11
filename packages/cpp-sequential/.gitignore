@@ -52,3 +52,7 @@ build/**/*
 lib/*
 bin/*
 test/test_runner
+
+
+benchmark/results/*
+!benchmark/results/.gitkeep

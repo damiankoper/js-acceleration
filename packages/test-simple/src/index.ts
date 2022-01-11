@@ -13,7 +13,7 @@ import "./style.scss";
 import * as gpu from "js-gpu";
 
 (async () => {
-  const sampling = { rho: 2, theta: 0.5 };
+  const sampling = { rho: 0.5, theta: 2 };
   const votingThreshold = 0.75;
 
   const options = {
