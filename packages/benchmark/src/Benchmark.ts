@@ -105,6 +105,7 @@ export class Benchmark extends BenchmarkBase implements IBenchmark {
   private checkSteadyState(config: GeneralConfig & StartConfig) {
     this.steadyStateReached = this.isSteadyState(config);
     if (this.steadyStateReached) {
+      this.coldSamples = [...this.samples];
       this.samples = [];
       this.totalMicroRuns = 0;
       this.totalTime = 0;

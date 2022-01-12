@@ -33,6 +33,6 @@ export class ChromeTimer implements ITimer {
 
   public stop(): number {
     this.interval.stop();
-    return this.interval.microseconds();
+    return this.interval.microseconds() / 1e3;
   }
 }

@@ -15,6 +15,7 @@ import { ChromeTimer } from "./timers/ChromeTimer";
 import { NodeHRTimer } from "./timers/NodeHRTimer";
 import { PerformanceTimer } from "./timers/PerformanceTimer";
 import * as ss from "simple-statistics";
+import platform from "platform";
 
 export type BenchmarkFn = (() => void) | (() => Promise<void>);
 
@@ -31,6 +32,7 @@ export class BenchmarkBase {
     /** INFINITY */ 1.95996398454,
   ];
 
+  protected coldSamples: IBenchmarkSampleResult[] = [];
   protected samples: IBenchmarkSampleResult[] = [];
   protected steadyStateReached = false;
   protected totalTime = 0;
@@ -57,6 +59,10 @@ export class BenchmarkBase {
 
   public getSamples(): IBenchmarkSampleResult[] {
     return [...this.samples];
+  }
+
+  public getColdSamples(): IBenchmarkSampleResult[] {
+    return [...this.coldSamples];
   }
 
   protected init(config: GeneralConfig & StartConfig & IterationConfig) {
@@ -89,7 +95,10 @@ export class BenchmarkBase {
     const maxTimeReached = totalTime >= config.maxTime;
     const minSamplesReached = samples >= config.minSamples;
 
-    return (!minSamplesReached || !minTimeReached) && !maxTimeReached;
+    return (
+      this.samples.length < 2 ||
+      ((!minSamplesReached || !minTimeReached) && !maxTimeReached)
+    );
   }
 
   protected adjustMicroRuns(config: GeneralConfig & TimeConfig) {
@@ -127,6 +136,7 @@ export class BenchmarkBase {
       moe,
       rme,
       samples: [...this.samples],
+      platform,
     };
   }
 

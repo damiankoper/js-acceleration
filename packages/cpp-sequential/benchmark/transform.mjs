@@ -20,7 +20,10 @@ const benchmarks = new Map();
 
                 const key = `${name}_${sizeTheta}`
                 const b = benchmarks.get(key) || { key, name, sizeTheta: +sizeTheta };
-                b[stat] = Number(data.real_time) / 1e6
+                if(stat!=='stddev')
+                    b[stat] = Number(data.real_time) / 1e6
+                else
+                    b['stdev'] = Number(data.real_time) / 1e6
                 benchmarks.set(key, b)
             }))
     )

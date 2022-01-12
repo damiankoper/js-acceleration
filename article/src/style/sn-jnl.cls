@@ -294,6 +294,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Standard LaTeX Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+\usepackage{pgfplots}
 \usepackage{graphicx}%
 \usepackage{multirow}%
 \usepackage{amsmath,amssymb,amsfonts}%

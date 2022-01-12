@@ -7,6 +7,9 @@
             "path": "packages/benchmark"
         },
         {
+            "path": "packages/js-benchmarks"
+        },
+        {
             "path": "packages/meta"
         },
         {
@@ -35,6 +38,7 @@
         "latex-workshop.latex.outDir": "../out",
         "jest.disabledWorkspaceFolders": [
             "js-acceleration",
+            "js-benchmarks",
             "js-sequential",
             "js-workers",
             "js-gpu",

@@ -1,4 +1,5 @@
 import { IBenchmarkSampleResult } from "./IBenchmarkSampleResult";
+import platform from "platform";
 
 export enum BenchmarkResultType {
   ITERATIONS,
@@ -28,4 +29,5 @@ export interface IBenchmarkResult<T = BenchmarkResultType>
   name: string;
   type: T;
   samples: IBenchmarkSampleResult[];
+  platform: typeof platform;
 }
