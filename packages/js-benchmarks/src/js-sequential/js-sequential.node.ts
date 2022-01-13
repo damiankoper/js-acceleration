@@ -1,5 +1,5 @@
 import { SHTSimple, SHTSimpleLookup } from "js-sequential";
-import { nodeBaseFactory } from "../common/base.sync.node";
+import { nodeBaseFactory } from "../common/base.node";
 
 nodeBaseFactory(
   SHTSimple,

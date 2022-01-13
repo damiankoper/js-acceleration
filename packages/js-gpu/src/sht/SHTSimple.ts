@@ -38,7 +38,7 @@ const SHTSimple: SHT = function (
         samplingRho,
         samplingTheta
       );
-  if (kernelFromCache) SHTSimpleKernelMap.set(kernelKey, SHTSimpleKernel);
+  if (!kernelFromCache) SHTSimpleKernelMap.set(kernelKey, SHTSimpleKernel);
 
   const houghSpaceFloat = SHTSimpleKernel(binaryImage) as Float32Array;
   const houghSpace = Uint32Array.from(houghSpaceFloat);

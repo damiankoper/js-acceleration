@@ -5,6 +5,7 @@ import { resolve, dirname } from "path";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import { fileURLToPath } from "url";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -24,10 +25,6 @@ const config = () => ({
     new ForkTsCheckerWebpackPlugin({
       eslint: {
         files: "./src/**/*.{ts,tsx,js,jsx}", // required - same as command `eslint ./src/**/*.{ts,tsx,js,jsx} --ext .ts,.tsx,.js,.jsx`
-      },
-      typescript: {
-        build: true,
-        mode: "write-dts",
       },
     }),
   ],
@@ -54,25 +51,30 @@ const config = () => ({
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
-  externals: [/^(jimp|\$)$/i],
+  externals: [/^(jimp|\$)$/i, /(node-cpp-sequential|\$)$/i],
   experiments: { outputModule: true },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        exclude: /\/Kernel.ts/,
+        terserOptions: {
+          compress: {
+            conditionals: false,
+          },
+          mangle: {
+            reserved: ["SHTSimple", "SHTSimpleLookup"],
+          },
+        },
+      }),
+    ],
+  },
 });
 
-export default [
-  () => {
+function webFactory(name, fn) {
+  return () => {
     const c = config();
     c.entry = {
-      "js-sequential": "./src/js-sequential/js-sequential.node.ts",
-    };
-    c.output.chunkFormat = "module";
-    c.output.filename = "[name].node.mjs";
-    c.target = "node";
-    return c;
-  },
-  () => {
-    const c = config();
-    c.entry = {
-      "js-sequential": "./src/js-sequential/js-sequential.web.ts",
+      [name]: `./src/${name}/${name}.web.ts`,
     };
     c.output.filename = "[name].web.mjs";
     c.target = "web";
@@ -82,6 +84,33 @@ export default [
         scriptLoading: "module",
       })
     );
+    if (fn) fn(c);
+    return c;
+  };
+}
+
+export default [
+  () => {
+    const c = config();
+    c.entry = {
+      "js-sequential": "./src/js-sequential/js-sequential.node.ts",
+      "js-workers": "./src/js-workers/js-workers.node.ts",
+      "js-asm": "./src/js-asm/js-asm.node.ts",
+      "js-wasm": "./src/js-wasm/js-wasm.node.ts",
+      "js-wasm-simd-impl": "./src/js-wasm-simd-impl/js-wasm-simd-impl.node.ts",
+      "cpp-addon": "./src/cpp-addon/cpp-addon.node.ts",
+      "js-wasm-simd-expl": "./src/js-wasm-simd-expl/js-wasm-simd-expl.node.ts",
+    };
+    c.output.chunkFormat = "module";
+    c.output.filename = "[name].node.mjs";
+    c.target = "node";
     return c;
   },
+  webFactory("js-sequential"),
+  webFactory("js-workers"),
+  webFactory("js-asm"),
+  webFactory("js-wasm"),
+  webFactory("js-wasm-simd-impl"),
+  webFactory("js-wasm-simd-expl"),
+  webFactory("js-gpu"),
 ];

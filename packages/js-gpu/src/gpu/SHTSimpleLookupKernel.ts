@@ -1,5 +1,6 @@
 import { GPU, IKernelRunShortcutBase } from "gpu.js";
 
+export const gpu = new GPU();
 export function createSHTSimpleLookupKernel(
   hsWidth: number,
   hsHeight: number,
@@ -8,7 +9,6 @@ export function createSHTSimpleLookupKernel(
   samplingRho: number,
   samplingTheta: number
 ) {
-  const gpu = new GPU();
   return gpu
     .createKernel<
       [number[], number[], number[]],
@@ -20,7 +20,8 @@ export function createSHTSimpleLookupKernel(
         samplingTheta: number;
       }
     >(
-      function (testImage: number[], sinLookup: number[], cosLookup: number[]) {
+      // !Prevents minification of kernel for correct transpilation
+      new Function(`return function (testImage/* : number[] */, sinLookup/* : number[] */, cosLookup/* : number[] */) {
         const rho =
           Math.floor(this.thread.x / this.constants.hsWidth) /
           this.constants.samplingRho;
@@ -63,7 +64,7 @@ export function createSHTSimpleLookupKernel(
           }
         }
         return acc;
-      },
+      }`)(),
       {
         output: [hsWidth * hsHeight],
         constants: {
@@ -75,7 +76,6 @@ export function createSHTSimpleLookupKernel(
         },
       }
     )
-    .setLoopMaxIterations(
-      Math.max(width, height)
-    ) as IKernelRunShortcutBase<Float32Array>;
+    .setLoopMaxIterations(Math.max(width, height))
+    .setOptimizeFloatMemory(true) as IKernelRunShortcutBase<Float32Array>;
 }

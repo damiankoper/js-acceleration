@@ -15,6 +15,7 @@ COMMON_ARGS="-Inode_modules/cpp-sequential/include
     -s SINGLE_FILE=1 \
     -s ENVIRONMENT=web \
     -s EXPORT_ES6=1 \
+    --no-entry \
     -O3
     "
 

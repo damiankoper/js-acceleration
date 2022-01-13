@@ -29,6 +29,8 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
   float vFOps[4] = {0, 0, 0, 0};
   float vFOps2[4] = {0, 0, 0, 0};
   v128_t zeros = wasm_v128_load(vFOps);
+  float half = 0.5;
+  v128_t vecHalf = wasm_v128_load32_splat(&half);
 
   for (uint32_t y = 0; y < height; y++) {
     const v128_t vecY = wasm_f32x4_convert_i32x4(wasm_v128_load32_splat(&y));
@@ -58,7 +60,8 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
           v128_t vecYSpace = wasm_f32x4_add(vecXCos, vecYSin);
           v128_t vecYSpaceValid = wasm_f32x4_ge(vecYSpace, zeros);
           vecYSpace = wasm_f32x4_mul(vecYSpace, vecSamplingRho);
-          vecYSpace = wasm_f32x4_floor(vecYSpace);
+          vecYSpace = wasm_f32x4_add(vecYSpace, vecHalf);
+          vecYSpace = wasm_f32x4_trunc(vecYSpace);
           vecYSpace = wasm_f32x4_mul(vecYSpace, vecHSWidth);
           vecYSpace = wasm_f32x4_add(vecYSpace, vecHX);
 
@@ -68,7 +71,7 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
 
           for (uint32_t i = 0; i < 4 && hx + i < hsWidth; i++) {
             if ((bool)ySpaceValid[i]) {
-              maxValue = std::max(maxValue, ++houghSpace[vFOps[i]]);
+              maxValue = std::max(maxValue, ++houghSpace[(uint32_t)vFOps[i]]);
             }
           }
         }

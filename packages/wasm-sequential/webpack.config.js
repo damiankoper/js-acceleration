@@ -11,11 +11,13 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const config = {
   entry: "./src/main.ts",
+  devtool: "cheap-module-source-map",
   output: {
     path: resolve(__dirname, "dist"),
     library: {
       type: "module",
     },
+    environment: { module: true },
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin({

@@ -46,7 +46,8 @@ const SHTSimpleLookup: SHT = function (
         samplingRho,
         samplingTheta
       );
-  if (kernelFromCache) SHTSimpleLookupKernelMap.set(kernelKey, SHTSimpleKernel);
+  if (!kernelFromCache)
+    SHTSimpleLookupKernelMap.set(kernelKey, SHTSimpleKernel);
 
   const houghSpaceFloat = SHTSimpleKernel(
     binaryImage,

@@ -65,3 +65,22 @@
   * std::round robi half up
 
 * benchmarki od theta, mają złożoność liniową, benchmark od rho nie ma praktycznego zastosowania, ponieważ rho jako przekątna jest optymalnym rozwiązaniem, a wahania odległości mają większy wpływ na jakość wykrywania niż próbkowanie kąta
+
+* wycieki pamięci w wasm
+
+* optymalizacja webpackowa psuje kompilację shadera
+  ```
+  t<this.constants.width*this.constants.height&&1==e[t]&&a++
+  ```
+  inkrementacja a pod warunkiem <warunek>&&a++
+
+* optymalizacja, minifikacja może popsuć kod, który gpu.js może przetranspilować na kernel 
+  ```
+  terserOptions: {
+          compress: {
+            conditionals: false,
+          },
+        },
+  ```
+
+* gpu istotne żeby pamiętać o max wymiarach tekstur 

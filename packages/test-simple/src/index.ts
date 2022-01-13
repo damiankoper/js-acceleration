@@ -13,9 +13,9 @@ import "./style.scss";
 import * as gpu from "js-gpu";
 
 (async () => {
-  const sampling = { rho: 0.5, theta: 2 };
+  const sampling = { rho: 1, theta: 1 };
   const votingThreshold = 0.75;
-
+  // todo benchmark deno workers
   const options = {
     sampling,
     votingThreshold,
@@ -25,8 +25,6 @@ import * as gpu from "js-gpu";
   await wasmSequentialImplicitSIMD.init();
   await wasmSequentialSIMD.init();
   await asmSequential.init();
-
-  //TODO: WASM SIMD za ciemny tak jakby maxValue był zły
 
   const configs = [
     {

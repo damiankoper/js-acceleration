@@ -1,7 +1,6 @@
 import factorySIMD from "../build/wasmSequentialSIMD.mjs";
-import factory from "../build/wasmSequential.mjs";
 import factoryImplicitSIMD from "../build/wasmSequentialImplicitSIMD.mjs";
-
+import { wasmSequential } from "../dist/main.mjs";
 function* unpackVector(vector) {
   for (let i = 0; i < vector.size(); i++) {
     yield vector.get(i);
@@ -28,14 +27,17 @@ const options = {
   votingThreshold: 13 / 14,
 };
 
-factory()
-  .then((instance) => {
+console.log(wasmSequential.prototype);
+
+wasmSequential
+  .init()
+  .then(() => {
     /*     instance.SHTSimple(testImage, options)
   instance.SHTSimple(testImage, options)
   instance.SHTSimple(testImage, options) */
 
     let t = performance.now();
-    let results = instance.SHTSimple(testImage, options);
+    let results = wasmSequential.SHTSimple(testImage, options);
     //console.log("SHTSimple:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
     console.log("SHTSimple:".padEnd(38), performance.now() - t);
@@ -43,7 +45,7 @@ factory()
     results.hSpace.data.delete();
 
     t = performance.now();
-    results = instance.SHTSimpleLookup(testImage, options);
+    results = wasmSequential.SHTSimpleLookup(testImage, options);
     //console.log("SHTSimpleLookup:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
     console.log("SHTSimpleLookup:".padEnd(38), performance.now() - t);

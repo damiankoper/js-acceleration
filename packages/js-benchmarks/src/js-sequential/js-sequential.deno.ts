@@ -2,7 +2,7 @@ import {
   SHTSimple,
   SHTSimpleLookup,
 } from "../../../js-sequential/dist/main.mjs";
-import { denoBaseFactory } from "../common/base.sync.deno.ts";
+import { denoBaseFactory } from "../common/base.deno.ts";
 
 denoBaseFactory(
   SHTSimple,SHTSimpleLookup,

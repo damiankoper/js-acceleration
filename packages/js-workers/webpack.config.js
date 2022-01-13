@@ -11,6 +11,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const config = () => ({
   entry: {},
+  devtool: "cheap-module-source-map",
   output: {
     filename: "[name].mjs",
     path: resolve(__dirname, "dist"),
@@ -75,6 +76,7 @@ export default [
     c.entry["main.node"] = "./src/main.node.ts";
     c.target = "node";
     c.output.chunkFormat = "module";
+    c.externals = [/^(comlink|\$)$/i]
 
     return c;
   },

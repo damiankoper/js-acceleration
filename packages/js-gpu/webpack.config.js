@@ -4,6 +4,7 @@
 import { resolve, dirname } from "path";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import { fileURLToPath } from "url";
+import TerserPlugin from "terser-webpack-plugin";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -11,11 +12,13 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const config = {
   entry: "./src/main.ts",
+  devtool: "cheap-module-source-map",
   output: {
     path: resolve(__dirname, "dist"),
     library: {
       type: "module",
     },
+    environment: { module: true },
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin({
@@ -54,7 +57,7 @@ const config = {
   experiments: { outputModule: true },
   externalsType: "module",
   optimization: {
-    minimize: false,
+    minimize: true,
   },
 };
 

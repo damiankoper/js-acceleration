@@ -1,5 +1,6 @@
 import { GPU, IKernelRunShortcutBase } from "gpu.js";
 
+export const gpu = new GPU();
 export function createSHTSimpleKernel(
   hsWidth: number,
   hsHeight: number,
@@ -8,7 +9,6 @@ export function createSHTSimpleKernel(
   samplingRho: number,
   samplingTheta: number
 ) {
-  const gpu = new GPU();
   return gpu
     .createKernel<
       [number[]],
@@ -20,7 +20,8 @@ export function createSHTSimpleKernel(
         samplingTheta: number;
       }
     >(
-      function (testImage: number[]) {
+      // !Prevents minification of kernel for correct transpilation
+      new Function(`return function (testImage/* : number[] */) {
         const rho =
           Math.floor(this.thread.x / this.constants.hsWidth) /
           this.constants.samplingRho;
@@ -43,7 +44,9 @@ export function createSHTSimpleKernel(
                 offset < this.constants.width * this.constants.height &&
                 testImage[offset] == 1
               ) {
-                acc++;
+                //
+                acc += 1;
+                //
               }
             }
             xc += 1;
@@ -58,14 +61,16 @@ export function createSHTSimpleKernel(
                 offset < this.constants.width * this.constants.height &&
                 testImage[offset] == 1
               ) {
-                acc++;
+                //
+                acc += 1;
+                //
               }
             }
             yc += 1;
           }
         }
         return acc;
-      },
+      }`)(),
       {
         output: [hsWidth * hsHeight],
         constants: {
@@ -77,7 +82,6 @@ export function createSHTSimpleKernel(
         },
       }
     )
-    .setLoopMaxIterations(
-      Math.max(width, height)
-    ) as IKernelRunShortcutBase<Float32Array>;
+    .setLoopMaxIterations(Math.max(width, height))
+    .setOptimizeFloatMemory(true) as IKernelRunShortcutBase<Float32Array>;
 }

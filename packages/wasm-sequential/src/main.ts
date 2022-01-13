@@ -39,7 +39,7 @@ export class WasmWrapper implements Module {
     binaryImage: Uint8Array,
     options: SHTOptions
   ): HTResults<SHTResult> {
-    const module = this.valdate();
+    const module = this.validate();
     const results = module.SHTSimple(
       binaryImage,
       this.mergeDefaultOptions(options)
@@ -51,7 +51,7 @@ export class WasmWrapper implements Module {
     binaryImage: Uint8Array,
     options: SHTOptions
   ): HTResults<SHTResult> {
-    const module = this.valdate();
+    const module = this.validate();
     const results = module.SHTSimpleLookup(
       binaryImage,
       this.mergeDefaultOptions(options)
@@ -59,7 +59,7 @@ export class WasmWrapper implements Module {
     return this.transformResults(results);
   }
 
-  private valdate(): Module {
+  public validate(): Module {
     if (this.moduleRaw) {
       return this.moduleRaw;
     } else
@@ -68,17 +68,24 @@ export class WasmWrapper implements Module {
       );
   }
 
-  private transformResults(results: HTResults<SHTResult>) {
-    return {
+  public transformResults(results: HTResults<SHTResult>): HTResults<SHTResult> {
+    const r = {
       results: [...unpackVector<SHTResult>(results.results)],
       hSpace: {
         data: new Uint32Array(unpackVector<number>(results.hSpace.data)),
         width: results.hSpace.width,
       },
     };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (results.results as any).delete();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (results.hSpace.data as any).delete();
+
+    return r;
   }
 
-  private mergeDefaultOptions(options: SHTOptions): SHTOptions {
+  public mergeDefaultOptions(options: SHTOptions): SHTOptions {
     return {
       width: options.width,
       sampling: {

@@ -1,5 +1,5 @@
 import { SHTSimple, SHTSimpleLookup } from "js-sequential";
-import { webBaseFactory } from "../common/base.sync.web";
+import { webBaseFactory } from "../common/base.web";
 
 webBaseFactory(
   SHTSimple,

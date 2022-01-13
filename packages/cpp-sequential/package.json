@@ -21,7 +21,8 @@
     "clean": "rimraf dist build",
     "prebuild": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release",
     "build": "cmake --build ./build --config Release --target all -j 4",
-    "bench": "npm run build && ./build/threshold --benchmark_repetitions=30 --benchmark_format=csv --benchmark_display_aggregates_only==true > benchmark/results/results.csv && node benchmark/transform.mjs"
+    "bench": "npm run build && ./build/threshold --benchmark_repetitions=50 --benchmark_format=csv --benchmark_display_aggregates_only==true > benchmark/results/results.csv && node benchmark/transform.mjs",
+    "bench:all": "./bench.sh"
   },
   "bugs": {
     "url": "https://github.com/damiankoper/js-acceleration/issues"
