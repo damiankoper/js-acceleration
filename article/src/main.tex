@@ -74,6 +74,7 @@
 \raggedbottom
 %%\unnumbered% uncomment this for unnumbered level heads
 
+\include{charts/global}
 
 \begin{document}
 
@@ -102,7 +103,7 @@
 %%==================================%%
 
 \abstract{
-    JavaScript has become one of the most widely used programming language in the world. However it has not been widely adopted to perform numerical computing by a community and maintainers for a long time. In this paper, we present analysis of acceleration methods of choice in JavaScript execution environments including browser, Node and Deno.  We focus evenly on adopting the same codebase to take advantage of every method, benchmarking our solutions and analysis of a toolchain building libraries as compatible as possible with multiple environments. To compare performance, we use a simplified standard Hough transform algorithm with threshold as voting phase. As a reference points of our benchmarks, we use sequential version of the algorithm written in both JavaScript and C++.
+  JavaScript has become one of the most widely used programming language in the world. However it has not been widely adopted to perform numerical computing by a community and maintainers for a long time. In this paper, we present analysis of acceleration methods of choice in JavaScript execution environments including browser, Node and Deno.  We focus evenly on adopting the same codebase to take advantage of every method, benchmarking our solutions and analysis of a toolchain building libraries as compatible as possible with multiple environments. To compare performance, we use a simplified standard Hough transform algorithm with threshold as voting phase. As a reference points of our benchmarks, we use sequential version of the algorithm written in both JavaScript and C++.
 }
 
 %%================================%%
@@ -125,8 +126,15 @@
 
 \maketitle
 
-\include{chapters/introduction}
-\include{charts/sequential}
+\input{chapters/introduction}
+\input{charts/sequential}
+\input{charts/workers}
+\input{charts/gpu}
+\input{charts/cpp-addon}
+\input{charts/wasm}
+\input{charts/asm}
+\input{charts/wasm-simd-impl}
+\input{charts/wasm-simd-expl}
 
 \begin{appendices}
 
@@ -139,7 +147,7 @@
 %% by copying the reference list from your .bbl file, paste it into the main manuscript .tex %%
 %% file, and delete the associated \verb+\bibliography+ commands.                            %%
 %%===========================================================================================%%
-
+\clearpage
 \bibliography{bibliography}% common bib file
 %% if required, the content of .bbl file can be included here once bbl is generated
 %%\input sn-article.bbl

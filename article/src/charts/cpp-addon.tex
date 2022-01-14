@@ -1,0 +1,17 @@
+
+
+\begin{figure}
+    \groupBenchmark{
+        \plotBenchmark{cpp-addon_theta_SHT_Simple_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \seqReference
+    } {
+        \plotBenchmark{cpp-addon_theta_SHT_Simple_Lookup_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \seqReferenceLookup
+    }[1600][650]
+    \label{plot:gpu}
+    \caption{Node C++ addon SHT execution benchmark results.}
+\end{figure}

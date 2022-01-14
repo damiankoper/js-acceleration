@@ -35,8 +35,8 @@
     "bench:deno:sequential": "deno run --allow-read --allow-write --allow-net src/js-sequential/js-sequential.deno.ts",
     "bench:deno:workers": "deno run --allow-read --allow-write --allow-net src/js-workers/js-workers.deno.ts",
     "bench:all": "./bench.sh",
-    "bench:chrome": "google-chrome --incognito --user-data-dir=/tmp --enable-benchmarking http://localhost:8080 & node server.mjs",
-    "bench:firefox": "firefox --private-window http://localhost:8080 & node server.mjs"
+    "bench:chrome": "nice -n 0 taskset 0x0000000f google-chrome --incognito --user-data-dir=/tmp --enable-benchmarking http://localhost:8080 & node server.mjs",
+    "bench:firefox": "nice -n 0 taskset 0x000000f0 firefox --private-window http://localhost:8080 & node server.mjs"
   },
   "bugs": {
     "url": "https://github.com/damiankoper/js-acceleration/issues"

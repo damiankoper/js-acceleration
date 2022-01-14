@@ -81,7 +81,7 @@ export function webBaseFactory(
       }
       csvMap.set(config.name, unparse(results));
     }
-
+    document.body.style.background = "green";
     for (const [name, csv] of csvMap) {
       const file = new File([csv], fileFn(name, env), {
         type: "text/csv;charset=utf-8",

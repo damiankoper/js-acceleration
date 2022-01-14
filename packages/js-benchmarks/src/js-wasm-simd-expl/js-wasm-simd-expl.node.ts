@@ -8,7 +8,7 @@ wasmSequentialSIMD
       wasmSequentialSIMD.SHTSimple.bind(wasmSequentialSIMD),
       wasmSequentialSIMD.SHTSimpleLookup.bind(wasmSequentialSIMD),
       (name: string) =>
-        `../../../../benchmark/js-wasm_simd_theta_${name}_node.csv`
+        `../../../../benchmark/js-wasm_simd_explicit_theta_${name}_node.csv`
     );
     return null;
   })

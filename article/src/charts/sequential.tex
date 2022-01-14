@@ -1,80 +1,39 @@
-\pgfplotsset{
-    table/search path={./../../benchmark},
-    every pin edge/.style={solid}
-}
-\definecolor{cppColor}{rgb}{0,0,0}
-\definecolor{nodeColor}{rgb}{0,0.6,0}
-\definecolor{denoColor}{rgb}{0,0,1}
-\definecolor{chromeColor}{rgb}{1,0,0}
-\definecolor{firefoxColor}{rgb}{1,0.5,0}
 
-\newcommand\plotBenchmark{} % just for safety
-\def\plotBenchmark[#1, #2, #3]{%
-    \addplot+ [
-        #3,
-        mark=*,
-        mark options={solid,fill=#3, scale=0.5},
-        error bars/.cd,
-        y dir=both,
-        y explicit,
-    ]
-    table [
-            x=sizeTheta,
-            y=mean,
-            y error=stdev,
-            col sep=comma
-        ] {#1};
-    \addlegendentry{
-        #2,
-    }
-}
 
 \begin{figure}
-    \begin{tikzpicture}
-        \begin{axis} [
-                width=\linewidth,
-                height=0.45\linewidth,
-                legend style={font=\tiny},
-                grid,
-                grid style=dashed,
-                xlabel={$S_\theta$ [pixels per degree]},
-                ylabel={Time [ms]},
-                mark options={solid},
-                legend pos=north west
-            ]
-            \plotBenchmark[cpp_theta_SHT_Simple.csv, C++, cppColor]
-            \plotBenchmark[js-sequential_theta_SHT_Simple_node.csv, Node, nodeColor]
-            \plotBenchmark[js-sequential_theta_SHT_Simple_deno.csv, Deno, denoColor]
-            \plotBenchmark[js-sequential_theta_SHT_Simple_Firefox.csv, Firefox 95, firefoxColor]
-            \plotBenchmark[js-sequential_theta_SHT_Simple_Chrome.csv, Chrome 97, chromeColor]
-        \end{axis}
-    \end{tikzpicture}
+    \groupBenchmark{
+        \plotBenchmark{cpp_theta_SHT_Simple.csv}{cppColor}{{}}
+        \addlegendentry{C++}
 
+        \plotBenchmark{js-sequential_theta_SHT_Simple_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_deno.csv}{denoColor}{{}}
+        \addlegendentry{Deno}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox 95}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome 97}
+
+    } {
+        \plotBenchmark{cpp_theta_SHT_Simple_Lookup.csv}{cppColor}{{}}
+        \addlegendentry{C++}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Lookup_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Lookup_deno.csv}{denoColor}{{}}
+        \addlegendentry{Deno}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Lookup_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox 95}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Lookup_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome 97}
+
+    }[3400][950]
     \label{plot:sequential}
-    \caption{\textbf{Sequential \texttt{SHT\_Simple}} execution. Problem size depends on angle sampling $S_\theta$. Input size, distance sampling and threshold are constant ($w = 419$, $h = 423$, $S_\rho=1$, $k=0.75$)}
-\end{figure}
-
-\begin{figure}
-    \begin{tikzpicture}
-        \begin{axis} [
-                width=\linewidth,
-                height=0.45\linewidth,
-                legend style={font=\tiny},
-                grid,
-                grid style=dashed,
-                xlabel={$S_\theta$ [pixels per degree]},
-                ylabel={Time [ms]},
-                mark options={solid},
-                legend pos=north west
-            ]
-            \plotBenchmark[cpp_theta_SHT_Simple_Lookup.csv, C++, cppColor]
-            \plotBenchmark[js-sequential_theta_SHT_Simple_Lookup_node.csv, Node, nodeColor]
-            \plotBenchmark[js-sequential_theta_SHT_Simple_Lookup_deno.csv, Deno, denoColor]
-            \plotBenchmark[js-sequential_theta_SHT_Simple_Lookup_Firefox.csv, Firefox 95, firefoxColor]
-            \plotBenchmark[js-sequential_theta_SHT_Simple_Lookup_Chrome.csv, Chrome 97, chromeColor]
-        \end{axis}
-    \end{tikzpicture}
-
-    \label{plot:sequential_lookup}
-    \caption{\textbf{Sequential \texttt{SHT\_Simple\_Lookup}} execution. Problem size depends on angle sampling $S_\theta$. Input size, distance sampling and threshold are constant ($w = 419$, $h = 423$, $S_\rho=1$, $k=0.75$)}
+    \caption{Sequential SHT execution benchmark results.}
 \end{figure}

@@ -1,0 +1,35 @@
+
+
+\begin{figure}
+    \groupBenchmark{
+        %\plotBenchmark{js-gpu_theta_SHT_Simple_node.csv}{nodeColor}{{}}
+        %\addlegendentry{Node}
+
+        %\plotBenchmark{js-gpu_theta_SHT_Simple_deno.csv}{denoColor}{{}}
+        %\addlegendentry{Deno}
+
+        \plotBenchmark{js-gpu_theta_SHT_Simple_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox 95}
+
+        \plotBenchmark{js-gpu_theta_SHT_Simple_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome 97}
+
+        \seqReference
+    } {
+        %\plotBenchmark{js-gpu_theta_SHT_Simple_Lookup_node.csv}{nodeColor}{{}}
+        %\addlegendentry{Node}
+
+        %\plotBenchmark{js-gpu_theta_SHT_Simple_Lookup_deno.csv}{denoColor}{{}}
+        %\addlegendentry{Deno}
+
+        \plotBenchmark{js-gpu_theta_SHT_Simple_Lookup_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox 95}
+
+        \plotBenchmark{js-gpu_theta_SHT_Simple_Lookup_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome 97}
+
+        \seqReferenceLookup
+    }[600][240]
+    \label{plot:gpu}
+    \caption{GPU SHT execution benchmark results.}
+\end{figure}

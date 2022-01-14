@@ -295,6 +295,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Standard LaTeX Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \usepackage{pgfplots}
+\usetikzlibrary{pgfplots.groupplots} % needs to be loaded exactly like this
+\usepgfplotslibrary{fillbetween}
+
 \usepackage{graphicx}%
 \usepackage{multirow}%
 \usepackage{amsmath,amssymb,amsfonts}%
@@ -309,8 +312,9 @@
 \usepackage{algorithm}%
 \usepackage{algorithmicx}%
 \usepackage{algpseudocode}%
-\usepackage{program}%
+%\usepackage{program}%
 \usepackage{listings}%
+\usepackage{xargs}%
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Pagination Settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
