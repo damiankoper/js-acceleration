@@ -24,7 +24,7 @@ const config = () => ({
   plugins: [
     new ForkTsCheckerWebpackPlugin({
       eslint: {
-        files: "./src/**/*.{ts,tsx,js,jsx}", // required - same as command `eslint ./src/**/*.{ts,tsx,js,jsx} --ext .ts,.tsx,.js,.jsx`
+        files: "./src/theta/**/*.{ts,tsx,js,jsx}", // required - same as command `eslint ./src/theta/**/*.{ts,tsx,js,jsx} --ext .ts,.tsx,.js,.jsx`
       },
     }),
   ],
@@ -70,13 +70,14 @@ const config = () => ({
   },
 });
 
-function webFactory(name, fn) {
+function webFactory(name, fn, dir = "theta") {
   return () => {
     const c = config();
     c.entry = {
-      [name]: `./src/${name}/${name}.web.ts`,
+      [name]: `./src/${dir}/${name}/${name}.web.ts`,
     };
     c.output.filename = "[name].web.mjs";
+    c.output.path += "/" + dir;
     c.target = "web";
     c.plugins.push(
       new HtmlWebpackPlugin({
@@ -90,27 +91,58 @@ function webFactory(name, fn) {
 }
 
 export default [
+  // theta
   () => {
     const c = config();
     c.entry = {
-      "js-sequential": "./src/js-sequential/js-sequential.node.ts",
-      "js-workers": "./src/js-workers/js-workers.node.ts",
-      "js-asm": "./src/js-asm/js-asm.node.ts",
-      "js-wasm": "./src/js-wasm/js-wasm.node.ts",
-      "js-wasm-simd-impl": "./src/js-wasm-simd-impl/js-wasm-simd-impl.node.ts",
-      "cpp-addon": "./src/cpp-addon/cpp-addon.node.ts",
-      "js-wasm-simd-expl": "./src/js-wasm-simd-expl/js-wasm-simd-expl.node.ts",
+      // theta
+      "js-sequential": "./src/theta/js-sequential/js-sequential.node.ts",
+      "js-workers": "./src/theta/js-workers/js-workers.node.ts",
+      "js-asm": "./src/theta/js-asm/js-asm.node.ts",
+      "js-wasm": "./src/theta/js-wasm/js-wasm.node.ts",
+      "js-wasm-simd-impl":
+        "./src/theta/js-wasm-simd-impl/js-wasm-simd-impl.node.ts",
+      "cpp-addon": "./src/theta/cpp-addon/cpp-addon.node.ts",
+      "js-wasm-simd-expl":
+        "./src/theta/js-wasm-simd-expl/js-wasm-simd-expl.node.ts",
     };
     c.output.chunkFormat = "module";
     c.output.filename = "[name].node.mjs";
+    c.output.path += "/theta";
+    c.target = "node";
+    return c;
+  },
+  // coldstart
+  () => {
+    const c = config();
+    c.entry = {
+      "js-sequential": "./src/coldstart/js-sequential/js-sequential.node.ts",
+      "cpp-addon": "./src/coldstart/cpp-addon/cpp-addon.node.ts",
+      "js-workers": "./src/coldstart/js-workers/js-workers.node.ts",
+      "js-wasm": "./src/coldstart/js-wasm/js-wasm.node.ts",
+      "js-wasm-simd-impl":
+        "./src/coldstart/js-wasm-simd-impl/js-wasm-simd-impl.node.ts",
+      "js-wasm-simd-expl":
+        "./src/coldstart/js-wasm-simd-expl/js-wasm-simd-expl.node.ts",
+      "js-asm": "./src/coldstart/js-asm/js-asm.node.ts",
+    };
+    c.output.chunkFormat = "module";
+    c.output.filename = "[name].node.mjs";
+    c.output.path += "/coldstart";
     c.target = "node";
     return c;
   },
   webFactory("js-sequential"),
   webFactory("js-workers"),
+  webFactory("js-workers", undefined, "coldstart"),
   webFactory("js-asm"),
+  webFactory("js-asm", undefined, "coldstart"),
   webFactory("js-wasm"),
+  webFactory("js-wasm", undefined, "coldstart"),
   webFactory("js-wasm-simd-impl"),
+  webFactory("js-wasm-simd-impl", undefined, "coldstart"),
   webFactory("js-wasm-simd-expl"),
+  webFactory("js-wasm-simd-expl", undefined, "coldstart"),
   webFactory("js-gpu"),
+  webFactory("js-gpu", undefined, "coldstart"),
 ];
