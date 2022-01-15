@@ -21,8 +21,10 @@ const SHTSimple: SHT = function (
   const samplingRho = sampling.rho;
   const samplingTheta = sampling.theta;
 
-  const hsWidth = Math.ceil(360 * samplingTheta);
-  const hsHeight = Math.ceil(Math.sqrt(width ** 2 + height ** 2) * samplingRho);
+  const hsWidth = Math.trunc(360 * samplingTheta);
+  const hsHeight = Math.trunc(
+    Math.sqrt(width ** 2 + height ** 2) * samplingRho
+  );
 
   let maxValue = 0;
 

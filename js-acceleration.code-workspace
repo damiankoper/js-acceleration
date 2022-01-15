@@ -107,7 +107,9 @@
             "cfenv": "cpp",
             "list": "cpp",
             "set": "cpp",
-            "cinttypes": "cpp"
+            "cinttypes": "cpp",
+            "csetjmp": "cpp",
+            "unordered_set": "cpp"
         }
     }
 }

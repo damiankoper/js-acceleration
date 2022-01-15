@@ -21,8 +21,10 @@ const SHTSimpleLookup: SHT = function (
   const samplingTheta = sampling.theta;
   const votingThreshold = options.votingThreshold || 0.75;
 
-  const hsWidth = Math.ceil(360 * samplingTheta);
-  const hsHeight = Math.ceil(Math.sqrt(width ** 2 + height ** 2) * samplingRho);
+  const hsWidth = Math.trunc(360 * samplingTheta);
+  const hsHeight = Math.trunc(
+    Math.sqrt(width ** 2 + height ** 2) * samplingRho
+  );
   const sinLookup = new Float32Array(hsWidth);
   const cosLookup = new Float32Array(hsWidth);
 

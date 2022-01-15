@@ -34,9 +34,9 @@ SHTResults SHTSimpleLookup(const std::vector<uint8_t> binaryImage,
   }
 
   float vFOps[4] = {0, 0, 0, 0};
+  uint32_t ySpaceValid[4];
+
   v128_t zeros = wasm_v128_load(vFOps);
-  float half = 0.5;
-  v128_t vecHalf = wasm_v128_load32_splat(&half);
 
   for (uint32_t y = 0; y < height; y++) {
     const v128_t vecY = wasm_f32x4_convert_i32x4(wasm_v128_load32_splat(&y));
@@ -52,27 +52,27 @@ SHTResults SHTSimpleLookup(const std::vector<uint8_t> binaryImage,
           vFOps[1] = sinLookup[hx + 1];
           vFOps[2] = sinLookup[hx + 2];
           vFOps[3] = sinLookup[hx + 3];
-          v128_t vecSin = wasm_v128_load(vFOps);
+          v128_t vecYSin = wasm_v128_load(vFOps);
+          vecYSin = wasm_f32x4_mul(vecY, vecYSin);
+
           vFOps[0] = cosLookup[hx];
           vFOps[1] = cosLookup[hx + 1];
           vFOps[2] = cosLookup[hx + 2];
           vFOps[3] = cosLookup[hx + 3];
-          v128_t vecCos = wasm_v128_load(vFOps);
-          v128_t vecXCos = wasm_f32x4_mul(vecX, vecCos);
-          v128_t vecYSin = wasm_f32x4_mul(vecY, vecSin);
+          v128_t vecXCos = wasm_v128_load(vFOps);
+          vecXCos = wasm_f32x4_mul(vecX, vecXCos);
 
-          v128_t vecYSpace = wasm_f32x4_add(vecXCos, vecYSin);
+          v128_t &vecYSpace = vecYSin;
+          vecYSpace = wasm_f32x4_add(vecXCos, vecYSin);
           vecYSpace = wasm_f32x4_mul(vecYSpace, vecSamplingRho);
-          vecYSpace = wasm_f32x4_add(vecYSpace, vecHalf);
           vecYSpace = wasm_f32x4_trunc(vecYSpace);
           vecYSpace = wasm_f32x4_mul(vecYSpace, vecHSWidth);
           vecYSpace = wasm_f32x4_add(vecYSpace, vecHX);
-
-          v128_t vecYSpaceValid = wasm_f32x4_ge(vecYSpace, zeros);
-
-          uint32_t ySpaceValid[4];
-          wasm_v128_store(ySpaceValid, vecYSpaceValid);
           wasm_v128_store(vFOps, vecYSpace);
+
+          // Is valid?
+          vecYSpace = wasm_f32x4_ge(vecYSpace, zeros);
+          wasm_v128_store(ySpaceValid, vecYSpace);
 
           for (uint32_t i = 0; i < 4 && hx + i < hsWidth; i++) {
             if ((bool)ySpaceValid[i]) {

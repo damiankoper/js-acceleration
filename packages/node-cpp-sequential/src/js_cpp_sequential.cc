@@ -1,3 +1,4 @@
+#define NAPI_DISABLE_CPP_EXCEPTIONS
 #include "SHTSimple.h"
 #include "SHTSimpleLookup.h"
 #include "napi.h"

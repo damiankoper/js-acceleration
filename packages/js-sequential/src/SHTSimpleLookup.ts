@@ -14,8 +14,10 @@ const SHTSimpleLookup: SHT = function (
   const samplingTheta = sampling.theta;
   const votingThreshold = options.votingThreshold || 0.75;
 
-  const hsWidth = Math.ceil(360 * samplingTheta);
-  const hsHeight = Math.ceil(Math.sqrt(width ** 2 + height ** 2) * samplingRho);
+  const hsWidth = Math.trunc(360 * samplingTheta);
+  const hsHeight = Math.trunc(
+    Math.sqrt(width ** 2 + height ** 2) * samplingRho
+  );
   const houghSpace = new Uint32Array(hsWidth * hsHeight);
   const sinLookup = new Float32Array(hsWidth);
   const cosLookup = new Float32Array(hsWidth);
@@ -32,11 +34,10 @@ const SHTSimpleLookup: SHT = function (
     for (let x = 0; x < width; x++)
       if (binaryImage[y * width + x] === 1)
         for (let hx = 0; hx < hsWidth; hx++) {
-          const hTheta = hx;
-          const ySpace = x * cosLookup[hTheta] + y * sinLookup[hTheta];
+          const ySpace = x * cosLookup[hx] + y * sinLookup[hx];
 
           if (ySpace >= 0) {
-            const offset = ((ySpace * samplingRho + 0.5) << 0) * hsWidth + hx;
+            const offset = ((ySpace * samplingRho) << 0) * hsWidth + hx;
             maxValue =
               maxValue < ++houghSpace[offset] ? houghSpace[offset] : maxValue;
           }

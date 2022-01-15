@@ -25,7 +25,7 @@ export function createSHTSimpleLookupKernel(
         const rho =
           Math.floor(this.thread.x / this.constants.hsWidth) /
           this.constants.samplingRho;
-        const thetaSampled = Math.floor(this.thread.x % this.constants.hsWidth);
+        const thetaSampled = Math.trunc(this.thread.x % this.constants.hsWidth);
         const theta = thetaSampled / this.constants.samplingTheta;
 
         const cosTheta = cosLookup[thetaSampled];
@@ -35,7 +35,7 @@ export function createSHTSimpleLookupKernel(
         if ((theta >= 45 && theta < 135) || (theta >= 225 && theta < 315)) {
           let xc = 0;
           for (let x = 0; x < this.constants.width; x++) {
-            const y = Math.round((rho - xc * cosTheta) / sinTheta);
+            const y = Math.trunc((rho - xc * cosTheta) / sinTheta);
             if (y < this.constants.height && y >= 0) {
               const offset = y * this.constants.width + xc;
               if (
@@ -50,7 +50,7 @@ export function createSHTSimpleLookupKernel(
         } else {
           let yc = 0;
           for (let y = 0; y < this.constants.height; y++) {
-            const x = Math.round((rho - yc * sinTheta) / cosTheta);
+            const x = Math.trunc((rho - yc * sinTheta) / cosTheta);
             if (x < this.constants.width && x >= 0) {
               const offset = yc * this.constants.width + x;
               if (

@@ -15,8 +15,10 @@ const SHTSimple: SHT = function (
   const samplingTheta = sampling.theta;
   const samplingThetaRad = Math.PI / 180 / samplingTheta;
 
-  const hsWidth = Math.ceil(360 * samplingTheta);
-  const hsHeight = Math.ceil(Math.sqrt(width ** 2 + height ** 2) * samplingRho);
+  const hsWidth = Math.trunc(360 * samplingTheta);
+  const hsHeight = Math.trunc(
+    Math.sqrt(width ** 2 + height ** 2) * samplingRho
+  );
   const houghSpace = new Uint32Array(hsWidth * hsHeight);
 
   let maxValue = 0;
@@ -29,7 +31,7 @@ const SHTSimple: SHT = function (
           const ySpace = x * Math.cos(hTheta) + y * Math.sin(hTheta);
 
           if (ySpace >= 0) {
-            const offset = ((ySpace * samplingRho + 0.5) << 0) * hsWidth + hx;
+            const offset = ((ySpace * samplingRho) << 0) * hsWidth + hx;
             maxValue =
               maxValue < ++houghSpace[offset] ? houghSpace[offset] : maxValue;
           }

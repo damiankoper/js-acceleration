@@ -12,9 +12,9 @@ SHTResults SHTSimpleLookup(const std::vector<uint8_t> binaryImage,
   float samplingRho = options.sampling.rho;
   float samplingTheta = options.sampling.theta;
 
-  uint32_t hsWidth = std::ceil(360 * samplingTheta);
+  uint32_t hsWidth = std::trunc(360 * samplingTheta);
   uint32_t hsHeight =
-      std::ceil(std::sqrt(width * width + height * height) * samplingRho);
+      std::trunc(std::sqrt(width * width + height * height) * samplingRho);
 
   std::vector<uint32_t> houghSpace(hsWidth * hsHeight);
   std::vector<float> sinLookup(hsWidth);
@@ -31,12 +31,12 @@ SHTResults SHTSimpleLookup(const std::vector<uint8_t> binaryImage,
   for (uint32_t y = 0; y < height; y++)
     for (uint32_t x = 0; x < width; x++)
       if (binaryImage[y * width + x] == 1)
-        for (int hx = 0; hx < hsWidth; hx++) {
-          float hTheta = hx;
-          float ySpace = x * cosLookup[hTheta] + y * sinLookup[hTheta];
+        for (uint32_t hx = 0; hx < hsWidth; hx++) {
+          float ySpace = x * cosLookup[hx] + y * sinLookup[hx];
 
           if (ySpace >= 0) {
-            uint32_t offset = std::round(ySpace * samplingRho) * hsWidth + hx;
+            uint32_t offset =
+                ((uint32_t)std::trunc(ySpace * samplingRho)) * hsWidth + hx;
             maxValue = std::max(maxValue, ++houghSpace[offset]);
           }
         }

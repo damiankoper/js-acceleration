@@ -21,8 +21,8 @@ const SHTSimpleFactory = (createWorker: () => Worker) => {
       pool.push(Comlink.wrap(createWorker()));
     }
 
-    const hsWidth = Math.ceil(360 * sampling.theta);
-    const hsHeight = Math.ceil(
+    const hsWidth = Math.trunc(360 * sampling.theta);
+    const hsHeight = Math.trunc(
       Math.sqrt(width ** 2 + height ** 2) * sampling.rho
     );
 

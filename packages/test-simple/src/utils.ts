@@ -49,8 +49,8 @@ export function renderSHTResults(
   height: number
 ) {
   const resultCtx = resultsCanvas.getContext("2d");
-  resultCtx.strokeStyle = "red";
   results.results.forEach((result) => {
+    resultCtx.strokeStyle = "red";
     const x = result.rho * Math.cos((result.theta * Math.PI) / 180);
     const y = result.rho * Math.sin((result.theta * Math.PI) / 180);
 
@@ -67,6 +67,7 @@ export function renderSHTResults(
       resultCtx.lineTo(width, width * slope + intercept);
     }
     resultCtx.stroke();
+    resultCtx.strokeStyle = "green";
 
     resultCtx.lineWidth = 1;
     resultCtx.beginPath();
