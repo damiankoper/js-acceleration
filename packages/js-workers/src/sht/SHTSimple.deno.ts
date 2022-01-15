@@ -71,10 +71,10 @@ const SHTSimpleFactory = (createWorker: () => SHTSimpleKernel) => {
 
     return {
       results,
-      hSpace: {
+      hSpace: options.returnHSpace ? {
         data: houghSpace,
         width: hsWidth,
-      },
+      } : undefined,
     };
   };
 

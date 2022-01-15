@@ -78,10 +78,12 @@ const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
 
     return {
       results,
-      hSpace: {
-        data: houghSpace,
-        width: hsWidth,
-      },
+      hSpace: options.returnHSpace
+        ? {
+            data: houghSpace,
+            width: hsWidth,
+          }
+        : undefined,
     };
   };
 

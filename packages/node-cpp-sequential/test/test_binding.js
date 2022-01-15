@@ -17,22 +17,23 @@ const testImage = new Uint8Array([
   assert(fn, "The expected function is undefined");
 
   function testBasic() {
-    const result = fn(testImage, { width: 7, votingThreshold: 13 / 14 });
-
+    const result = fn(testImage, { width: 7, votingThreshold: 13 / 14, returnHSpace: true});
+    console.log(result);
     assert.equal(result.results.length, 9, "Unexpected results length");
     assert.equal(result.hSpace.width, 360, "Unexpected hough space width");
-    assert.equal(result.hSpace.data.length / result.hSpace.width, 12, "Unexpected hough space height");
+    assert.equal(result.hSpace.data.length / result.hSpace.width, 11, "Unexpected hough space height");
   }
 
   assert.doesNotThrow(testBasic, undefined, "testBasic threw an expection");
 
 
   function testSampling() {
-    const result = fn(testImage, { width: 7, votingThreshold: 13 / 14, sampling: { rho: 0.5, theta: 0.5 } });
+    const result = fn(testImage, { width: 7, votingThreshold: 13 / 14, sampling: { rho: 2, theta: 2 }, returnHSpace: true });
+    console.log(result);
 
     assert.equal(result.results.length, 9, "Unexpected results length");
     assert.equal(result.hSpace.width, 360 * 2, "Unexpected hough space width");
-    assert.equal(result.hSpace.data.length / result.hSpace.width, 23, "Unexpected hough space height");
+    assert.equal(result.hSpace.data.length / result.hSpace.width, 22, "Unexpected hough space height");
   }
 
   assert.doesNotThrow(testSampling, undefined, "testSampling threw an expection");

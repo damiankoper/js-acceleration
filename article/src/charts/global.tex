@@ -87,8 +87,8 @@
 
 
 \newcommand\seqReference{
-    \plotBenchmark{cpp_theta_SHT_Simple.csv}{cppColor}{{}}
-    \addlegendentry{C++ Seq};
+    \plotBenchmark{cpp_theta_SHT_Simple.csv}{cppColor}{dashed}
+    \addlegendentry{C++ Sequential};
     \plotBenchmark
     {js-sequential_theta_SHT_Simple_Firefox.csv}
     {firefoxColor}
@@ -101,8 +101,8 @@
 }
 
 \newcommand\seqReferenceLookup{
-    \plotBenchmark{cpp_theta_SHT_Simple_Lookup.csv}{cppColor}{{}}
-    \addlegendentry{C++ Seq};
+    \plotBenchmark{cpp_theta_SHT_Simple_Lookup.csv}{cppColor}{dashed}
+    \addlegendentry{C++ Sequential};
     \plotBenchmark
     {js-sequential_theta_SHT_Simple_Lookup_Firefox.csv}
     {firefoxColor}

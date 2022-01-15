@@ -76,7 +76,7 @@ export function renderSHTResults(
     resultCtx.stroke();
   });
 
-  if (results.hSpace) {
+  if (results.hSpace && results.hSpace.data) {
     const spaceCtx = spaceCanvas.getContext("2d");
     const width = results.hSpace.width;
     const height = results.hSpace.data.length / results.hSpace.width;

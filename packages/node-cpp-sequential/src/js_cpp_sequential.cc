@@ -23,10 +23,14 @@ SHTOptions getSHTOptions(Napi::Object &optionsBind) {
   if (!votingThreshold.IsUndefined())
     options.votingThreshold = votingThreshold.As<Napi::Number>();
 
+  auto returnHSpace = optionsBind.Get("returnHSpace");
+  if (!returnHSpace.IsUndefined())
+    options.returnHSpace = returnHSpace.As<Napi::Boolean>();
+
   return options;
 }
 
-std::vector<uint8_t> getTestImage(Napi::Uint8Array testImageBind) {
+std::vector<uint8_t> getTestImage(Napi::Uint8Array &testImageBind) {
   uint8_t *buff_data = testImageBind.Data();
   size_t element_length = testImageBind.ElementLength();
   std::vector<uint8_t> testImage;
@@ -35,7 +39,8 @@ std::vector<uint8_t> getTestImage(Napi::Uint8Array testImageBind) {
   return testImage;
 }
 
-Napi::Object getResultBind(napi_env env, SHTResults results) {
+Napi::Object getResultBind(napi_env env, SHTOptions &options,
+                           SHTResults &results) {
   auto resultBind = Napi::Object::New(env);
   auto resultsBind = Napi::Array::New(env);
   resultBind.Set("results", resultsBind);
@@ -48,15 +53,20 @@ Napi::Object getResultBind(napi_env env, SHTResults results) {
     resultsBind[c++] = resultBind;
   }
 
-  auto hSpaceBind = Napi::Object::New(env);
-  resultBind.Set("hSpace", hSpaceBind);
-  hSpaceBind.Set("width", results.hSpace.width);
+  if (options.returnHSpace) {
+    auto hSpaceBind = Napi::Object::New(env);
+    resultBind.Set("hSpace", hSpaceBind);
+    hSpaceBind.Set("width", results.hSpace.width);
 
-  size_t size = results.hSpace.data.size();
-  auto arrayBuffer = Napi::ArrayBuffer::New(env, size * 4);
-  memcpy(arrayBuffer.Data(), results.hSpace.data.data(), size * 4);
-  auto hSpaceDataBind = Napi::Uint32Array::New(env, size, arrayBuffer, 0);
-  hSpaceBind.Set("data", hSpaceDataBind);
+    size_t size = results.hSpace.data.size();
+    auto arrayBuffer = Napi::ArrayBuffer::New(env, size * 4);
+    memcpy(arrayBuffer.Data(), results.hSpace.data.data(), size * 4);
+    auto hSpaceDataBind = Napi::Uint32Array::New(env, size, arrayBuffer, 0);
+    hSpaceBind.Set("data", hSpaceDataBind);
+  } else {
+    auto hSpaceBind = Napi::Env(env).Undefined();
+    resultBind.Set("hSpace", hSpaceBind);
+  }
 
   return resultBind;
 }
@@ -69,7 +79,7 @@ Napi::Object SHTSimpleBind(const Napi::CallbackInfo &info) {
   SHTOptions options = getSHTOptions(optionsBind);
   SHTResults results = SHTSimple(testImage, options);
 
-  return getResultBind(env, results);
+  return getResultBind(env, options, results);
 }
 
 Napi::Object SHTSimpleLookupBind(const Napi::CallbackInfo &info) {
@@ -80,7 +90,7 @@ Napi::Object SHTSimpleLookupBind(const Napi::CallbackInfo &info) {
   SHTOptions options = getSHTOptions(optionsBind);
   SHTResults results = SHTSimpleLookup(testImage, options);
 
-  return getResultBind(env, results);
+  return getResultBind(env, options, results);
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {

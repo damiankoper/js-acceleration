@@ -32,7 +32,8 @@ EMSCRIPTEN_BINDINGS(wasm_sequential) {
   emscripten::value_object<SHTOptions>("SHTOptions")
       .field("width", &SHTOptions::width)
       .field("sampling", &SHTOptions::sampling)
-      .field("votingThreshold", &SHTOptions::votingThreshold);
+      .field("votingThreshold", &SHTOptions::votingThreshold)
+      .field("returnHSpace", &SHTOptions::returnHSpace);
   emscripten::value_object<HSpace>("HSpace")
       .field("data", &HSpace::data)
       .field("width", &HSpace::width);

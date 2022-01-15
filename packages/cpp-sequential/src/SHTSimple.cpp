@@ -46,6 +46,9 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
       }
     }
 
+  if (!options.returnHSpace)
+    houghSpace.clear();
+
   HSpace hSpace{houghSpace, hsWidth};
   return {results, hSpace};
 }

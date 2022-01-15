@@ -50,10 +50,12 @@ const SHTSimple: SHT = function (
 
   return {
     results,
-    hSpace: {
-      data: houghSpace,
-      width: hsWidth,
-    },
+    hSpace: options.returnHSpace
+      ? {
+          data: houghSpace,
+          width: hsWidth,
+        }
+      : undefined,
   };
 };
 

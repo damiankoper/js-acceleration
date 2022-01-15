@@ -23,6 +23,7 @@ export class WasmWrapper implements Module {
   readonly defaultSHTOptions: Partial<SHTOptions> = {
     sampling: { rho: 1, theta: 1 },
     votingThreshold: 0.75,
+    returnHSpace: false,
   };
 
   public moduleRaw: Module | null;
@@ -94,6 +95,10 @@ export class WasmWrapper implements Module {
       },
       votingThreshold:
         options.votingThreshold || this.defaultSHTOptions.votingThreshold,
+      returnHSpace:
+        options.returnHSpace !== undefined
+          ? options.returnHSpace
+          : this.defaultSHTOptions.returnHSpace,
     };
   }
 }

@@ -16,6 +16,8 @@ export interface SHTOptions {
 
   /** Value in range [0, 1] */
   votingThreshold?: number;
+  /** Wether to return hSpace buffer */
+  returnHSpace?: boolean;
 }
 
 export interface SHTParallelOptions extends SHTOptions {

@@ -20,6 +20,7 @@ struct SHTOptions {
   SHTSamplingOptions sampling = {1, 1};
   /** Value in range [0, 1] */
   float votingThreshold = 0.75;
+  bool returnHSpace = false;
 };
 
 struct HSpace {
