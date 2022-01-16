@@ -84,3 +84,4 @@
   ```
 
 * gpu istotne żeby pamiętać o max wymiarach tekstur 
+* float32 vs float64 ma znaczenie dla różnich akumulatora

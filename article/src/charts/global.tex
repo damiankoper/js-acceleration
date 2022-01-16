@@ -113,3 +113,42 @@
     {name path=Chrome_Seq_Lookup,opacity=0}
     \addplot [black,opacity=0.1] fill between [of=Chrome_Seq_Lookup and Firefox_Seq_Lookup];
 }
+
+\newcommand{\plotColdstart}[2]{%
+    \addplot+ [
+        #2,
+        mark=*,
+        mark options={solid, scale=0.75},
+        line width=0.75pt
+    ]
+    table [
+            x=nth,
+            y=time,
+            col sep=comma
+        ] {#1};
+}
+
+
+\newcommand{\plotMethod}[4]{%
+    \addplot
+    plot [error bars/.cd, y dir=both, y explicit]
+    table [
+            x=name,
+            y=mean,
+            y error=stdev,
+            col sep=comma
+        ] {methods/#1.csv};
+    \pgfplotsset{cycle list shift=-#2}
+    \addlegendentry{#3}
+    \addplot+ [
+        postaction={pattern=north east lines}
+    ]
+    plot [error bars/.cd, y dir=both, y explicit]  table [
+            x=name,
+            y=mean,
+            y error=stdev,
+            col sep=comma
+        ] {methods/#1-lookup.csv};
+
+    \addlegendentry{#4}
+}

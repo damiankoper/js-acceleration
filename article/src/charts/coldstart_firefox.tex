@@ -1,0 +1,83 @@
+
+\begin{figure}
+    \begin{tikzpicture}
+        \begin{axis} [
+                width=\linewidth,
+                height=0.4\linewidth,
+                legend style={
+                        at={(0,1.025)},
+                        anchor=south west,
+                        font=\tiny
+                    },
+                legend cell align={left},
+                legend columns=3,
+                grid,
+                grid style=dashed,
+                xlabel={nth run},
+                ylabel={Time normalized},
+                mark options={solid},
+                xtick distance=1,
+                ytick distance=0.25,
+                ymin=0,
+                xmin=-0.5,
+                xmax=8.5,
+                cycle list/Set1
+            ]
+
+            % Sequential
+
+            \plotColdstart{coldstart/js-sequential_coldstart_SHT_Simple_Firefox.csv}{}
+            \addlegendentry{JS Seq.}
+            \pgfplotsset{cycle list shift=-1}
+            \plotColdstart{coldstart/js-sequential_coldstart_SHT_Simple_Lookup_Firefox.csv}{dashed}
+            \addlegendentry{JS Seq. (LUT)}
+
+            % Wasm
+            \plotColdstart{coldstart/js-wasm_coldstart_SHT_Simple_Firefox.csv}{{}}
+            \addlegendentry{WASM}
+            \pgfplotsset{cycle list shift=-2}
+            \plotColdstart{coldstart/js-wasm_coldstart_SHT_Simple_Lookup_Firefox.csv}{dashed}
+            \addlegendentry{WASM (LUT)}
+
+            % asm.js
+            \plotColdstart{coldstart/js-asm_coldstart_SHT_Simple_Firefox.csv}{{}}
+            \addlegendentry{Asm.js}
+            \pgfplotsset{cycle list shift=-3}
+            \plotColdstart{coldstart/js-asm_coldstart_SHT_Simple_Lookup_Firefox.csv}{dashed}
+            \addlegendentry{Asm.js (LUT)}
+
+            % SIMD impl
+            \plotColdstart{coldstart/js-wasm_simd_implicit_coldstart_SHT_Simple_Firefox.csv}{{}}
+            \addlegendentry{WASM SIMD (impl.)}
+            \pgfplotsset{cycle list shift=-4}
+            \plotColdstart{coldstart/js-wasm_simd_implicit_coldstart_SHT_Simple_Lookup_Firefox.csv}{dashed}
+            \addlegendentry{WASM SIMD (impl., LUT)}
+
+            % SIMD expl
+            \plotColdstart{coldstart/js-wasm_simd_explicit_coldstart_SHT_Simple_Firefox.csv}{{}}
+            \addlegendentry{WASM SIMD (expl.)}
+            \pgfplotsset{cycle list shift=-5}
+            \plotColdstart{coldstart/js-wasm_simd_explicit_coldstart_SHT_Simple_Lookup_Firefox.csv}{dashed}
+            \addlegendentry{WASM SIMD (expl., LUT)}
+
+            % Workers 
+            \plotColdstart{coldstart/js-workers_coldstart_SHT_Simple_Firefox.csv}{{}}
+            \addlegendentry{Workers}
+            \pgfplotsset{cycle list shift=-6}
+            \plotColdstart{coldstart/js-workers_coldstart_SHT_Simple_Lookup_Firefox.csv}{dashed}
+            \addlegendentry{Workers (LUT)}
+
+            % GPU
+            \plotColdstart{coldstart/js-gpu_coldstart_SHT_Simple_Firefox.csv}{{}}
+            \addlegendentry{WebGL}
+            \pgfplotsset{cycle list shift=-7}
+            \plotColdstart{coldstart/js-gpu_coldstart_SHT_Simple_Lookup_Firefox.csv}{dashed}
+            \addlegendentry{WebGL (LUT)}
+
+
+        \end{axis}
+    \end{tikzpicture}
+
+    \label{plot:coldstart-Firefox}
+    \caption{Normalized coldstart execution times for methods implemented in the Firefox environment. Precompiled methods do not benefit from runtime optimization. The LUT variant is more optimizable than the standard one. The performance of WebGL's first run suffers from the need for compiling GPU programs.}
+\end{figure}

@@ -297,6 +297,13 @@
 \usepackage{pgfplots}
 \usetikzlibrary{pgfplots.groupplots} % needs to be loaded exactly like this
 \usepgfplotslibrary{fillbetween}
+\usepgfplotslibrary{colorbrewer}
+\usetikzlibrary{patterns}
+
+\usepackage{csvsimple}
+\usepackage{siunitx}
+\usepackage{tabularx}
+
 
 \usepackage{graphicx}%
 \usepackage{multirow}%

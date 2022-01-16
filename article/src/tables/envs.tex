@@ -1,0 +1,32 @@
+
+\newcommand{\comma}{, }
+\begin{table}
+    \label{tab:envs}
+    \caption{Comparison of implemented methods in analyzed environments. The general comparison was done using Chrome as a reference point and geometric mean for times comparable with Chrome.}
+
+    \begin{tabularx}{\linewidth}{X r r r r}%
+        \hline
+                                 & \multicolumn{4}{c}{\bfseries Execution time[ms]}                                                             \\
+        \bfseries Method         & \bfseries Chrome                                 & \bfseries Firefox     & \bfseries Node  & \bfseries Deno
+
+        \csvreader[
+            head to column names,
+            before first line=                                                                                                                  \\\hline,
+            late after line=                                                                                                                    \\,
+            late after last line=                                                                                                               \\\hline
+        ]{../../benchmark/environments/envs.csv}{}% use head of csv as column names
+        {
+        \name\                   & \chrome\ (\chromeF)                              & \firefox\ (\firefoxF) & \node\ (\nodeF) & \deno\ (\denoF)
+        }% specify your coloumns here 
+        \bfseries Geometric mean &
+        \csvreader[
+            head to column names,
+            late after last line=                                                                                                               \\\hline
+
+        ]{../../benchmark/environments/geoMeans.csv}{}% use head of csv as column names
+        {
+        (\chrome)                & (\firefox)                                       & (\node)               & (\deno)
+        }% specify your coloumns here 
+    \end{tabularx}
+
+\end{table}

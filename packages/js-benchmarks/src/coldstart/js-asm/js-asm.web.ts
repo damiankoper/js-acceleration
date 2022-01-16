@@ -7,7 +7,7 @@ asmSequential
     webBaseFactory(
       asmSequential.SHTSimple.bind(asmSequential),
       asmSequential.SHTSimpleLookup.bind(asmSequential),
-      (name: string, env: string) => `js-asm_theta_${name}_${env}.csv`
+      (name: string, env: string) => `js-asm_coldstart_${name}_${env}.csv`
     );
     return null;
   })

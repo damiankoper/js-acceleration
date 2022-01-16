@@ -133,6 +133,7 @@ export default [
     return c;
   },
   webFactory("js-sequential"),
+  webFactory("js-sequential", undefined, "coldstart"),
   webFactory("js-workers"),
   webFactory("js-workers", undefined, "coldstart"),
   webFactory("js-asm"),

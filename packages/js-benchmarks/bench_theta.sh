@@ -14,3 +14,6 @@ nice -n $NICENESS taskset $CPU_MASK npm run bench:node:theta:workers
 
 nice -n $NICENESS taskset $CPU_MASK npm run bench:deno:theta:sequential
 nice -n $NICENESS taskset $CPU_MASK npm run bench:deno:theta:workers
+
+node processMethods.mjs
+node processEnvs.mjs

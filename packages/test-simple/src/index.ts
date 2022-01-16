@@ -20,7 +20,7 @@ import * as gpu from "js-gpu";
     sampling,
     votingThreshold,
     concurrency: 4,
-    returnHSpace: false,
+    returnHSpace: true,
   };
   await wasmSequential.init();
   await wasmSequentialImplicitSIMD.init();

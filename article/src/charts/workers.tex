@@ -9,10 +9,10 @@
         \addlegendentry{Deno}
 
         \plotBenchmark{js-workers_theta_SHT_Simple_Firefox.csv}{firefoxColor}{{}}
-        \addlegendentry{Firefox 95}
+        \addlegendentry{Firefox}
 
         \plotBenchmark{js-workers_theta_SHT_Simple_Chrome.csv}{chromeColor}{{}}
-        \addlegendentry{Chrome 97}
+        \addlegendentry{Chrome}
 
         \seqReference
     } {
@@ -23,14 +23,14 @@
         \addlegendentry{Deno}
 
         \plotBenchmark{js-workers_theta_SHT_Simple_Lookup_Firefox.csv}{firefoxColor}{{}}
-        \addlegendentry{Firefox 95}
+        \addlegendentry{Firefox}
 
         \plotBenchmark{js-workers_theta_SHT_Simple_Lookup_Chrome.csv}{chromeColor}{{}}
-        \addlegendentry{Chrome 97}
+        \addlegendentry{Chrome}
 
         \seqReferenceLookup
     }[1700][500]
     \label{plot:workers}
-    \caption{Workers SHT execution benchmark results with concurrency $n=4$. Gray area shows sequential JavaScript execution performance range. Non-lookup variant performs better than sequential execution. On the other hand lookup one has gained only small increase in performance.}
+    \caption{Workers SHT execution benchmark results with concurrency $n=4$. Gray area shows sequential JavaScript execution performance range. Non-LUT variant performs better than sequential execution. On the other hand the LUT one has gained only small increase in performance.}
     % TODO: speedup math
 \end{figure}

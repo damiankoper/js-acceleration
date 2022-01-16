@@ -1,0 +1,56 @@
+
+\begin{figure}
+    \begin{tikzpicture}
+        \begin{axis}[
+                ybar,
+                bar width=0.09,
+                width=\linewidth,
+                height=0.4\linewidth,
+                ylabel={Time [ms]},
+                xtick=data,
+                xticklabels = {
+                        Chrome,
+                        Firefox,
+                        Node,
+                    },
+                xmin=0.5,
+                xmax=3.5,
+                xtick pos=left,
+                major x tick style = {opacity=0},
+                minor x tick num = 1,
+                minor tick length=2ex,
+                legend style={
+                        at={(0,1.025)},
+                        anchor=south west,
+                        font=\tiny
+                    },
+                legend cell align={left},
+                legend columns=3,
+                grid,
+                ymajorgrids,
+                xmajorgrids=false,
+                grid style=dashed,
+                ytick distance=100,
+            ]
+            \plotMethod{js-sequential}{1}{JS Seq.}{JS Seq. (LUT)}
+            \plotMethod{js-wasm_theta}{2}{WASM}{WASM (LUT)}
+            \plotMethod{js-wasm_simd_implicit}{3}{WASM SIMD (impl.)}{WASM SIMD (impl., LUT)}
+            \plotMethod{js-wasm_simd_explicit}{4}{WASM SIMD (expl.)}{WASM SIMD (expl., LUT)}
+            %\plotMethod{js-workers}{Workers}{3}{}
+            %\plotMethod{js-gpu}{WebGL}{4}{}
+
+            \addplot [black,line legend,
+                sharp plot,update limits=false,
+            ] coordinates { (0,50.0716) (5,50.0716) };
+            \addlegendentry{C++}
+
+            \addplot [black, dashed,line legend,
+                sharp plot,update limits=false,
+            ] coordinates { (0,11.7133) (5,11.7133) };
+            \addlegendentry{C++ (LUT)}
+
+        \end{axis}
+    \end{tikzpicture}
+    \label{plot:methods_seq_vs_wasm}
+    \caption{Performance of sequential and WASM-based methods against native C++ for both variants of implemented SHT.}
+\end{figure}
