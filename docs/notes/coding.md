@@ -36,7 +36,7 @@
     * nierównomierne rozłożenie sinusoidy
     * dla równego rozłożenia sin lepiej całe rho niż theta
 *  dziki rounding przyspiesza https://gist.github.com/Olical/1162452
-* przez obiekt 20x wolniej https://stackoverflow.com/questions/37982072/web-worker-20x-worse-performance
+* przez obiekt 20x wolniej https://stackoverflow.com/questions/37982072/web-worker-20x-worse-performance``
 
 * czy w WASM różnica z dzikim zaokrąglaniem da inny wynik - porównać WAT?
 * gupi webpack nie transpilije workerów poprawnie jeśli inicjujemy je np:

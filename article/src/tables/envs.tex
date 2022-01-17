@@ -18,14 +18,14 @@
         {
         \name\                   & \chrome\ (\chromeF)                              & \firefox\ (\firefoxF) & \node\ (\nodeF) & \deno\ (\denoF)
         }% specify your coloumns here 
-        \bfseries Geometric mean &
         \csvreader[
             head to column names,
+            late after line=                                                                                                                    \\,
             late after last line=                                                                                                               \\\hline
 
         ]{../../benchmark/environments/geoMeans.csv}{}% use head of csv as column names
         {
-        (\chrome)                & (\firefox)                                       & (\node)               & (\deno)
+            \bfseries \name & (\chrome)                & (\firefox)                                       & (\node)               & (\deno)
         }% specify your coloumns here 
     \end{tabularx}
 

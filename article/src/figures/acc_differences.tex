@@ -1,0 +1,16 @@
+\begin{figure}[]
+
+    \begin{subfigure}{0.3\textwidth}
+        \includegraphics[width=\linewidth] {../../packages/js-benchmarks/img/diff_seq_seq_lookup.png}
+        \caption{Sequential LUT}\label{fig:diff:seq_lut}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.3\textwidth}
+        \includegraphics[width=\linewidth] {../../packages/js-benchmarks/img/diff_seq_gpu.png}
+        \caption{WebGL}\label{fig:diff:gpu}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.3\textwidth}
+        \includegraphics[width=\linewidth] {../../packages/js-benchmarks/img/diff_seq_wasm.png}
+        \caption{WASM}\label{fig:diff:wasm}
+    \end{subfigure}
+    \caption{Normalized absolute accumulator difference from sequential non-LUT variant.}\label{fig:diff}
+\end{figure}

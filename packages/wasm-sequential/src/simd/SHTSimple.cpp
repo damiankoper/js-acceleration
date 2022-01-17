@@ -11,9 +11,9 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
 
   // Defaults handled in the structure definitions
 
-  uint32_t hsWidth = std::ceil(360 * options.sampling.theta);
-  uint32_t hsHeight = std::ceil(std::sqrt(width * width + height * height) *
-                                options.sampling.rho);
+  uint32_t hsWidth = std::trunc(360 * options.sampling.theta);
+  uint32_t hsHeight = std::trunc(std::sqrt(width * width + height * height) *
+                                 options.sampling.rho);
 
   std::vector<uint32_t> houghSpace(hsWidth * hsHeight);
 
@@ -23,13 +23,13 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
   v128_t vecSamplingThetaRad = wasm_v128_load32_splat(&samplingThetaRad);
   float samplingRhoF = options.sampling.rho;
   v128_t vecSamplingRho = wasm_v128_load32_splat(&samplingRhoF);
-  float hsWidthF = hsWidth;
-  v128_t vecHSWidth = wasm_v128_load32_splat(&hsWidthF);
+  v128_t vecHSWidth = wasm_v128_load32_splat(&hsWidth);
 
   float vFOps[4] = {0, 0, 0, 0};
   float vFOps2[4] = {0, 0, 0, 0};
-  v128_t zeros = wasm_v128_load(vFOps);
+  uint32_t vIOps[4] = {0, 0, 0, 0};
   uint32_t ySpaceValid[4];
+  v128_t zeros = wasm_f32x4_const_splat(0);
 
   for (uint32_t y = 0; y < height; y++) {
     const v128_t vecY = wasm_f32x4_convert_i32x4(wasm_v128_load32_splat(&y));
@@ -39,7 +39,10 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
         for (uint32_t hx = 0; hx < hsWidth; hx += 4) {
           vFOps[0] = hx, vFOps[1] = hx + 1;
           vFOps[2] = hx + 2, vFOps[3] = hx + 3;
+          vIOps[0] = hx, vIOps[1] = hx + 1;
+          vIOps[2] = hx + 2, vIOps[3] = hx + 3;
           v128_t vecHX = wasm_v128_load(vFOps);
+          v128_t vecHXI = wasm_v128_load(vIOps);
           v128_t vecHTheta = wasm_f32x4_mul(vecHX, vecSamplingThetaRad);
           wasm_v128_store(vFOps, vecHTheta);
 
@@ -58,19 +61,20 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
           vecXCos = wasm_f32x4_mul(vecX, vecXCos);
 
           v128_t &vecYSpace = vecYSin;
+          v128_t &vecYSpaceValid = vecXCos;
           vecYSpace = wasm_f32x4_add(vecXCos, vecYSin);
           vecYSpace = wasm_f32x4_mul(vecYSpace, vecSamplingRho);
-          vecYSpace = wasm_f32x4_trunc(vecYSpace);
-          vecYSpace = wasm_f32x4_mul(vecYSpace, vecHSWidth);
-          vecYSpace = wasm_f32x4_add(vecYSpace, vecHX);
-          wasm_v128_store(vFOps, vecYSpace);
+          vecYSpaceValid = wasm_f32x4_ge(vecYSpace, zeros);
+          vecYSpace = wasm_i32x4_trunc_sat_f32x4(vecYSpace);
+          vecYSpace = wasm_i32x4_mul(vecYSpace, vecHSWidth);
+          vecYSpace = wasm_i32x4_add(vecYSpace, vecHXI);
 
-          vecYSpace = wasm_f32x4_ge(vecYSpace, zeros);
-          wasm_v128_store(ySpaceValid, vecYSpace);
+          wasm_v128_store(vIOps, vecYSpace);
+          wasm_v128_store(ySpaceValid, vecYSpaceValid);
 
           for (uint32_t i = 0; i < 4 && hx + i < hsWidth; i++) {
             if ((bool)ySpaceValid[i]) {
-              maxValue = std::max(maxValue, ++houghSpace[(uint32_t)vFOps[i]]);
+              maxValue = std::max(maxValue, ++houghSpace[vIOps[i]]);
             }
           }
         }
@@ -78,7 +82,6 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
     }
   }
 
-  uint32_t vIOps[4] = {0, 0, 0, 0};
   vecHSWidth = wasm_v128_load32_splat(&hsWidth);
 
   float maxValueF = (float)maxValue;

@@ -50,29 +50,37 @@ readdir(testFolder, (err, files) => {
       }
     });
 
-  const chromeFs = [];
-  const firefoxFs = [];
-  const nodeFs = [];
-  const denoFs = [];
+  const chromeFs_nonlookup = [];
+  const chromeFs_lookup = [];
+  const firefoxFs_nonlookup = [];
+  const firefoxFs_lookup = [];
+  const nodeFs_nonlookup = [];
+  const nodeFs_lookup = [];
+  const denoFs_nonlookup = [];
+  const denoFs_lookup = [];
 
   [...methodMap.values()].forEach((method) => {
     method.nodeF = method.node / method.chrome || "-";
     method.firefoxF = method.firefox / method.chrome || "-";
     method.denoF = method.deno / method.chrome || "-";
     if (typeof method.nodeF === "number") {
-      nodeFs.push(method.nodeF);
+      if (method.name.includes("LUT")) nodeFs_lookup.push(method.nodeF);
+      else nodeFs_nonlookup.push(method.nodeF);
       method.nodeF = method.nodeF.toFixed(2);
     }
     if (typeof method.firefoxF === "number") {
-      firefoxFs.push(method.firefoxF);
+      if (method.name.includes("LUT")) firefoxFs_lookup.push(method.firefoxF);
+      else firefoxFs_nonlookup.push(method.firefoxF);
       method.firefoxF = method.firefoxF.toFixed(2);
     }
     if (typeof method.denoF === "number") {
-      denoFs.push(method.denoF);
+      if (method.name.includes("LUT")) denoFs_lookup.push(method.denoF);
+      else denoFs_nonlookup.push(method.denoF);
       method.denoF = method.denoF.toFixed(2);
     }
     if (method.chrome === "-") {
-      chromeFs.push(method.chromeF);
+      if (method.name.includes("LUT")) chromeFs_lookup.push(method.chromeF);
+      else chromeFs_nonlookup.push(method.chromeF);
       method.chromeF = "-";
     }
   });
@@ -82,10 +90,33 @@ readdir(testFolder, (err, files) => {
     papaparse.unparse(
       [
         {
-          chrome: ss.geometricMean(chromeFs).toFixed(2),
-          firefox: ss.geometricMean(firefoxFs).toFixed(2),
-          node: ss.geometricMean(nodeFs).toFixed(2),
-          deno: ss.geometricMean(denoFs).toFixed(2),
+          name: "Geometric mean (non-LUT)",
+          chrome: ss.geometricMean(chromeFs_nonlookup).toFixed(2),
+          firefox: ss.geometricMean(firefoxFs_nonlookup).toFixed(2),
+          node: ss.geometricMean(nodeFs_nonlookup).toFixed(2),
+          deno: ss.geometricMean(denoFs_nonlookup).toFixed(2),
+        },
+        {
+          name: "Geometric mean (LUT)",
+          chrome: ss.geometricMean(chromeFs_lookup).toFixed(2),
+          firefox: ss.geometricMean(firefoxFs_lookup).toFixed(2),
+          node: ss.geometricMean(nodeFs_lookup).toFixed(2),
+          deno: ss.geometricMean(denoFs_lookup).toFixed(2),
+        },
+        {
+          name: "Geometric mean (all)",
+          chrome: ss
+            .geometricMean([...chromeFs_lookup, ...chromeFs_nonlookup])
+            .toFixed(2),
+          firefox: ss
+            .geometricMean([...firefoxFs_lookup, ...firefoxFs_nonlookup])
+            .toFixed(2),
+          node: ss
+            .geometricMean([...nodeFs_lookup, ...nodeFs_nonlookup])
+            .toFixed(2),
+          deno: ss
+            .geometricMean([...denoFs_lookup, ...denoFs_nonlookup])
+            .toFixed(2),
         },
       ],
       { header: true }
@@ -101,21 +132,21 @@ readdir(testFolder, (err, files) => {
 function mapMethodName(name, lookup) {
   switch (name) {
     case "js-sequential":
-      return !lookup ? "JS Sequential" : "JS Sequential (lookup)";
+      return !lookup ? "JS Sequential" : "JS Sequential (LUT)";
     case "cpp-addon":
-      return !lookup ? "C++ addon" : "C++ addon (lookup)";
+      return !lookup ? "C++ addon" : "C++ addon (LUT)";
     case "js-wasm_theta":
-      return !lookup ? "WASM" : "WASM (lookup)";
+      return !lookup ? "WASM" : "WASM (LUT)";
     case "js-asm":
-      return !lookup ? "Asm.js" : "Asm.js (lookup)";
+      return !lookup ? "Asm.js" : "Asm.js (LUT)";
     case "js-wasm_simd_explicit":
-      return !lookup ? "WASM SIMD (expl.)" : "WASM SIMD (expl.\\comma lookup)";
+      return !lookup ? "WASM SIMD (expl.)" : "WASM SIMD (expl.\\comma LUT)";
     case "js-wasm_simd_implicit":
-      return !lookup ? "WASM SIMD (impl.)" : "WASM SIMD (impl.\\comma lookup)";
+      return !lookup ? "WASM SIMD (impl.)" : "WASM SIMD (impl.\\comma LUT)";
     case "js-workers":
-      return !lookup ? "Workers" : "Workers (lookup)";
+      return !lookup ? "Workers" : "Workers (LUT)";
     case "js-gpu":
-      return !lookup ? "WebGL" : "WebGL (lookup)";
+      return !lookup ? "WebGL" : "WebGL (LUT)";
     default:
       return "NA";
   }

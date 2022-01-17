@@ -303,7 +303,7 @@
 \usepackage{csvsimple}
 \usepackage{siunitx}
 \usepackage{tabularx}
-
+\usepackage{subcaption}
 
 \usepackage{graphicx}%
 \usepackage{multirow}%

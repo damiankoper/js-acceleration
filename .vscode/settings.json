@@ -48,7 +48,8 @@
     "latex-workshop.latex.outDir": "../out",
     "[latex]": {
         "editor.wordWrap": "wordWrapColumn",
-        "editor.wordWrapColumn": 80,
-        "editor.formatOnSave": true
+        "editor.wordWrapColumn": 120,
+        "editor.formatOnSave": false,
+        "editor.formatOnType": true
       }
 }
