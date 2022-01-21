@@ -69,11 +69,11 @@ export function renderSHTResults(
     resultCtx.stroke();
     resultCtx.strokeStyle = "green";
 
-    resultCtx.lineWidth = 1;
+    /* resultCtx.lineWidth = 1;
     resultCtx.beginPath();
     resultCtx.moveTo(0, 0);
     resultCtx.lineTo(x, y);
-    resultCtx.stroke();
+    resultCtx.stroke(); */
   });
 
   if (results.hSpace && results.hSpace.data) {

@@ -1,0 +1,1 @@
+In this paper we try to find how the same algorithm performs when implemented using multiple acceleration methods in popular JavaScript environments with as little adjustments as possible for each method. We also want to find if all of this methods can be built to a single output format with the same library interface.

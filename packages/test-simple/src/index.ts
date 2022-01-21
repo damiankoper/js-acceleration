@@ -28,7 +28,7 @@ import * as gpu from "js-gpu";
   await asmSequential.init();
 
   const configs = [
-    /*   {
+    {
       id: "sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         sequential.SHTSimple(processedData, {
@@ -107,7 +107,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
-    }, */
+    },
     {
       id: "sht_workers",
       fn: (processedData: Uint8Array, imageData: ImageData) =>

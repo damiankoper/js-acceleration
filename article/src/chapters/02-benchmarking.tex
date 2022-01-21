@@ -1,10 +1,30 @@
 \section{Benchmarking}\label{sec:benchmarking}
 
-TODO: SHT in general briefly
+We tested performance of mentioned acceleration methods in different environments. Implementation status and reason if not implemented is shown in table~\ref{tab:implemented}. Tested JS environments and their versions are described in table~\ref{tab:versions}.
+
+\input{tables/implemented}
+
+As an algorithm to benchmark these methods against we chose a simplified standard variant of Hough transform(SHT) \cite{mukhopadhyay2015survey}. Choosing single algorithm over the whole benchmark suite gives us granular control over implementation, building process and adaptation for each acceleration method. Hough transform, in the standard variant, is used to detect lines in binary images. It maps points to values in an accumulator space, called Hough or parameter space. Unlike the original transform \cite{hough1962method}, modern version maps points $(x, y)$ using polar coordinates $(\theta, \rho)$ according to (\ref{eq:polar_hough}) \cite{duda1972use}.
+
+\begin{equation}
+    \label{eq:polar_hough}
+    f(x,y) = \rho(\theta) = x\cos{\theta}+y\sin{\theta}
+\end{equation}
+
+\input{tables/versions}
+
+The resolution of the accumulator determines the precision of line detection, the size of the computational problem, and the required memory. The computational complexity of the sequential algorithm equals $O(wh)$ where $w$ and $h$ are dimensions of an input image. It could be also expressed as $O(S_{\theta} S_\rho)$ with constant input dimensions where $S_{\theta}$ and $S_\rho$ denotes angular and pixel sampling respectively. We benchmark each method for various problem sizes keeping everything constant but $S_\theta$. We implemented simplified version from commonly seen. Our implementation defined the anchor point of polar coordinates in the upper left corner of the image instead of its center and is bases the voting process on a simple threshold instead of analyzing the image space \cite{palmer1997optimizing}.
+
+We believe that the algorithm is sufficient for performing valuable benchmarks since it requires many iterations to populate the accumulator and also enforces intensified memory usage for input data and the accumulator itself. 
+
+\input{figures/sht_example}
+
+
 
 TODO: Implemented SHT, Non-LUT and LUT variants
 
 TODO: Env x Methods matrix
+
 
 TODO: library interface and building method
 
