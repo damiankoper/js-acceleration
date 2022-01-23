@@ -8,17 +8,17 @@ Analyzing benchmark times shown in Figure \ref{plot:sequential} we can see the a
 
 \input{charts/sequential}
 
+
 We detected one pixel difference in generated accumulator between variants as shown in Figure \ref{fig:diff:seq_lut} (upper right corner). We implemented lookup table for \textit{LUT} variants using \texttt{Float32Array}. JS internally, without optimizations, represents numbers in double-precision and reduced precision of cached values can have significant impact on detection results.
 
 \input{figures/acc_differences}
+
 
 \subsection{Node C++ addon}\label{sec:results:cpp-addon}
 
 C++ addon for Node was built using the same shared library as the C++ version. Thus the difference in performance between native C++ and the addon arise mostly from handling data transfer between C++ -- JS boundary since the data needs to be copied and transformed to corresponding C++ structures. Results are shown in Figure \ref{plot:cpu-addon}.
 
 \input{charts/cpp-addon}
-
-
 % MARK: times math
 Compilation with optimization of trigonometric functions in \textit{non-LUT} variant allowed to gain more performance ($2.21\times$) than compilation of the \textit{LUT} variant ($1.38\times$) relative to their sequential variants. This case allows us to draw a conclusion that if an algorithm has trigonometric functions and output of which cannot be cached beforehand, the usage of the C++ addon in Node is beneficial.
 
@@ -46,10 +46,14 @@ SIMD instructions in WASM are available from Chrome 91 and Firefox 89 for all us
 
 All worker benchmarks used concurrency $n=4$. Results are shown in Figure \ref{plot:workers}. Because of simplified implementation described in section \ref{sec:benchmarking}, precisely the center of polar coordinate system in image space, the \nth{3} worker is redundant. The \nth{3} vertical quarter of the accumulator will always be empty (Fig. \ref{fig:sht_example:b}). This was not optimized in our implementation.
 
-\input{tables/worker_speedup} 
-The table \ref{tab:worker_speedup} shows the speedup and its efficiency for environments and variants. The big difference in speedup efficiency between variants again shows us how demanding trigonometric functions are. Only the accumulator filling process was parallelized thus the speedup difference between environments is expected since the worker calculations take less time due to the lookup tables. Our implementation can be improved to achieve better performance because the voting process is not parallelized. Even though, the current state of implementation still allows us to compare this method across environments.
 
-We share the accumulator array between workers using \texttt{SharedArrayBuffer} and it is important to mention that our implementation does not use \texttt{Atomics} since every worker operates on a different part of the array. According to our benchmarks, \texttt{Atomics} tends to slow down performance and were not necessary in this case.
+The table \ref{tab:worker_speedup} shows the speedup and its efficiency for environments and variants. The big difference in speedup efficiency between variants again shows us how demanding trigonometric functions are. Only the accumulator filling process was parallelized thus the speedup difference between environments is expected since the worker calculations take less time due to the lookup tables.
+
+\input{tables/worker_speedup} 
+Our implementation can be improved to achieve better performance because the voting process is not parallelized. Even though, the current state of implementation still allows us to compare this method across environments.
+
+
+We share the accumulator array between workers and it is important to mention that our implementation does not use \texttt{Atomics} since every worker operates on a different part of the array. According to our benchmarks, \texttt{Atomics} tends to slow down performance and were not necessary in this case.
 
 \input{charts/workers}
 
