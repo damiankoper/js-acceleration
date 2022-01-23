@@ -37,3 +37,9 @@ parallelized
 transpilation
 bundler
 Webpack
+LUT
+vectorization
+backend
+parallelization
+minification
+npm

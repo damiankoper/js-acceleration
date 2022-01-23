@@ -9,6 +9,7 @@
   "types": "dist/main.d.ts",
   "type": "module",
   "module": "dist/main.mjs",
+  "sideEffects": [],
   "directories": {
     "src": "src"
   },

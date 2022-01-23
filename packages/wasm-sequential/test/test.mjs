@@ -26,35 +26,24 @@ const options = {
   sampling: { rho: 1, theta: 1 },
   votingThreshold: 13 / 14,
 };
-
-console.log(wasmSequential.prototype);
-
-wasmSequential
-  .init()
+const w = wasmSequential();
+w.init()
   .then(() => {
-    /*     instance.SHTSimple(testImage, options)
-  instance.SHTSimple(testImage, options)
-  instance.SHTSimple(testImage, options) */
-
     let t = performance.now();
-    let results = wasmSequential.SHTSimple(testImage, options);
+    w.SHTSimple(testImage, options);
     //console.log("SHTSimple:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
     console.log("SHTSimple:".padEnd(38), performance.now() - t);
-    results.results.delete();
-    results.hSpace.data.delete();
 
     t = performance.now();
-    results = wasmSequential.SHTSimpleLookup(testImage, options);
+    w.SHTSimpleLookup(testImage, options);
     //console.log("SHTSimpleLookup:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
     console.log("SHTSimpleLookup:".padEnd(38), performance.now() - t);
-    results.results.delete();
-    results.hSpace.data.delete();
 
     return null;
   })
-  .catch(() => null);
+  .catch(console.log);
 
 factoryImplicitSIMD()
   .then((instance) => {
@@ -74,8 +63,6 @@ factoryImplicitSIMD()
       "SHTSimpleLookupImplicitSIMD:".padEnd(38),
       performance.now() - t
     );
-    results.results.delete();
-    results.hSpace.data.delete();
 
     return null;
   })
@@ -87,16 +74,12 @@ factoryImplicitSIMD()
 
     //console.log("SHTSimpleSIMD:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
-    results.results.delete();
-    results.hSpace.data.delete();
 
     t = performance.now();
     results = instance.SHTSimpleLookup(testImage, options);
     console.log("SHTSimpleLookupSIMD:".padEnd(38), performance.now() - t);
     //console.log("SHTSimpleLookupSIMD:".padEnd(38), results.results.size())
     //console.log([...unpackVector(results.results)])
-    results.results.delete();
-    results.hSpace.data.delete();
     return null;
   })
   .catch(() => null);

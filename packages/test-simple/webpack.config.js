@@ -12,7 +12,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const config = {
   entry: "./src/index.ts",
-  devtool: "cheap-module-source-map",
+  devtool: false,
   output: {
     path: resolve(__dirname, "dist"),
   },
@@ -28,6 +28,7 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "index.html",
+      scriptLoading: "module",
     }),
     new ForkTsCheckerWebpackPlugin({
       eslint: {

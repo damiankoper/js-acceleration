@@ -33,6 +33,7 @@ readdir(testFolder, (err, files) => {
             const lookup = file.includes("Lookup");
             const key = method + (!lookup ? "" : "-lookup");
             const methodResults = methodMap.get(key) || {
+              lookup: lookup ? "\\cmark" : "",
               name: mapMethodName(method, lookup),
               chrome: "-",
               chromeF: "1.00",
@@ -64,22 +65,22 @@ readdir(testFolder, (err, files) => {
     method.firefoxF = method.firefox / method.chrome || "-";
     method.denoF = method.deno / method.chrome || "-";
     if (typeof method.nodeF === "number") {
-      if (method.name.includes("LUT")) nodeFs_lookup.push(method.nodeF);
+      if (method.lookup) nodeFs_lookup.push(method.nodeF);
       else nodeFs_nonlookup.push(method.nodeF);
       method.nodeF = method.nodeF.toFixed(2);
     }
     if (typeof method.firefoxF === "number") {
-      if (method.name.includes("LUT")) firefoxFs_lookup.push(method.firefoxF);
+      if (method.lookup) firefoxFs_lookup.push(method.firefoxF);
       else firefoxFs_nonlookup.push(method.firefoxF);
       method.firefoxF = method.firefoxF.toFixed(2);
     }
     if (typeof method.denoF === "number") {
-      if (method.name.includes("LUT")) denoFs_lookup.push(method.denoF);
+      if (method.lookup) denoFs_lookup.push(method.denoF);
       else denoFs_nonlookup.push(method.denoF);
       method.denoF = method.denoF.toFixed(2);
     }
     if (method.chrome === "-") {
-      if (method.name.includes("LUT")) chromeFs_lookup.push(method.chromeF);
+      if (method.lookup) chromeFs_lookup.push(method.chromeF);
       else chromeFs_nonlookup.push(method.chromeF);
       method.chromeF = "-";
     }
@@ -90,6 +91,7 @@ readdir(testFolder, (err, files) => {
     papaparse.unparse(
       [
         {
+          lookup: "",
           name: "Geometric mean (non-LUT)",
           chrome: ss.geometricMean(chromeFs_nonlookup).toFixed(2),
           firefox: ss.geometricMean(firefoxFs_nonlookup).toFixed(2),
@@ -97,6 +99,7 @@ readdir(testFolder, (err, files) => {
           deno: ss.geometricMean(denoFs_nonlookup).toFixed(2),
         },
         {
+          lookup: "",
           name: "Geometric mean (LUT)",
           chrome: ss.geometricMean(chromeFs_lookup).toFixed(2),
           firefox: ss.geometricMean(firefoxFs_lookup).toFixed(2),
@@ -104,6 +107,7 @@ readdir(testFolder, (err, files) => {
           deno: ss.geometricMean(denoFs_lookup).toFixed(2),
         },
         {
+          lookup: "",
           name: "Geometric mean (all)",
           chrome: ss
             .geometricMean([...chromeFs_lookup, ...chromeFs_nonlookup])
@@ -122,31 +126,75 @@ readdir(testFolder, (err, files) => {
       { header: true }
     )
   );
-
+  const order = [
+    "JS Sequential",
+    "C++ addon",
+    "asm.js",
+    "WASM",
+    "WASM SIMD (impl.)",
+    "WASM SIMD (expl.)",
+    "Workers",
+    "WebGL",
+  ];
   writeFileSync(
     join(resultFolder, "envs" + ".csv"),
-    papaparse.unparse([...methodMap.values()], { header: true })
+    papaparse.unparse(
+      [...methodMap.values()]
+        .sort((a, b) => {
+          const startsWithA = order.reduce(
+            (o, str, i) => (a.name.startsWith(str) ? i : o),
+            0
+          );
+          const startsWithB = order.reduce(
+            (o, str, i) => (b.name.startsWith(str) ? i : o),
+            0
+          );
+          const x = Math.sign(startsWithA - startsWithB);
+
+          return a.lookup && !b.lookup ? 1 : !a.lookup && b.lookup ? -1 : x;
+        })
+        .map((v) => {
+          if (v.name.startsWith("asm.js")) {
+            v.chrome = `\\textcolor{red}{${v.chrome}}`;
+            v.firefox = `\\textcolor{red}{${v.firefox}}`;
+            v.node = `\\textcolor{red}{${v.node}}`;
+          }
+          if (v.name.startsWith("WASM SIMD (expl.)")) {
+            v.chrome = `\\textcolor{orange}{${v.chrome}}`;
+            v.firefox = `\\textcolor{orange}{${v.firefox}}`;
+            v.node = `\\textcolor{orange}{${v.node}}`;
+          }
+          if (v.name.startsWith("C++")) {
+            v.node = `\\textcolor{green!70!black}{${v.node}}`;
+          }
+          if (v.name.startsWith("WebGL")) {
+            v.chrome = `\\textbf{\\textcolor{green!70!black}{${v.chrome}}}`;
+          }
+          return v;
+        }),
+      { header: true }
+    )
   );
 });
 
 function mapMethodName(name, lookup) {
   switch (name) {
     case "js-sequential":
-      return !lookup ? "JS Sequential" : "JS Sequential (LUT)";
+      return !lookup ? "JS Sequential" : "JS Sequential";
     case "cpp-addon":
-      return !lookup ? "C++ addon" : "C++ addon (LUT)";
+      return !lookup ? "C++ addon" : "C++ addon";
     case "js-wasm_theta":
-      return !lookup ? "WASM" : "WASM (LUT)";
+      return !lookup ? "WASM" : "WASM";
     case "js-asm":
-      return !lookup ? "Asm.js" : "Asm.js (LUT)";
+      return !lookup ? "asm.js" : "asm.js";
     case "js-wasm_simd_explicit":
-      return !lookup ? "WASM SIMD (expl.)" : "WASM SIMD (expl.\\comma LUT)";
+      return !lookup ? "WASM SIMD (expl.)" : "WASM SIMD (expl.)";
     case "js-wasm_simd_implicit":
-      return !lookup ? "WASM SIMD (impl.)" : "WASM SIMD (impl.\\comma LUT)";
+      return !lookup ? "WASM SIMD (impl.)" : "WASM SIMD (impl.)";
     case "js-workers":
-      return !lookup ? "Workers" : "Workers (LUT)";
+      return !lookup ? "Workers" : "Workers";
     case "js-gpu":
-      return !lookup ? "WebGL" : "WebGL (LUT)";
+      return !lookup ? "WebGL" : "WebGL";
     default:
       return "NA";
   }

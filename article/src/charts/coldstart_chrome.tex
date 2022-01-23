@@ -41,24 +41,24 @@
 
             % asm.js
             \plotColdstart{coldstart/js-asm_coldstart_SHT_Simple_Chrome.csv}{{}}
-            \addlegendentry{Asm.js}
+            \addlegendentry{asm.js}
             \pgfplotsset{cycle list shift=-3}
             \plotColdstart{coldstart/js-asm_coldstart_SHT_Simple_Lookup_Chrome.csv}{dashed}
-            \addlegendentry{Asm.js (LUT)}
+            \addlegendentry{asm.js (LUT)}
 
             % SIMD impl
             \plotColdstart{coldstart/js-wasm_simd_implicit_coldstart_SHT_Simple_Chrome.csv}{{}}
             \addlegendentry{WASM SIMD (impl.)}
             \pgfplotsset{cycle list shift=-4}
             \plotColdstart{coldstart/js-wasm_simd_implicit_coldstart_SHT_Simple_Lookup_Chrome.csv}{dashed}
-            \addlegendentry{WASM SIMD (impl., LUT)}
+            \addlegendentry{WASM SIMD (impl., \textit{LUT})}
 
             % SIMD expl
             \plotColdstart{coldstart/js-wasm_simd_explicit_coldstart_SHT_Simple_Chrome.csv}{{}}
             \addlegendentry{WASM SIMD (expl.)}
             \pgfplotsset{cycle list shift=-5}
             \plotColdstart{coldstart/js-wasm_simd_explicit_coldstart_SHT_Simple_Lookup_Chrome.csv}{dashed}
-            \addlegendentry{WASM SIMD (expl., LUT)}
+            \addlegendentry{WASM SIMD (expl., \textit{LUT})}
 
             % Workers 
             \plotColdstart{coldstart/js-workers_coldstart_SHT_Simple_Chrome.csv}{{}}
@@ -79,5 +79,5 @@
     \end{tikzpicture}
 
     \label{plot:coldstart-chrome}
-    \caption{Normalized coldstart execution times for methods implemented in the Chrome environment. Precompiled methods do not benefit from runtime optimization. The LUT variant is more optimizable than the standard one. The performance of WebGL's first run suffers from the need for compiling GPU programs.}
+    \caption{Normalized coldstart execution times for methods implemented in the Chrome environment. Precompiled methods do not benefit from runtime optimization. The \textit{LUT} variant is more optimizable than the standard one. The performance of WebGL's first run suffers from the need for compiling GPU programs.}
 \end{figure}

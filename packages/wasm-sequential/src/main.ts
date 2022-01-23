@@ -34,6 +34,7 @@ export class WasmWrapper implements Module {
 
   public async init() {
     this.moduleRaw = await this.moduleFactory();
+    return this;
   }
 
   public SHTSimple(
@@ -103,7 +104,8 @@ export class WasmWrapper implements Module {
   }
 }
 
-export const wasmSequential = new WasmWrapper(factory);
-export const wasmSequentialImplicitSIMD = new WasmWrapper(factoryImplicitSIMD);
-export const wasmSequentialSIMD = new WasmWrapper(factorySIMD);
-export const asmSequential = new WasmWrapper(factoryAsm);
+export const wasmSequentialFactory = () => new WasmWrapper(factory);
+export const wasmSequentialImplicitSIMDFactory = () =>
+  new WasmWrapper(factoryImplicitSIMD);
+export const wasmSequentialSIMDFactory = () => new WasmWrapper(factorySIMD);
+export const asmSequentialFactory = () => new WasmWrapper(factoryAsm);

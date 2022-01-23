@@ -1,0 +1,18 @@
+\section{Conclusions}\label{sec:conclusions}
+We performed various benchmarks of the same algorithm in Chrome, Firefox, Node and Deno environments (Tab. \ref{tab:versions}). In each one we tested available and popular acceleration methods including native addon, WASM alone, WASM with SIMD instructions, multi-threading with workers and GPGPU using \mbox{WebGL} graphics pipeline. We did not test every method on every environment because of being unavailable, unstable, under a flag or basing on non-C++ codebase (Tab. \ref{tab:implemented}). Summarized results for the same problem size are shown in table \ref{tab:envs}.
+In every benchmark Chrome appears as the fastest environment with Firefox being $2.24\times$, Node $1.49\times$ and Deno $1.59\times$ slower in general. As expected, without involving parallel execution, the Node C++ native addon brings the best results across all environments. Server-side environments preformed similarly with slight predominance of Node over Deno.
+
+According to our results, the performance of \textit{LUT} variant was always better than its \textit{non-LUT} counterpart. Trigonometric functions are demanding but our study shows that using native addon or compiling code to WASM can prevent significant performance loss, especially in the Firefox environment. We can see that Firefox is not able to optimize code as well as other environments, where using vector instructions explicitly actually lowers performance, increasing it in Firefox.
+When using lookup tables results may be different. Looking at Chrome performance of all WASM methods with \textit{LUT} variant we can see that performance is roughly the same with the sequential. Data exchanged between JS and WASM must be transformed and copied, which takes time, so it is not safe to assume performance benefit with intensive memory input and output when adopting WASM.
+We also identified problem with asm.js. which wasn't compiled ahead-of-time. We suspect that the bundling system and minification process prevented environments from recognizing asm.js specific code. 
+
+To sum up, all environments serve similar cases but differ in terms of the performance of various acceleration methods. It is important to analyze which method best suits our needs depending on requirements. 
+%We hope that this analysis will help to find the most efficient way to speed up execution making JavaScript a more robust environment for CPU-intensive computations. 
+With all this, it is important to remember that no acceleration method can increase the performance of an algorithm like improvement of the computational complexity of the algorithm itself.
+\input{tables/envs}
+
+% TODO: identified interesting aspects
+
+% TODO: further research
+
+% TODO: state of multi-environment numerical computing in JS

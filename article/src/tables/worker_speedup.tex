@@ -1,0 +1,19 @@
+\begin{wraptable}{r}{6cm}
+    \caption{Speedup metrics for worker acceleration method ($S_\theta = 1, p = 4$).}
+    \label{tab:worker_speedup}
+    \setlength{\tabcolsep}{0.5em}
+    \begin{tabular}{lrr}%
+        \hline
+        Env.        & Speedup & Efficiency              \\
+        \hline
+        Chrome      & 2.99    & 0.75                    \\
+        Firefox     & 2.82    & 0.70                    \\
+        Node        & 3.25    & \textcolor{green!70!black}{0.81} \\
+        Deno        & 2.70    & \textcolor{red}{0.67}   \\
+        Chrome \textit{LUT}  & 1.85    & 0.46                    \\
+        Firefox \textit{LUT} & 1.89    & 0.47                    \\
+        Node \textit{LUT}    & 1.76    & 0.44                    \\
+        Deno \textit{LUT}    & 1.51    & \textcolor{red}{0.38}   \\
+        \hline
+    \end{tabular}
+\end{wraptable}

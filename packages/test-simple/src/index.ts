@@ -2,10 +2,10 @@
 import * as sequential from "js-sequential";
 import * as workers from "js-workers";
 import {
-  wasmSequential,
-  wasmSequentialImplicitSIMD,
-  wasmSequentialSIMD,
-  asmSequential,
+  wasmSequentialFactory,
+  wasmSequentialImplicitSIMDFactory,
+  wasmSequentialSIMDFactory,
+  asmSequentialFactory,
 } from "wasm-sequential";
 import { getImageData, renderSHTResults } from "./utils";
 import "./style.scss";
@@ -22,10 +22,11 @@ import * as gpu from "js-gpu";
     concurrency: 4,
     returnHSpace: true,
   };
-  await wasmSequential.init();
-  await wasmSequentialImplicitSIMD.init();
-  await wasmSequentialSIMD.init();
-  await asmSequential.init();
+  const wasmSequential = await wasmSequentialFactory().init();
+  const wasmSequentialImplicitSIMD =
+    await wasmSequentialImplicitSIMDFactory().init();
+  const wasmSequentialSIMD = await wasmSequentialSIMDFactory().init();
+  const asmSequential = await asmSequentialFactory().init();
 
   const configs = [
     {

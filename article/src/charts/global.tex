@@ -52,6 +52,7 @@
         \begin{groupplot}[
                 group style={group size=2 by 1},
                 width=0.52552\linewidth,
+                height=0.405\linewidth,
                 grid,
                 grid style=dashed,
                 legend style={
@@ -65,7 +66,7 @@
             ]
 
             \nextgroupplot[
-                title={SHT Simple},
+                title={SHT \textit{non-LUT}},
                 ylabel={Time [ms]},
                 legend to name={CommonLegend},
                 xlabel={$S_\theta$ [pixels per degree]},
@@ -74,7 +75,7 @@
             #1
 
             \nextgroupplot[
-                title={SHT Simple LUT},
+                title={SHT \textit{LUT}},
                 xlabel={$S_\theta$ [pixels per degree]},
                 legend to name={CommonLegend},
                 ymax=#4
