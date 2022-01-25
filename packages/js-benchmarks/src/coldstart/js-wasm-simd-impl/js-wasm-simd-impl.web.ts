@@ -1,9 +1,9 @@
-import { wasmSequentialImplicitSIMD } from "wasm-sequential";
+import { wasmSequentialImplicitSIMDFactory } from "wasm-sequential";
 import { webBaseFactory } from "../common/base.web";
 
-wasmSequentialImplicitSIMD
+wasmSequentialImplicitSIMDFactory()
   .init()
-  .then(() => {
+  .then((wasmSequentialImplicitSIMD) => {
     webBaseFactory(
       wasmSequentialImplicitSIMD.SHTSimple.bind(wasmSequentialImplicitSIMD),
       wasmSequentialImplicitSIMD.SHTSimpleLookup.bind(

@@ -4,29 +4,29 @@ In this section, we present execution times for each method depending on angular
 \subsection{Sequential}\label{sec:results:sequential}
 
 % MARK: times math
-Analyzing benchmark times shown in Figure \ref{plot:sequential} we can see the advantage of Chrome over Firefox being $1.6\times$ faster in the \textit{non-LUT} variant and $2.08\times$ in the \textit{LUT} one. It it worth to notice the optimization in Firefox for the $S_\theta=5$ and subsequent sampling values in the \textit{LUT} variant which could be an object of further research. The performance of server-side environments, Node and Deno, since they are very similar environments, has only insignificant differences, yet still being $(1.50, 1.45)\times$ slower that Chrome for both variants.
+Analyzing benchmark times shown in Figure \ref{plot:sequential} we can see the advantage of Chrome over Firefox being $1.61\times$ faster in the \textit{non-LUT} variant and $2.87\times$ in the \textit{LUT} one. It is worth noticing the optimization in Firefox for the $S_\theta=5$ and subsequent sampling values in the \textit{LUT} variant which could be an object of further research. The performance of server-side environments, Node and Deno, since they are very similar environments, has only insignificant differences, yet still being $~(1.47, 2.06)\times$ slower than Chrome for both variants.
 
 \input{charts/sequential}
 
 
-We detected one pixel difference in generated accumulator between variants as shown in Figure \ref{fig:diff:seq_lut} (upper right corner). We implemented lookup table for \textit{LUT} variants using \texttt{Float32Array}. JS internally, without optimizations, represents numbers in double-precision and reduced precision of cached values can have significant impact on detection results.
+We detected one-pixel difference in generated accumulator between variants as shown in Figure \ref{fig:diff:seq_lut} (upper right corner). We implemented lookup table for \textit{LUT} variants using \texttt{Float32Array}. JS internally, without optimizations, represents numbers in double-precision and reduced precision of cached values can have a significant impact on detection results.
 
 \input{figures/acc_differences}
 
 
 \subsection{Node C++ addon}\label{sec:results:cpp-addon}
 
-C++ addon for Node was built using the same shared library as the C++ version. Thus the difference in performance between native C++ and the addon arise mostly from handling data transfer between C++ -- JS boundary since the data needs to be copied and transformed to corresponding C++ structures. Results are shown in Figure \ref{plot:cpu-addon}.
+C++ addon for Node was built using the same shared library as the C++ version. Thus the difference in performance between native C++ and the addon arises mostly from handling data transfer between C++ -- JS boundary since the data needs to be copied and transformed to corresponding C++ structures. Results are shown in Figure \ref{plot:cpu-addon}.
 
 \input{charts/cpp-addon}
 % MARK: times math
-Compilation with optimization of trigonometric functions in \textit{non-LUT} variant allowed to gain more performance ($2.21\times$) than compilation of the \textit{LUT} variant ($1.38\times$) relative to their sequential variants. This case allows us to draw a conclusion that if an algorithm has trigonometric functions and output of which cannot be cached beforehand, the usage of the C++ addon in Node is beneficial.
+Compilation with optimization of trigonometric functions in \textit{non-LUT} variant allowed to gain more performance ($2.24\times$) than compilation of the \textit{LUT} variant ($1.32\times$) relative to their sequential variants. This case allows us to draw a conclusion that if an algorithm has trigonometric functions and output which cannot be cached beforehand, the usage of the C++ addon in Node is beneficial.
 
 \subsection{WebAssembly and asm.js}\label{sec:results:asm-wasm}
 
-Benchmark results for asm.js and WASM were shown on figures \ref{plot:asm} and \ref{plot:wasm} respectively. In our case asm.js - a highly optimizable subset of JS instructions, operating only on numeric types and using heap memory - is actually slower in all environments than sequential execution. We suspect that it is caused by the building process. Webpack adds its own module resolution mechanisms that prevent part of the bundle with asm.js code from being recognized and compiled ahead-of-time. Performance flame chart from Chrome DevTools tools shows a lack of \texttt{Compile Code} blocks, unlike any other isolated asm.js sample.
+Benchmark results for asm.js and WASM were shown on figures \ref{plot:asm} and \ref{plot:wasm} respectively. In our case asm.js - a highly optimizable subset of JS instructions, operating only on numeric types and using heap memory - is actually slower in all environments than sequential execution. We suspect that it is caused by the building process. Webpack adds its own module resolution mechanisms that prevent part of the bundle with asm.js code from being recognized and compiled ahead-of-time. Performance flame chart from Chrome DevTools tools shows a~lack of \texttt{Compile Code} blocks, unlike any other isolated asm.js sample.
 
-WASM on the other hand improves performance for \textit{non-LUT} variant and has no effect on \textit{LUT} variant besides preventing optimization mentioned in section \ref{sec:results:sequential} in Firefox. Again, it is beneficial to use this method if the output if trigonometric functions cannot be cached.
+WASM on the other hand improves performance for \textit{non-LUT} variant and has no effect on \textit{LUT} variant besides preventing optimization mentioned in section \ref{sec:results:sequential} in Firefox. Again, it is beneficial to use this method if the output of trigonometric functions cannot be cached.
 
 In our C++ implementation we use single precision floating point variables. This results in accumulator differences shown in Figure \ref{fig:diff:wasm} since WASM distinguishes between \texttt{f32} and \texttt{f64} types.
 
@@ -38,28 +38,28 @@ In our C++ implementation we use single precision floating point variables. This
 \subsection{WebAssembly SIMD}
 
 % MARK: times math
-SIMD instructions in WASM are available from Chrome 91 and Firefox 89 for all users. The usage of SIMD instructions can be done implicitly by letting the compiler (commonly LLVM) perform the auto-vectorization process or explicitly by using vector instructions in code. We tested both solutions resulting in no difference from sequential benchmarks for the first one. Because of that, we present only an explicit usage attempt. In benchmarks shown in Figure \ref{plot:wasm_simd_explicit} we can see that the performance difference between Chrome and Firefox decreased compared to sequential execution and Chrome is only $1.16\times$ faster than Firefox. Moreover, Firefox overtaken Node in performance, which was not as prone to SIMD optimization as other environments.
+SIMD instructions in WASM are available from Chrome 91 and Firefox 89 for all users. The usage of SIMD instructions can be done implicitly by letting the compiler (commonly LLVM) perform the auto-vectorization process or explicitly by using vector instructions in code. We tested both solutions resulting in no difference from sequential benchmarks for the first one. Because of that, we present only an explicit usage attempt. In benchmarks shown in Figure \ref{plot:wasm_simd_explicit} we can see that the performance difference between Chrome and Firefox decreased compared to sequential execution and Chrome is only $1.16\times$ faster than Firefox. Moreover, Firefox overtakes Node in performance, which was not as prone to SIMD optimization as other environments.
 
 \input{charts/wasm-simd-expl}
 
 \subsection{Workers}
 
-All worker benchmarks used concurrency $n=4$. Results are shown in Figure \ref{plot:workers}. Because of simplified implementation described in section \ref{sec:benchmarking}, precisely the center of polar coordinate system in image space, the \nth{3} worker is redundant. The \nth{3} vertical quarter of the accumulator will always be empty (Fig. \ref{fig:sht_example:b}). This was not optimized in our implementation.
+All worker benchmarks used concurrency $n=4$. Results are shown in Figure \ref{plot:workers}. Because of the simplified implementation described in section \ref{sec:benchmarking}, precisely the center of the polar coordinate system in image space, the \nth{3} worker is redundant. The \nth{3} vertical quarter of the accumulator will always be empty as shown on example accumulator visualization in Figure \ref{fig:sht_example:b}. This was not optimized in our implementation.
 
 
-The table \ref{tab:worker_speedup} shows the speedup and its efficiency for environments and variants. The big difference in speedup efficiency between variants again shows us how demanding trigonometric functions are. Only the accumulator filling process was parallelized thus the speedup difference between environments is expected since the worker calculations take less time due to the lookup tables.
+The Table \ref{tab:worker_speedup} shows the speedup and its efficiency for environments and variants. The big difference in speedup efficiency between variants again shows us how demanding calculations of trigonometric functions are. Only the accumulator filling process was parallelized thus the speedup difference between environments is expected since the worker calculations take less time due to the lookup tables.
 
 \input{tables/worker_speedup} 
 Our implementation can be improved to achieve better performance because the voting process is not parallelized. Even though, the current state of implementation still allows us to compare this method across environments.
 
 
-We share the accumulator array between workers and it is important to mention that our implementation does not use \texttt{Atomics} since every worker operates on a different part of the array. According to our benchmarks, \texttt{Atomics} tends to slow down performance and were not necessary in this case.
+We share the accumulator array between workers and it is important to mention that our implementation does not use \texttt{Atomics} since every worker operates on a different part of the array. According to our benchmarks, usage of \texttt{Atomics} tends to slow down performance and was not necessary in this case.
 
 \input{charts/workers}
 
 \subsection{WebGL}
 
-Our last acceleration method uses a GPGPU to fill the accumulator array. With help of the WebGL and the gpu.js library, we implemented kernel functions calculating every pixel separately. It is the only possible solution since the WebGL pipeline does not provide shared memory. This results in a bigger accumulator difference shown in Figure \ref{fig:diff:gpu}. First of all, the pipeline provides only single-precision operations. Secondly, for every accumulator value - pair ($\theta$, $\rho$), we had to sum image pixels laying on a possible line. This operation is prone to rounding errors. Additionally, the minification of output bundle provided by Webpack was interfering with the way the gpu.js library transpiles code to a GLSL language. We had to construct the function from string to prevent minification of the kernel function -- \lstinline[language=JavaScript]|new Function('return function (testImage) {...}')()|.
+Our last acceleration method uses a GPGPU to fill the accumulator array. With help of the WebGL and the gpu.js library, we implemented kernel functions calculating every pixel separately. It is the only possible solution since the WebGL pipeline does not provide shared memory. This results in a bigger accumulator difference shown in Figure \ref{fig:diff:gpu}. First of all, the pipeline provides only single-precision operations. Secondly, for every accumulator value - pair ($\theta$, $\rho$), we had to sum image pixels laying on a possible line. This operation is prone to rounding errors. Additionally, the minification of the output bundle provided by Webpack was interfering with the way the gpu.js library transpiles code to a GLSL language. We had to construct the function from string to prevent minification of the kernel function -- \lstinline[language=JavaScript]|new Function('return function (testImage) {...}')()|.
 
-This method has the biggest result variance which comes directly from communication between CPU and GPU. It has also the biggest cold start times since the kernel has to be compiled by an environment on the first run. There is no big difference between both variants because in the \textit{non-LUT} variant each thread on the GPU has to calculate $sin$ and $cos$ functions once which is not a significant overhead.
+This method tends to have the biggest result variance which comes directly from communication between CPU and GPU. It has also the biggest cold start times since the kernel has to be compiled by an environment on the first run. There is no big difference between both variants because in the \textit{non-LUT} variant each thread on the GPU has to calculate $sin$ and $cos$ functions once which is not a significant overhead.
 \input{charts/gpu}

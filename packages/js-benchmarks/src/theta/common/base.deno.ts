@@ -1,7 +1,7 @@
 
-import { SHTOptions, SHT, SHTAsync, SHTParallelOptions} from "../../../meta/dist/main.mjs";
+import { SHTOptions, SHT, SHTAsync, SHTParallelOptions} from "../../../../meta/dist/main.mjs";
 import { getImageData } from "../../utils/deno.ts";
-import { Benchmark } from "../../../benchmark/dist/main.mjs";
+import { Benchmark } from "../../../../benchmark/dist/main.mjs";
 import { writeCSVObjects } from "https://deno.land/x/csv/mod.ts";
 import { runConfig } from "../common/runConfig.ts";
 import { size } from "../common/runConfig.ts";

@@ -43,3 +43,7 @@ backend
 parallelization
 minification
 npm
+modularity
+transpiles
+gpu.js
+GLSL

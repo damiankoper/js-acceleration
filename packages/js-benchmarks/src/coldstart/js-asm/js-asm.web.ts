@@ -1,9 +1,9 @@
-import { asmSequential } from "wasm-sequential";
+import { asmSequentialFactory } from "wasm-sequential";
 import { webBaseFactory } from "../common/base.web";
 
-asmSequential
+asmSequentialFactory()
   .init()
-  .then(() => {
+  .then((asmSequential) => {
     webBaseFactory(
       asmSequential.SHTSimple.bind(asmSequential),
       asmSequential.SHTSimpleLookup.bind(asmSequential),
