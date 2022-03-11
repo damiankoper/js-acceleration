@@ -1,2 +1,4 @@
 **/out/**/*
 !**/out/*.pdf
+dist
+*.zip
