@@ -1,1 +1,6 @@
-In this paper we try to find how the same algorithm performs when implemented using multiple acceleration methods in popular JavaScript environments with as little adjustments as possible for each method. We also want to find if all of this methods can be built to a single output format with the same library interface.
+- no reference to Java Script Fig 3 a, b, c very similar - are these figures neccessary really?
+  - W recenzowanej wersji istnieją odniesienia do Fig3 - po jednej dla 3a, 3b i 3c. Brak referencji do Fig3 jako całej, ale to chyba nie problem.
+- is the Fig. 3 correct?
+  - nie wiadomo w sumie o co chodzi, dodano w opisie Fig3 wskazanie na różnicę w prawym górnym rogu Fig 3a
+- I cannot recommend the paper for publication because the results it reports are trivial, not advancing...
+  - argumentacja jest w rozdziale Benchmark, paragrafy 2 i 4 i uważam, że była wystarczająca, dodałem pól zdania.
