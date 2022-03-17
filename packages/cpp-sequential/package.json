@@ -28,7 +28,7 @@
     "url": "https://github.com/damiankoper/js-acceleration/issues"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.178",
+    "@types/lodash": "^4.14.180",
     "fast-csv": "^4.3.6",
     "rimraf": "^3.0.2",
     "lodash": "^4.17.21"

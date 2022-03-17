@@ -21,13 +21,7 @@ const config = () => ({
     },
     environment: { module: true },
   },
-  plugins: [
-    new ForkTsCheckerWebpackPlugin({
-      eslint: {
-        files: "./src/theta/**/*.{ts,tsx,js,jsx}", // required - same as command `eslint ./src/theta/**/*.{ts,tsx,js,jsx} --ext .ts,.tsx,.js,.jsx`
-      },
-    }),
-  ],
+  plugins: [new ForkTsCheckerWebpackPlugin()],
   module: {
     rules: [
       {
