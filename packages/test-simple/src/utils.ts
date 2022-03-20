@@ -1,4 +1,4 @@
-import { HTResults, SHTResult } from "meta";
+import { CHTResult, HTResults, SHTResult } from "meta";
 
 export async function getImageData(prefix: string, imageName: string) {
   const resp = await fetch(imageName);
@@ -42,14 +42,13 @@ export async function getImageData(prefix: string, imageName: string) {
 }
 
 export function renderSHTResults(
-  results: HTResults<SHTResult>,
+  results: HTResults<unknown>,
   resultsCanvas: HTMLCanvasElement,
-  spaceCanvas: HTMLCanvasElement,
   width: number,
   height: number
 ) {
   const resultCtx = resultsCanvas.getContext("2d");
-  results.results.forEach((result) => {
+  results.results.forEach((result: SHTResult) => {
     resultCtx.strokeStyle = "red";
     const x = result.rho * Math.cos((result.theta * Math.PI) / 180);
     const y = result.rho * Math.sin((result.theta * Math.PI) / 180);
@@ -68,14 +67,13 @@ export function renderSHTResults(
     }
     resultCtx.stroke();
     resultCtx.strokeStyle = "green";
-
-    /* resultCtx.lineWidth = 1;
-    resultCtx.beginPath();
-    resultCtx.moveTo(0, 0);
-    resultCtx.lineTo(x, y);
-    resultCtx.stroke(); */
   });
+}
 
+export function renderHSpace(
+  results: HTResults<unknown>,
+  spaceCanvas: HTMLCanvasElement
+) {
   if (results.hSpace && results.hSpace.data) {
     const spaceCtx = spaceCanvas.getContext("2d");
     const width = results.hSpace.width;
@@ -101,4 +99,23 @@ export function renderSHTResults(
       spaceCtx.putImageData(imageData, 0, 0);
     }
   }
+}
+
+export function renderCHTResults(
+  results: HTResults<unknown>,
+  resultsCanvas: HTMLCanvasElement
+) {
+  const resultCtx = resultsCanvas.getContext("2d");
+  results.results.forEach((result: CHTResult) => {
+    resultCtx.strokeStyle = "red";
+    resultCtx.fillStyle = "red";
+
+    resultCtx.beginPath();
+    resultCtx.arc(result.x, result.y, 1, 0, 2 * Math.PI);
+    resultCtx.fill();
+
+    resultCtx.beginPath();
+    resultCtx.arc(result.x, result.y, result.r, 0, 2 * Math.PI);
+    resultCtx.stroke();
+  });
 }

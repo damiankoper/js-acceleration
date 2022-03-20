@@ -1,9 +1,9 @@
-import { SHT, SHTOptions, SHTResult, HTResults } from "meta";
+import { SHT, SHTOptions, SHTResult, SHTResults } from "meta";
 
 const SHTSimple: SHT = function (
   binaryImage: Uint8Array,
   options: SHTOptions
-): HTResults<SHTResult> {
+): SHTResults {
   const results: SHTResult[] = [];
   const width = options.width;
   const height = binaryImage.length / width;

@@ -85,3 +85,8 @@
 
 * gpu istotne żeby pamiętać o max wymiarach tekstur 
 * float32 vs float64 ma znaczenie dla różnich akumulatora
+
+
+# circles CHT
+
+* pojedyncze pixele, kiedy spleciemy je z sobelem znikają (logiczne w sumie, gradient 0, bo nie mają otoczenia)

@@ -7,21 +7,31 @@ import {
   wasmSequentialSIMDFactory,
   asmSequentialFactory,
 } from "wasm-sequential";
-import { getImageData, renderSHTResults } from "./utils";
+import {
+  getImageData,
+  renderCHTResults,
+  renderHSpace,
+  renderSHTResults,
+} from "./utils";
 import "./style.scss";
 
 import * as gpu from "js-gpu";
 
 (async () => {
-  const sampling = { rho: 1, theta: 1 };
-  const votingThreshold = 0.75;
-
-  const options = {
-    sampling,
-    votingThreshold,
+  const shtOptions = {
+    sampling: { rho: 1, theta: 1 },
+    votingThreshold: 0.75,
     concurrency: 4,
     returnHSpace: true,
   };
+
+  const chtOptions = {
+    sampling: { x: 1, y: 1, r: 1 },
+    gradientThreshold: 0.6,
+    concurrency: 4,
+    returnHSpace: true,
+  };
+
   const wasmSequential = await wasmSequentialFactory().init();
   const wasmSequentialImplicitSIMD =
     await wasmSequentialImplicitSIMDFactory().init();
@@ -34,16 +44,28 @@ import * as gpu from "js-gpu";
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         sequential.SHTSimple(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
+      render: renderSHTResults,
     },
     {
+      id: "cht_seq",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        sequential.CHTSimple(processedData, {
+          width: imageData.width,
+          ...chtOptions,
+        }),
+      inputImage: "/circle1.png",
+      render: renderCHTResults,
+    },
+    /* {
       id: "sht_seq_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         sequential.SHTSimpleLookup(processedData, {
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "wasm_sht_seq",
@@ -52,6 +74,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "wasm_sht_seq_lookup",
@@ -60,6 +83,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "wasm_implicit_simd_sht_seq",
@@ -68,6 +92,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "wasm_implicit_simd_sht_seq_lookup",
@@ -76,6 +101,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "wasm_simd_sht_seq",
@@ -84,6 +110,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "wasm_simd_sht_seq_lookup",
@@ -92,6 +119,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "asm_sht_seq",
@@ -100,6 +128,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "asm_sht_seq_lookup",
@@ -108,6 +137,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "sht_workers",
@@ -116,6 +146,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "sht_workers_lookup",
@@ -124,6 +155,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "sht_gpu",
@@ -132,6 +164,7 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
+      render:renderSHTResults
     },
     {
       id: "sht_gpu_lookup",
@@ -140,12 +173,16 @@ import * as gpu from "js-gpu";
           width: imageData.width,
           ...options,
         }),
-    },
+      render:renderSHTResults
+    }, */
   ];
 
   for (const config of configs) {
     const { processedData, imageData, resultsCanvas, spaceCanvas } =
-      await getImageData(config.id, "/sudoku_threshold.jpg");
+      await getImageData(
+        config.id,
+        config.inputImage || "/sudoku_threshold.jpg"
+      );
     let t1 = performance.now();
     let results = await config.fn(processedData, imageData);
     let t2 = performance.now() - t1;
@@ -160,12 +197,8 @@ import * as gpu from "js-gpu";
     h1 = document.querySelector("#" + config.id);
     h1.innerHTML += " - " + t2;
 
-    renderSHTResults(
-      results,
-      resultsCanvas,
-      spaceCanvas,
-      imageData.width,
-      imageData.height
-    );
+    renderHSpace(results, spaceCanvas);
+
+    config.render(results, resultsCanvas, imageData.width, imageData.height);
   }
 })();

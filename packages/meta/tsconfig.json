@@ -9,5 +9,5 @@
     "declarationDir": "dist",
     "moduleResolution": "Node"
   },
-  "files": ["src/main.ts"]
+  "include": ["src/*.ts"]
 }
