@@ -26,8 +26,11 @@ import * as gpu from "js-gpu";
   };
 
   const chtOptions = {
-    sampling: { x: 1, y: 1, r: 1 },
-    gradientThreshold: 0.6,
+    sampling: {},
+    gradientThreshold: 0.75,
+    minDist: 50,
+    minR: 0,
+    maxR: 60,
     concurrency: 4,
     returnHSpace: true,
   };

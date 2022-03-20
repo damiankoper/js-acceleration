@@ -108,6 +108,7 @@ export function renderCHTResults(
   const resultCtx = resultsCanvas.getContext("2d");
   results.results.forEach((result: CHTResult) => {
     resultCtx.strokeStyle = "red";
+    resultCtx.lineWidth = 2;
     resultCtx.fillStyle = "red";
 
     resultCtx.beginPath();

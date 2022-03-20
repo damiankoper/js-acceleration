@@ -17,7 +17,7 @@ def diff(a, b, out):
 diff('./seq.png', './wasm.png', 'diff_seq_wasm.png')
 diff('./seq_lookup.png', './wasm_lookup.png', 'diff_seq_lookup_wasm_lookup.png')
 
-#diff('./seq.png', './wasm_simd_expl.png', 'diff_seq_wasm_simd_expl.png')
+# diff('./seq.png', './wasm_simd_expl.png', 'diff_seq_wasm_simd_expl.png')
 diff('./seq_lookup.png', './wasm_simd_expl_lookup.png',
      'diff_seq_lookup_wasm_simd_expl_lookup.png')
 

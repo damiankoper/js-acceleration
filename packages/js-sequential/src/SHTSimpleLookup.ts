@@ -57,10 +57,7 @@ const SHTSimpleLookup: SHT = function (
   return {
     results,
     hSpace: options.returnHSpace
-      ? {
-          data: houghSpace,
-          width: hsWidth,
-        }
+      ? { data: houghSpace, width: hsWidth }
       : undefined,
   };
 };

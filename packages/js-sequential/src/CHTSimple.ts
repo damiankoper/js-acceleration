@@ -17,46 +17,39 @@ const kernelShift = Math.floor(kernelSize / 2);
 
 const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
   const results: CHTResult[] = [];
-  const candidates: CHTResult[] = [];
+  const candidates: (CHTResult & { acc?: number })[] = [];
   const width = options.width;
   const height = binaryImage.length / width;
+  const maxDimHalf = Math.floor(Math.max(height, width) / 2);
 
-  // Defaultss
-  const sampling = Object.assign({ x: 1, y: 1, r: 1 }, options.sampling);
+  // Defaults
   const gradientThreshold = options.gradientThreshold || 0.75;
+  const minDist = options.minDist || 1;
+  const maxR = options.maxR || maxDimHalf;
+  const minR = options.minR || 0;
 
-  /* const hsWidth = width;
-  const hsHeight = binaryImage.length / width; */
   const houghSpace = new Uint32Array(width * height);
   const gxSpace = conv2(binaryImage, width, height, sobelXKernel);
   const gySpace = conv2(binaryImage, width, height, sobelYKernel);
 
-  const maxR = 1000;
-  const maxRadPw = maxR * maxR;
-
-  const minR = 0;
-  const minRadPw = minR * minR;
+  const minDist2 = minDist * minDist;
+  const maxRad2 = maxR * maxR;
+  const minRad2 = minR * minR;
 
   let maxValue = 0;
 
-  for (let y = 0; y < height; y++)
+  for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const coord = y * width + x;
       if (binaryImage[coord] === 1) {
-        const gx = gxSpace[coord];
-        const gy = gySpace[coord];
-        const d = Math.sqrt(gx * gx + gy * gy);
-        if (d < 1) continue;
-
-        let m = gy / gx;
+        let m = gySpace[coord] / gxSpace[coord];
         if (Math.abs(m) <= 1) {
           const bounds = getBounds(x, width, minR, maxR);
           bounds.forEach((bounds) => {
             for (let px = bounds[0]; px < bounds[1]; px++) {
               const py = Math.floor(m * px - x * m + y);
-              if (inBounds(x, y, px, py, height, minRadPw, maxRadPw)) {
+              if (inBounds(x, y, px, py, height, minRad2, maxRad2)) {
                 maxValue = Math.max(maxValue, ++houghSpace[py * width + px]);
-                if (houghSpace[py * width + px] === undefined) debugger;
               }
             }
           });
@@ -66,7 +59,7 @@ const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
           bounds.forEach((bounds) => {
             for (let py = bounds[0]; py < bounds[1]; py++) {
               const px = Math.floor(m * py - y * m + x);
-              if (inBounds(y, x, py, px, width, minRadPw, maxRadPw)) {
+              if (inBounds(y, x, py, px, width, minRad2, maxRad2)) {
                 maxValue = Math.max(maxValue, ++houghSpace[py * width + px]);
               }
             }
@@ -74,21 +67,27 @@ const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
         }
       }
     }
+  }
 
-  for (let hy = 0; hy < height; hy++)
-    for (let hx = 0; hx < width; hx++) {
-      const offset = hy * width + hx;
-      if (houghSpace[offset] / maxValue > gradientThreshold) {
-        candidates.push({
-          x: hx,
-          y: hy,
-          r: 0,
-        });
+  for (let y = 0; y < height; y++)
+    for (let x = 0; x < width; x++) {
+      const value = houghSpace[y * width + x];
+      if (value / maxValue > gradientThreshold) {
+        candidates.push({ x: x, y: y, r: 0, acc: value });
       }
     }
 
-  const rAccLength = Math.abs(maxR - minR);
-  candidates.forEach((result) => {
+  candidates
+    .sort((a, b) => b.acc - a.acc)
+    .forEach((c) => {
+      const distance = results.every(
+        (r) => distance2(r.x, r.y, c.x, c.y) >= minDist2
+      );
+      if (distance) results.push(c);
+    });
+
+  const rAccLength = Math.abs(maxR - minR) + 1;
+  results.forEach((result) => {
     const rAcc = new Uint32Array(rAccLength);
     for (let y = 0; y < height; y++)
       for (let x = 0; x < width; x++) {
@@ -104,25 +103,20 @@ const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
 
     let maxRadiusVotes = 0;
     let maxRadius = 0;
-    for (let i = 0; i < rAccLength; i++) {
-      if (maxRadiusVotes < rAcc[i]) {
-        maxRadiusVotes = rAcc[i];
+    for (let i = 1; i < rAccLength; i++) {
+      const votes = rAcc[i] + rAcc[i + 1] + rAcc[i - 1];
+      if (maxRadiusVotes < votes) {
+        maxRadiusVotes = votes;
         maxRadius = i + minR;
       }
     }
     result.r = maxRadius;
-    // TODO: filtrowanie
-    // TODO: pipe promienia do opcji
-    // TODO: obsługa samplingu
   });
 
   return {
-    results: candidates,
+    results,
     hSpace: options.returnHSpace
-      ? {
-          data: houghSpace,
-          width: width,
-        }
+      ? { data: houghSpace, width: width }
       : undefined,
   };
 };
@@ -145,13 +139,17 @@ function inBounds(
   px: number,
   py: number,
   max: number,
-  minRadPw: number,
-  maxRadPw: number
+  minRad2: number,
+  maxRad2: number
 ) {
-  const dx = Math.abs(x - px);
-  const dy = Math.abs(y - py);
-  const d = dx * dx + dy * dy;
-  return py >= 0 && py < max && minRadPw < d && maxRadPw >= d;
+  const d = distance2(x, y, px, py);
+  return py >= 0 && py < max && minRad2 < d && maxRad2 >= d;
+}
+
+function distance2(x1: number, y1: number, x2: number, y2: number) {
+  const dx = Math.abs(x1 - x2);
+  const dy = Math.abs(y1 - y2);
+  return dx * dx + dy * dy;
 }
 
 function conv2(
@@ -164,15 +162,17 @@ function conv2(
   for (let y = 0; y < height; y++)
     for (let x = 0; x < width; x++) {
       const coord = clamp(y - 1, 0, height) * width + clamp(x - 1, 0, width);
-      let sum = 0;
-      for (let ky = 0; ky < kernelSize; ky++)
-        for (let kx = 0; kx < kernelSize; kx++) {
-          const sy = clamp(y - kernelShift + ky, 0, height);
-          const sx = clamp(x - kernelShift + kx, 0, width);
-          const pixel = input[sy * width + sx];
-          sum += kernel[ky][kx] * pixel;
-        }
-      result[coord] = sum;
+      if (input[coord] === 1) {
+        let sum = 0;
+        for (let ky = 0; ky < kernelSize; ky++)
+          for (let kx = 0; kx < kernelSize; kx++) {
+            const sy = clamp(y - kernelShift + ky, 0, height);
+            const sx = clamp(x - kernelShift + kx, 0, width);
+            const pixel = input[sy * width + sx];
+            sum += kernel[ky][kx] * pixel;
+          }
+        result[coord] = sum;
+      }
     }
   return result;
 }
