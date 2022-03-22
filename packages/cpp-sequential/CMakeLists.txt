@@ -14,13 +14,20 @@ add_library(sht
     src/SHTSimpleLookup.cpp
 )
 
-add_executable(sht-test-raw test/testRaw.cpp)
+add_library(cht 
+    src/CHTSimple.cpp 
+)
+
+add_executable(sht-test-raw test/testRawSHT.cpp)
+add_executable(cht-test-raw test/testRawCHT.cpp)
 target_link_libraries(sht-test-raw sht)
+target_link_libraries(cht-test-raw cht)
 
 add_executable(threshold benchmark/threshold.cpp)
 target_link_libraries(threshold Threads::Threads)
 target_link_libraries(threshold benchmark)
 target_link_libraries(threshold sht)
+target_link_libraries(threshold cht)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

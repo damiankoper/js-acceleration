@@ -13,17 +13,19 @@ export interface SHTResult {
 }
 
 export interface SHTSpecificOptions {
+  /** Sampling of HT params  */
+  sampling?: SHTSampling;
+
+  /** Value in range between [0, 1]  */
   votingThreshold?: number;
 }
 
-export interface SHTOptions
-  extends HTOptions<SHTSampling>,
-    SHTSpecificOptions {}
+export interface SHTOptions extends HTOptions, SHTSpecificOptions {}
 export interface SHTParallelOptions
-  extends HTParallelOptions<SHTSampling>,
+  extends HTParallelOptions,
     SHTSpecificOptions {}
 
 export type SHTResults = HTResults<SHTResult>;
 
-export type SHT = HT<SHTOptions, SHTSampling, SHTResult>;
-export type SHTAsync = HTAsync<SHTOptions, SHTSampling, SHTResult>;
+export type SHT = HT<SHTOptions, SHTResult>;
+export type SHTAsync = HTAsync<SHTOptions, SHTResult>;

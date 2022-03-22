@@ -1,13 +1,11 @@
-export interface HTOptions<Sampling> {
+export interface HTOptions {
   /** Input image width */
   width: number;
-  /** Sampling of HT params  */
-  sampling?: Sampling;
   /** Wether to return hSpace buffer */
   returnHSpace?: boolean;
 }
 
-export interface HTParallelOptions<Sampling> extends HTOptions<Sampling> {
+export interface HTParallelOptions extends HTOptions {
   concurrency?: number;
 }
 
@@ -19,12 +17,12 @@ export interface HTResults<HTResult> {
   };
 }
 
-export type HT<O extends HTOptions<Sampling>, Sampling, HTResult> = (
+export type HT<O extends HTOptions, HTResult> = (
   binaryImage: Uint8Array,
   options: O
 ) => HTResults<HTResult>;
 
-export type HTAsync<O extends HTOptions<Sampling>, Sampling, HTResult> = (
+export type HTAsync<O extends HTOptions, HTResult> = (
   binaryImage: Uint8Array,
   options: O
 ) => Promise<HTResults<HTResult>>;

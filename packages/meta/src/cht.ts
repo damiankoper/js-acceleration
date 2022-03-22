@@ -6,27 +6,23 @@ export interface CHTResult {
   r: number;
 }
 
-export interface CHTSampling {
-  /** Center x coordinate sampling (samples per pixel) */
-  x?: number;
-  /** Center y coordinate sampling (samples per pixel) */
-  y?: number;
-  /** Radius sampling (samples per pixel) */
-  r?: number;
-}
-
 export interface CHTSpecificOptions {
+  /** Value in range between [0, 1] */
   gradientThreshold?: number;
+  /** Minimum distance between centers of detected circles */
+  minDist: number;
+  /** Min radius to look for */
+  minR: number;
+  /** Max radius to look for */
+  maxR: number;
 }
 
-export interface CHTOptions
-  extends HTOptions<CHTSampling>,
-    CHTSpecificOptions {}
+export interface CHTOptions extends HTOptions, CHTSpecificOptions {}
 export interface CHTParallelOptions
-  extends HTParallelOptions<CHTSampling>,
+  extends HTParallelOptions,
     CHTSpecificOptions {}
 
 export type CHTResults = HTResults<CHTResult>;
 
-export type CHT = HT<CHTOptions, CHTSampling, CHTResult>;
-export type CHTAsync = HTAsync<CHTOptions, CHTSampling, CHTResult>;
+export type CHT = HT<CHTOptions, CHTResult>;
+export type CHTAsync = HTAsync<CHTOptions, CHTResult>;
