@@ -16,7 +16,7 @@ int main() {
   });
 
   SHTResults results =
-      SHTSimpleLookup(testImage, {7, {0.5, 0.5}, 13. / 14., true});
+      SHTSimpleLookup(testImage, {7, true, {0.5, 0.5}, 13. / 14.});
 
   size_t s = results.hSpace.data.size();
   size_t w = results.hSpace.width;

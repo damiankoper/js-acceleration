@@ -10,7 +10,6 @@
 **/compile_commands.json
 
 .env
-.vscode
 .cmake-js
 modules/*/include/napi.h
 modules/*/include/napi-inl.h

@@ -1,8 +1,9 @@
-import { SHT } from "meta";
+import { SHT, CHT } from "meta";
 
-const addon = require('../build/Release/node-cpp-sequential-native');
+const addon = require("../build/Release/node-cpp-sequential-native");
 
 export = addon as {
-  SHTSimple: SHT
-  SHTSimpleLookup: SHT
-}
+  CHTSimple: CHT;
+  SHTSimple: SHT;
+  SHTSimpleLookup: SHT;
+};

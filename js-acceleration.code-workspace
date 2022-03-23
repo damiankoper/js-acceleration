@@ -1,115 +1,116 @@
 {
-    "folders": [
-        {
-            "path": "."
-        },
-        {
-            "path": "packages/benchmark"
-        },
-        {
-            "path": "packages/js-benchmarks"
-        },
-        {
-            "path": "packages/meta"
-        },
-        {
-            "path": "packages/js-sequential"
-        },
-        {
-            "path": "packages/js-workers"
-        },
-        {
-            "path": "packages/js-gpu"
-        },
-        {
-            "path": "packages/cpp-sequential"
-        },
-        {
-            "path": "packages/node-cpp-sequential"
-        },
-        {
-            "path": "packages/wasm-sequential"
-        },
-        {
-            "path": "packages/test-simple"
-        },
-    ],
-    "settings": {
-        "latex-workshop.latex.outDir": "../out",
-        "jest.disabledWorkspaceFolders": [
-            "js-acceleration",
-            "js-benchmarks",
-            "js-sequential",
-            "js-workers",
-            "js-gpu",
-            "meta",
-            "test-simple",
-            "test-simple-server",
-            "cpp-sequential",
-            "node-cpp-sequential",
-            "wasm-sequential"
-        ],
-        "files.associations": {
-            "*.bash": "shellscript",
-            "cmath": "cpp",
-            "array": "cpp",
-            "string": "cpp",
-            "string_view": "cpp",
-            "atomic": "cpp",
-            "bit": "cpp",
-            "*.tcc": "cpp",
-            "cctype": "cpp",
-            "chrono": "cpp",
-            "clocale": "cpp",
-            "condition_variable": "cpp",
-            "cstdarg": "cpp",
-            "cstddef": "cpp",
-            "cstdint": "cpp",
-            "cstdio": "cpp",
-            "cstdlib": "cpp",
-            "cstring": "cpp",
-            "ctime": "cpp",
-            "cwchar": "cpp",
-            "cwctype": "cpp",
-            "deque": "cpp",
-            "unordered_map": "cpp",
-            "vector": "cpp",
-            "exception": "cpp",
-            "algorithm": "cpp",
-            "functional": "cpp",
-            "iterator": "cpp",
-            "memory": "cpp",
-            "memory_resource": "cpp",
-            "numeric": "cpp",
-            "optional": "cpp",
-            "random": "cpp",
-            "ratio": "cpp",
-            "system_error": "cpp",
-            "tuple": "cpp",
-            "type_traits": "cpp",
-            "utility": "cpp",
-            "fstream": "cpp",
-            "initializer_list": "cpp",
-            "iosfwd": "cpp",
-            "iostream": "cpp",
-            "istream": "cpp",
-            "limits": "cpp",
-            "mutex": "cpp",
-            "new": "cpp",
-            "ostream": "cpp",
-            "sstream": "cpp",
-            "stdexcept": "cpp",
-            "streambuf": "cpp",
-            "thread": "cpp",
-            "typeinfo": "cpp",
-            "map": "cpp",
-            "bitset": "cpp",
-            "cfenv": "cpp",
-            "list": "cpp",
-            "set": "cpp",
-            "cinttypes": "cpp",
-            "csetjmp": "cpp",
-            "unordered_set": "cpp"
-        }
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "packages/benchmark"
+    },
+    {
+      "path": "packages/js-benchmarks"
+    },
+    {
+      "path": "packages/meta"
+    },
+    {
+      "path": "packages/js-sequential"
+    },
+    {
+      "path": "packages/js-workers"
+    },
+    {
+      "path": "packages/js-gpu"
+    },
+    {
+      "path": "packages/cpp-sequential"
+    },
+    {
+      "path": "packages/node-cpp-sequential"
+    },
+    {
+      "path": "packages/wasm-sequential"
+    },
+    {
+      "path": "packages/test-simple"
     }
+  ],
+  "settings": {
+    "latex-workshop.latex.outDir": "../out",
+    "jest.disabledWorkspaceFolders": [
+      "js-acceleration",
+      "js-benchmarks",
+      "js-sequential",
+      "js-workers",
+      "js-gpu",
+      "meta",
+      "test-simple",
+      "test-simple-server",
+      "cpp-sequential",
+      "node-cpp-sequential",
+      "wasm-sequential"
+    ],
+    "files.associations": {
+      "*.bash": "shellscript",
+      "cmath": "cpp",
+      "array": "cpp",
+      "string": "cpp",
+      "string_view": "cpp",
+      "atomic": "cpp",
+      "bit": "cpp",
+      "*.tcc": "cpp",
+      "cctype": "cpp",
+      "chrono": "cpp",
+      "clocale": "cpp",
+      "condition_variable": "cpp",
+      "cstdarg": "cpp",
+      "cstddef": "cpp",
+      "cstdint": "cpp",
+      "cstdio": "cpp",
+      "cstdlib": "cpp",
+      "cstring": "cpp",
+      "ctime": "cpp",
+      "cwchar": "cpp",
+      "cwctype": "cpp",
+      "deque": "cpp",
+      "unordered_map": "cpp",
+      "vector": "cpp",
+      "exception": "cpp",
+      "algorithm": "cpp",
+      "functional": "cpp",
+      "iterator": "cpp",
+      "memory": "cpp",
+      "memory_resource": "cpp",
+      "numeric": "cpp",
+      "optional": "cpp",
+      "random": "cpp",
+      "ratio": "cpp",
+      "system_error": "cpp",
+      "tuple": "cpp",
+      "type_traits": "cpp",
+      "utility": "cpp",
+      "fstream": "cpp",
+      "initializer_list": "cpp",
+      "iosfwd": "cpp",
+      "iostream": "cpp",
+      "istream": "cpp",
+      "limits": "cpp",
+      "mutex": "cpp",
+      "new": "cpp",
+      "ostream": "cpp",
+      "sstream": "cpp",
+      "stdexcept": "cpp",
+      "streambuf": "cpp",
+      "thread": "cpp",
+      "typeinfo": "cpp",
+      "map": "cpp",
+      "bitset": "cpp",
+      "cfenv": "cpp",
+      "list": "cpp",
+      "set": "cpp",
+      "cinttypes": "cpp",
+      "csetjmp": "cpp",
+      "unordered_set": "cpp",
+      "iomanip": "cpp"
+    }
+  }
 }

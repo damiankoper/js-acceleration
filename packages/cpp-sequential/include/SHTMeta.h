@@ -1,4 +1,5 @@
 #pragma once
+#include "HTMeta.h"
 #include <cstdint>
 #include <vector>
 
@@ -14,22 +15,15 @@ struct SHTSamplingOptions {
   float theta = 1;
 };
 
-struct SHTOptions {
-  /** Input image width */
-  uint32_t width;
+struct SHTOptions : HTOptions {
   SHTSamplingOptions sampling = {1, 1};
   /** Value in range [0, 1] */
   float votingThreshold = 0.75;
-  /** Wether to return hSpace buffer */
-  bool returnHSpace = false;
-};
-
-struct HSpace {
-  std::vector<uint32_t> data;
-  uint32_t width;
 };
 
 struct SHTResults {
   std::vector<SHTResult> results;
   HSpace hSpace;
 };
+
+struct HSpace;

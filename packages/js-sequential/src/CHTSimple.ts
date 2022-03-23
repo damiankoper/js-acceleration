@@ -45,25 +45,21 @@ const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
         let m = gySpace[coord] / gxSpace[coord];
         if (Math.abs(m) <= 1) {
           const bounds = getBounds(x, width, minR, maxR);
-          bounds.forEach((bounds) => {
-            for (let px = bounds[0]; px < bounds[1]; px++) {
+          for (let i = 0; i < 4; i += 2)
+            for (let px = bounds[i]; px < bounds[i + 1]; px++) {
               const py = Math.floor(m * px - x * m + y);
-              if (inBounds(x, y, px, py, height, minRad2, maxRad2)) {
+              if (inBounds(x, y, px, py, height, minRad2, maxRad2))
                 maxValue = Math.max(maxValue, ++houghSpace[py * width + px]);
-              }
             }
-          });
         } else {
           m = 1 / m;
           const bounds = getBounds(y, height, minR, maxR);
-          bounds.forEach((bounds) => {
-            for (let py = bounds[0]; py < bounds[1]; py++) {
+          for (let i = 0; i < 4; i += 2)
+            for (let py = bounds[i]; py < bounds[i + 1]; py++) {
               const px = Math.floor(m * py - y * m + x);
-              if (inBounds(y, x, py, px, width, minRad2, maxRad2)) {
+              if (inBounds(y, x, py, px, width, minRad2, maxRad2))
                 maxValue = Math.max(maxValue, ++houghSpace[py * width + px]);
-              }
             }
-          });
         }
       }
     }
@@ -87,17 +83,15 @@ const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
     });
 
   const rAccLength = Math.abs(maxR - minR) + 1;
+  const rAcc = new Uint32Array(rAccLength);
   results.forEach((result) => {
-    const rAcc = new Uint32Array(rAccLength);
+    rAcc.fill(0);
     for (let y = 0; y < height; y++)
       for (let x = 0; x < width; x++) {
         const coord = y * width + x;
         if (binaryImage[coord] === 1) {
-          const dx = result.x - x;
-          const dy = result.y - y;
-          const d = Math.floor(Math.sqrt(dx * dx + dy * dy));
-          if (d <= maxR && d >= minR)
-            maxValue = Math.max(maxValue, ++rAcc[d - minR]);
+          const d = Math.sqrt(distance2(result.x, result.y, x, y));
+          if (d <= maxR && d >= minR) ++rAcc[d - minR];
         }
       }
 
@@ -122,14 +116,11 @@ const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
 };
 
 function getBounds(x: number, max: number, minR: number, maxR: number) {
-  const xMinMax = clamp(x - maxR, 0, max);
   const xMinMin = clamp(x - minR, 0, max);
+  const xMinMax = clamp(x - maxR, 0, max);
   const xMaxMax = clamp(x + maxR, 0, max);
   const xMaxMin = clamp(x + minR, 0, max);
-  const bounds = [
-    [xMinMax, xMinMin],
-    [xMaxMin, xMaxMax],
-  ];
+  const bounds = [xMinMax, xMinMin, xMaxMin, xMaxMax];
   return bounds;
 }
 
@@ -147,8 +138,8 @@ function inBounds(
 }
 
 function distance2(x1: number, y1: number, x2: number, y2: number) {
-  const dx = Math.abs(x1 - x2);
-  const dy = Math.abs(y1 - y2);
+  const dx = x1 - x2;
+  const dy = y1 - y2;
   return dx * dx + dy * dy;
 }
 
@@ -161,7 +152,7 @@ function conv2(
   const result = new Int32Array(width * height);
   for (let y = 0; y < height; y++)
     for (let x = 0; x < width; x++) {
-      const coord = clamp(y - 1, 0, height) * width + clamp(x - 1, 0, width);
+      const coord = clamp(y, 0, height) * width + clamp(x, 0, width);
       if (input[coord] === 1) {
         let sum = 0;
         for (let ky = 0; ky < kernelSize; ky++)

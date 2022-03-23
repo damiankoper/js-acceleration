@@ -9,6 +9,7 @@
             ],
             'libraries': [
                 "-lsht",
+                "-lcht",
                 "-L<!@(node -p \"require('cpp-sequential').library_dir\")"
             ],
             'cflags': ['-O3'],

@@ -1,6 +1,7 @@
 #include <benchmark/benchmark.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "./include/stb_image.h"
+#include "CHTSimple.h"
 #include "SHTSimple.h"
 #include "SHTSimpleLookup.h"
 
@@ -39,7 +40,7 @@ static void DoTeardown(const benchmark::State &state) {
 static void SHT_Simple(benchmark::State &state) {
   float f = state.range(0);
   for (auto _ : state)
-    SHTSimple(binaryImage, {width, {1, f}, 0.75f});
+    SHTSimple(binaryImage, {width, false, {1, f}, 0.75f});
 }
 BENCHMARK(SHT_Simple)
     ->DenseRange(1, 10, 1)
@@ -49,10 +50,20 @@ BENCHMARK(SHT_Simple)
 static void SHT_Simple_Lookup(benchmark::State &state) {
   float f = state.range(0);
   for (auto _ : state)
-    SHTSimpleLookup(binaryImage, {width, {1.f, f}, 0.75f});
+    SHTSimpleLookup(binaryImage, {width, false, {1.f, f}, 0.75f});
 }
 BENCHMARK(SHT_Simple_Lookup)
     ->DenseRange(1, 10, 1)
+    ->Setup(DoSetup)
+    ->Teardown(DoTeardown);
+
+static void CHT_Simple(benchmark::State &state) {
+  uint32_t f = state.range(0);
+  for (auto _ : state) //{7, 0.9, 1, 1, 6, true}
+    CHTSimple(binaryImage, {width, false, 0.75, 1, 10, f});
+}
+BENCHMARK(CHT_Simple)
+    ->DenseRange(10, 100, 10)
     ->Setup(DoSetup)
     ->Teardown(DoTeardown);
 
