@@ -100,7 +100,7 @@ CHTResults CHTSimple(const std::vector<uint8_t> binaryImage,
                 maxValue = std::max(maxValue, ++houghSpace[py * width + px]);
             }
         } else {
-          m = gx / gy;
+          m = (float)gx / gy;
           std::vector<uint32_t> bounds = getBounds(y, height, minR, maxR);
           for (uint32_t i = 0; i < 4; i += 2)
             for (uint32_t py = bounds[i]; py < bounds[i + 1]; py++) {
@@ -124,7 +124,7 @@ CHTResults CHTSimple(const std::vector<uint8_t> binaryImage,
             [](const CHTResultCandidate &a, const CHTResultCandidate &b) {
               return a.acc > b.acc;
             });
-  for (auto &c : candidates) {
+  for (const CHTResultCandidate &c : candidates) {
     bool distance = std::all_of(
         results.begin(), results.end(), [minDist2, c](const CHTResult &r) {
           return distance2(r.x, r.y, c.x, c.y) >= minDist2;
@@ -133,29 +133,31 @@ CHTResults CHTSimple(const std::vector<uint8_t> binaryImage,
       results.push_back(c);
   }
 
-  uint32_t rAccLength = std::abs((int32_t)maxR - (int32_t)minR) + 1;
+  uint32_t rAccLength = std::abs((int32_t)maxR - (int32_t)minR);
   std::vector<uint32_t> rAcc = std::vector<uint32_t>(rAccLength);
-  for (auto &result : results) {
+  for (CHTResult &result : results) {
+    std::fill(rAcc.begin(), rAcc.end(), 0);
     for (uint32_t y = 0; y < height; y++)
       for (uint32_t x = 0; x < width; x++) {
         uint32_t coord = y * width + x;
         if (binaryImage[coord] == 1) {
-          uint32_t d = std::sqrt(distance2(result.x, result.y, x, y));
+          uint32_t d =
+              std::trunc(std::sqrt(distance2(result.x, result.y, x, y)));
           if (d <= maxR && d >= minR)
             ++rAcc[d - minR];
         }
       }
 
-    uint32_t maxRadiusVotes = 0;
-    uint32_t maxRadius = 0;
+    uint32_t bestRadiusVotes = 0;
+    uint32_t bestRadius = 0;
     for (uint32_t i = 1; i < rAccLength - 1; i++) {
       uint32_t votes = rAcc[i - 1] + rAcc[i] + rAcc[i + 1];
-      if (maxRadiusVotes <= votes) {
-        maxRadiusVotes = votes;
-        maxRadius = i + minR;
+      if (bestRadiusVotes <= votes) {
+        bestRadiusVotes = votes;
+        bestRadius = i + minR;
       }
     }
-    result.r = maxRadius;
+    result.r = bestRadius;
   }
 
   if (!options.returnHSpace)

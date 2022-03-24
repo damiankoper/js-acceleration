@@ -27,7 +27,7 @@ import * as gpu from "js-gpu";
 
   const chtOptions = {
     sampling: {},
-    gradientThreshold: 0.65,
+    gradientThreshold: 0.5,
     minDist: 50,
     minR: 1,
     maxR: 100,
@@ -115,8 +115,18 @@ import * as gpu from "js-gpu";
           ...shtOptions,
         }),
       render:renderSHTResults
-    },
+    },*/
     {
+      id: "wasm_implicit_simd_cht_seq",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        wasmSequentialImplicitSIMD.CHTSimple(processedData, {
+          width: imageData.width,
+          ...chtOptions,
+        }),
+      inputImage: "/circle1.png",
+      render: renderCHTResults,
+    },
+    /* {
       id: "wasm_simd_sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequentialSIMD.SHTSimple(processedData, {
@@ -151,7 +161,18 @@ import * as gpu from "js-gpu";
           ...shtOptions,
         }),
       render:renderSHTResults
+    },*/
+    {
+      id: "asm_cht_seq",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        asmSequential.CHTSimple(processedData, {
+          width: imageData.width,
+          ...chtOptions,
+        }),
+      inputImage: "/circle1.png",
+      render: renderCHTResults,
     },
+    /*
     {
       id: "sht_workers",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
@@ -211,6 +232,7 @@ import * as gpu from "js-gpu";
     h1.innerHTML += " - " + t2;
 
     renderHSpace(results, spaceCanvas);
+    console.log(results.results.map((r) => r.r));
 
     config.render(results, resultsCanvas);
   }

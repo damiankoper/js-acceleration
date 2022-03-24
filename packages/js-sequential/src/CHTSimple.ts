@@ -83,7 +83,7 @@ const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
       if (distance) results.push(c);
     });
 
-  const rAccLength = Math.abs(maxR - minR) + 1;
+  const rAccLength = Math.abs(maxR - minR);
   const rAcc = new Uint32Array(rAccLength);
   results.forEach((result) => {
     rAcc.fill(0);
@@ -91,21 +91,20 @@ const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
       for (let x = 0; x < width; x++) {
         const coord = y * width + x;
         if (binaryImage[coord] === 1) {
-          const d = Math.sqrt(distance2(result.x, result.y, x, y));
+          const d = Math.trunc(Math.sqrt(distance2(result.x, result.y, x, y)));
           if (d <= maxR && d >= minR) ++rAcc[d - minR];
         }
       }
-
-    let maxRadiusVotes = 0;
-    let maxRadius = 0;
-    for (let i = 1; i < rAccLength; i++) {
-      const votes = rAcc[i] + rAcc[i + 1] + rAcc[i - 1];
-      if (maxRadiusVotes < votes) {
-        maxRadiusVotes = votes;
-        maxRadius = i + minR;
+    let bestRadiusVotes = 0;
+    let bestRadius = 0;
+    for (let i = 1; i < rAccLength - 1; i++) {
+      const votes = rAcc[i - 1] + rAcc[i] + rAcc[i + 1];
+      if (bestRadiusVotes <= votes) {
+        bestRadiusVotes = votes;
+        bestRadius = i + minR;
       }
     }
-    result.r = maxRadius;
+    result.r = bestRadius;
   });
 
   return {
