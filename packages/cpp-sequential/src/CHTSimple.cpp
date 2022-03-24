@@ -5,24 +5,21 @@
 #define kernelSize 3
 #define kernelShift 1
 
-std::vector<int32_t> conv2(const std::vector<uint8_t> input, uint32_t width,
-                           uint32_t height, int8_t kernel[3][3]) {
-  std::vector<int32_t> result = std::vector<int32_t>(width * height);
-  for (uint32_t y = 0; y < height; y++)
-    for (uint32_t x = 0; x < width; x++) {
-      uint32_t coord = std::clamp(y, (uint32_t)0, height) * width +
-                       std::clamp(x, (uint32_t)0, width);
-      if (input[coord] == 1) {
-        int32_t sum = 0;
-        for (uint8_t ky = 0; ky < kernelSize; ky++)
-          for (uint8_t kx = 0; kx < kernelSize; kx++) {
-            uint32_t sy = std::clamp(y - kernelShift + ky, (uint32_t)0, height);
-            uint32_t sx = std::clamp(x - kernelShift + kx, (uint32_t)0, width);
-            int32_t pixel = input[sy * width + sx];
-            sum += kernel[ky][kx] * pixel;
-          }
-        result[coord] = sum;
-      }
+std::vector<int8_t> conv2(const std::vector<uint8_t> input, uint32_t width,
+                          uint32_t height, int8_t kernel[3][3]) {
+  std::vector<int8_t> result = std::vector<int8_t>(width * height);
+  for (uint32_t y = kernelShift; y < height - kernelShift; y++)
+    for (uint32_t x = kernelShift; x < width - kernelShift; x++) {
+      int8_t sum = 0;
+      uint32_t coord = y * width + x;
+      for (uint8_t ky = 0; ky < kernelSize; ky++)
+        for (uint8_t kx = 0; kx < kernelSize; kx++) {
+          uint32_t sy = y - kernelShift + ky;
+          uint32_t sx = x - kernelShift + kx;
+          uint8_t pixel = input[sy * width + sx];
+          sum += kernel[ky][kx] * pixel;
+        }
+      result[coord] = sum;
     }
   return result;
 }
@@ -47,7 +44,7 @@ uint32_t distance2(int32_t x1, int32_t y1, int32_t x2, int32_t y2) {
   return dx * dx + dy * dy;
 }
 
-bool inBounds(uint32_t x, uint32_t y, uint32_t px, uint32_t py, uint32_t max,
+bool inBounds(uint32_t x, uint32_t y, int32_t px, int32_t py, uint32_t max,
               uint32_t minRad2, uint32_t maxRad2) {
   uint32_t d = distance2(x, y, px, py);
   return py >= 0 && py < max && minRad2 < d && maxRad2 >= d;
@@ -73,10 +70,8 @@ CHTResults CHTSimple(const std::vector<uint8_t> binaryImage,
   uint32_t height = binaryImage.size() / width;
   uint32_t maxDimHalf = std::max(height, width) / 2;
   std::vector<uint32_t> houghSpace(width * height);
-  std::vector<int32_t> gxSpace =
-      conv2(binaryImage, width, height, sobelXKernel);
-  std::vector<int32_t> gySpace =
-      conv2(binaryImage, width, height, sobelYKernel);
+  std::vector<int8_t> gxSpace = conv2(binaryImage, width, height, sobelXKernel);
+  std::vector<int8_t> gySpace = conv2(binaryImage, width, height, sobelYKernel);
 
   // Defaults
   float gradientThreshold = options.gradientThreshold;
@@ -89,26 +84,27 @@ CHTResults CHTSimple(const std::vector<uint8_t> binaryImage,
   uint32_t minRad2 = minR * minR;
 
   uint32_t maxValue = 0;
-
+  float m = 0;
   for (uint32_t y = 0; y < height; y++) {
     for (uint32_t x = 0; x < width; x++) {
       uint32_t coord = y * width + x;
-      if (binaryImage[coord] == 1 && gxSpace[coord] != 0) {
-        float m = gySpace[coord] / gxSpace[coord];
-        if (std::abs(m) <= 1) {
+      int8_t gx = gxSpace[coord];
+      int8_t gy = gySpace[coord];
+      if (gx * gx + gy * gy >= 1) {
+        if (gx != 0 && std::abs(m = (float)gy / gx) <= 1) {
           std::vector<uint32_t> bounds = getBounds(x, width, minR, maxR);
           for (uint32_t i = 0; i < 4; i += 2)
             for (uint32_t px = bounds[i]; px < bounds[i + 1]; px++) {
-              uint32_t py = m * px - x * m + y;
+              int32_t py = m * px - x * m + y;
               if (inBounds(x, y, px, py, height, minRad2, maxRad2))
                 maxValue = std::max(maxValue, ++houghSpace[py * width + px]);
             }
         } else {
-          m = 1 / m;
+          m = gx / gy;
           std::vector<uint32_t> bounds = getBounds(y, height, minR, maxR);
           for (uint32_t i = 0; i < 4; i += 2)
             for (uint32_t py = bounds[i]; py < bounds[i + 1]; py++) {
-              uint32_t px = m * py - y * m + x;
+              int32_t px = m * py - y * m + x;
               if (inBounds(y, x, py, px, width, minRad2, maxRad2))
                 maxValue = std::max(maxValue, ++houghSpace[py * width + px]);
             }
@@ -120,7 +116,7 @@ CHTResults CHTSimple(const std::vector<uint8_t> binaryImage,
   for (uint32_t y = 0; y < height; y++)
     for (uint32_t x = 0; x < width; x++) {
       uint32_t value = houghSpace[y * width + x];
-      if (value / (float)maxValue > gradientThreshold) {
+      if (value / (float)maxValue >= gradientThreshold) {
         candidates.push_back({x, y, 0, value});
       }
     }

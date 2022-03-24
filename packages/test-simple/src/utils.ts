@@ -48,6 +48,7 @@ export function renderSHTResults(
   height: number
 ) {
   const resultCtx = resultsCanvas.getContext("2d");
+  resultCtx.imageSmoothingEnabled = false;
   results.results.forEach((result: SHTResult) => {
     resultCtx.strokeStyle = "red";
     const x = result.rho * Math.cos((result.theta * Math.PI) / 180);
@@ -76,6 +77,7 @@ export function renderHSpace(
 ) {
   if (results.hSpace && results.hSpace.data) {
     const spaceCtx = spaceCanvas.getContext("2d");
+    spaceCtx.imageSmoothingEnabled = false;
     const width = results.hSpace.width;
     const height = results.hSpace.data.length / results.hSpace.width;
     spaceCanvas.width = width;
@@ -84,9 +86,9 @@ export function renderHSpace(
     const data = Array.from(results.hSpace.data);
     let max = -Infinity;
     data.forEach((element) => {
-      if (max < element) max = element;
+      if (max < element) max = Math.abs(element);
     });
-    const normalized = data.map((n) => (n / max) * 255);
+    const normalized = data.map((n) => Math.abs(n / max) * 255);
 
     if (height) {
       const imageData = spaceCtx.createImageData(width, height);

@@ -38,7 +38,7 @@ SHTResults SHTSimple(const std::vector<uint8_t> binaryImage,
   for (uint32_t hy = 0; hy < hsHeight; hy++)
     for (uint32_t hx = 0; hx < hsWidth; hx++) {
       uint32_t offset = hy * hsWidth + hx;
-      if (houghSpace[offset] / (float)maxValue > options.votingThreshold) {
+      if (houghSpace[offset] / (float)maxValue >= options.votingThreshold) {
         results.push_back({
             hy / samplingRho,   // rho
             hx / samplingTheta, // theta

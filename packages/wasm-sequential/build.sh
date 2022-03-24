@@ -16,6 +16,7 @@ COMMON_ARGS="-Inode_modules/cpp-sequential/include
     -s ENVIRONMENT=web \
     -s EXPORT_ES6=1 \
     --no-entry \
+    -std=c++17\
     -O3
     "
 
@@ -24,20 +25,22 @@ $(
 NON_SIMD_ARGS="$COMMON_ARGS \
     src/wasm_sequential.cc \
     node_modules/cpp-sequential/src/SHTSimpleLookup.cpp \
-    node_modules/cpp-sequential/src/SHTSimple.cpp"
+    node_modules/cpp-sequential/src/SHTSimple.cpp \
+    node_modules/cpp-sequential/src/CHTSimple.cpp"
 
 emcc $(echo $NON_SIMD_ARGS -o build/wasmSequential.mjs)
 emcc $(echo $NON_SIMD_ARGS -o build/wasmSequential.wasm --no-entry)
 wasm2wat build/wasmSequential.wasm > build/wasmSequential.wat
 ) &
-### Implicit SIMD
 
+### Implicit SIMD
 $(
 IMPLICIT_SIMD_ARGS="$COMMON_ARGS \
     -msimd128 \
     src/wasm_sequential.cc \
     node_modules/cpp-sequential/src/SHTSimpleLookup.cpp \
-    node_modules/cpp-sequential/src/SHTSimple.cpp"
+    node_modules/cpp-sequential/src/SHTSimple.cpp \
+    node_modules/cpp-sequential/src/CHTSimple.cpp"
 
 emcc $(echo $IMPLICIT_SIMD_ARGS -o build/wasmSequentialImplicitSIMD.mjs)
 emcc $(echo $IMPLICIT_SIMD_ARGS -o build/wasmSequentialImplicitSIMD.wasm --no-entry)
@@ -45,7 +48,6 @@ wasm2wat build/wasmSequentialImplicitSIMD.wasm > build/wasmSequentialImplicitSIM
 ) &
 
 ### Explicit SIMD
-
 $(
 EXPLICIT_SIMD_ARGS="$COMMON_ARGS \
     -msimd128 \
@@ -59,13 +61,13 @@ wasm2wat build/wasmSequentialSIMD.wasm > build/wasmSequentialSIMD.wat
 ) &
 
 ### asm.js
-
 $(
 ASM_ARGS="$COMMON_ARGS \
     -s WASM=0 \
     src/wasm_sequential.cc \
     node_modules/cpp-sequential/src/SHTSimpleLookup.cpp \
-    node_modules/cpp-sequential/src/SHTSimple.cpp "
+    node_modules/cpp-sequential/src/SHTSimple.cpp \
+    node_modules/cpp-sequential/src/CHTSimple.cpp"
     
 emcc $(echo $ASM_ARGS -o build/asmSequential.mjs)
 ) &

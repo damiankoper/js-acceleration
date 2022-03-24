@@ -40,7 +40,7 @@ const SHTSimple: SHT = function (
   for (let hy = 0; hy < hsHeight; hy++)
     for (let hx = 0; hx < hsWidth; hx++) {
       const offset = hy * hsWidth + hx;
-      if (houghSpace[offset] / maxValue > votingThreshold) {
+      if (houghSpace[offset] / maxValue >= votingThreshold) {
         results.push({
           rho: hy / samplingRho,
           theta: hx / samplingTheta,

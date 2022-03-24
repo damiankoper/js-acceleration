@@ -14,7 +14,7 @@
   },
   "scripts": {
     "clean": "rimraf dist build",
-    "test": "node test/test.js",
+    "test": "node test/test.mjs",
     "prebuild": "bash build.sh",
     "build": "webpack --mode=production --node-env=production",
     "build:lib": "webpack --mode=production --node-env=production",

@@ -1,4 +1,12 @@
-import { HTResults, SHT, SHTOptions, SHTResult } from "meta";
+import {
+  CHT,
+  CHTOptions,
+  CHTResult,
+  HTResults,
+  SHT,
+  SHTOptions,
+  SHTResult,
+} from "meta";
 import factory from "../build/wasmSequential.mjs";
 import factoryImplicitSIMD from "../build/wasmSequentialImplicitSIMD.mjs";
 import factorySIMD from "../build/wasmSequentialSIMD.mjs";
@@ -15,6 +23,7 @@ function* unpackVector<T>(vector: any): Generator<T, void, unknown> {
 type ModuleFactory = (Module?: any) => Promise<any>;
 
 interface Module {
+  CHTSimple: CHT;
   SHTSimple: SHT;
   SHTSimpleLookup: SHT;
 }
@@ -24,6 +33,13 @@ export class WasmWrapper implements Module {
     sampling: { rho: 1, theta: 1 },
     votingThreshold: 0.75,
     returnHSpace: false,
+  };
+  readonly defaultCHTOptions: Partial<CHTOptions> = {
+    gradientThreshold: 0.75,
+    returnHSpace: false,
+    maxR: 100,
+    minDist: 100,
+    minR: 10,
   };
 
   public moduleRaw: Module | null;
@@ -37,6 +53,18 @@ export class WasmWrapper implements Module {
     return this;
   }
 
+  public CHTSimple(
+    binaryImage: Uint8Array,
+    options: CHTOptions
+  ): HTResults<CHTResult> {
+    const module = this.validate();
+    const results = module.CHTSimple(
+      binaryImage,
+      this.mergeDefaultCHTOptions(options)
+    );
+    return this.transformResults(results);
+  }
+
   public SHTSimple(
     binaryImage: Uint8Array,
     options: SHTOptions
@@ -44,7 +72,7 @@ export class WasmWrapper implements Module {
     const module = this.validate();
     const results = module.SHTSimple(
       binaryImage,
-      this.mergeDefaultOptions(options)
+      this.mergeDefaultSHTOptions(options)
     );
     return this.transformResults(results);
   }
@@ -56,7 +84,7 @@ export class WasmWrapper implements Module {
     const module = this.validate();
     const results = module.SHTSimpleLookup(
       binaryImage,
-      this.mergeDefaultOptions(options)
+      this.mergeDefaultSHTOptions(options)
     );
     return this.transformResults(results);
   }
@@ -70,9 +98,11 @@ export class WasmWrapper implements Module {
       );
   }
 
-  public transformResults(results: HTResults<SHTResult>): HTResults<SHTResult> {
+  public transformResults<HTResult>(
+    results: HTResults<HTResult>
+  ): HTResults<HTResult> {
     const r = {
-      results: [...unpackVector<SHTResult>(results.results)],
+      results: [...unpackVector<HTResult>(results.results)],
       hSpace: {
         data: new Uint32Array(unpackVector<number>(results.hSpace.data)),
         width: results.hSpace.width,
@@ -87,7 +117,7 @@ export class WasmWrapper implements Module {
     return r;
   }
 
-  public mergeDefaultOptions(options: SHTOptions): SHTOptions {
+  public mergeDefaultSHTOptions(options: SHTOptions): SHTOptions {
     return {
       width: options.width,
       sampling: {
@@ -100,6 +130,21 @@ export class WasmWrapper implements Module {
         options.returnHSpace !== undefined
           ? options.returnHSpace
           : this.defaultSHTOptions.returnHSpace,
+    };
+  }
+
+  public mergeDefaultCHTOptions(options: CHTOptions): CHTOptions {
+    return {
+      width: options.width,
+      returnHSpace:
+        options.returnHSpace !== undefined
+          ? options.returnHSpace
+          : this.defaultCHTOptions.returnHSpace,
+      gradientThreshold:
+        options.gradientThreshold || this.defaultCHTOptions.gradientThreshold,
+      minDist: options.minDist || this.defaultCHTOptions.minDist,
+      minR: options.minR || this.defaultCHTOptions.minR,
+      maxR: options.maxR || this.defaultCHTOptions.maxR,
     };
   }
 }

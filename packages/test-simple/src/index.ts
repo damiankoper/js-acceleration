@@ -29,7 +29,7 @@ import * as gpu from "js-gpu";
     sampling: {},
     gradientThreshold: 0.65,
     minDist: 50,
-    minR: 10,
+    minR: 1,
     maxR: 100,
     concurrency: 4,
     returnHSpace: true,
@@ -42,7 +42,7 @@ import * as gpu from "js-gpu";
   const asmSequential = await asmSequentialFactory().init();
 
   const configs = [
-    {
+    /*     {
       id: "sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         sequential.SHTSimple(processedData, {
@@ -51,6 +51,15 @@ import * as gpu from "js-gpu";
         }),
       render: renderSHTResults,
     },
+    {
+      id: "sht_seq_lookup",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        sequential.SHTSimpleLookup(processedData, {
+          width: imageData.width,
+          ...shtOptions,
+        }),
+      render: renderSHTResults,
+    }, */
     {
       id: "cht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
@@ -61,39 +70,40 @@ import * as gpu from "js-gpu";
       inputImage: "/circle1.png",
       render: renderCHTResults,
     },
-    /* {
-      id: "sht_seq_lookup",
-      fn: (processedData: Uint8Array, imageData: ImageData) =>
-        sequential.SHTSimpleLookup(processedData, {
-          width: imageData.width,
-          ...options,
-        }),
-      render:renderSHTResults
-    },
-    {
+    /*     {
       id: "wasm_sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequential.SHTSimple(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
-      render:renderSHTResults
+      render: renderSHTResults,
     },
     {
       id: "wasm_sht_seq_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequential.SHTSimpleLookup(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
-      render:renderSHTResults
-    },
+      render: renderSHTResults,
+    }, */
     {
+      id: "wasm_cht_seq",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        wasmSequential.CHTSimple(processedData, {
+          width: imageData.width,
+          ...chtOptions,
+        }),
+      inputImage: "/circle1.png",
+      render: renderCHTResults,
+    },
+    /*  {
       id: "wasm_implicit_simd_sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequentialImplicitSIMD.SHTSimple(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
       render:renderSHTResults
     },
@@ -102,7 +112,7 @@ import * as gpu from "js-gpu";
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequentialImplicitSIMD.SHTSimpleLookup(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
       render:renderSHTResults
     },
@@ -111,7 +121,7 @@ import * as gpu from "js-gpu";
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequentialSIMD.SHTSimple(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
       render:renderSHTResults
     },
@@ -120,7 +130,7 @@ import * as gpu from "js-gpu";
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequentialSIMD.SHTSimpleLookup(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
       render:renderSHTResults
     },
@@ -129,7 +139,7 @@ import * as gpu from "js-gpu";
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         asmSequential.SHTSimple(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
       render:renderSHTResults
     },
@@ -138,7 +148,7 @@ import * as gpu from "js-gpu";
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         asmSequential.SHTSimpleLookup(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
       render:renderSHTResults
     },
@@ -147,7 +157,7 @@ import * as gpu from "js-gpu";
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         workers.SHTSimple(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
       render:renderSHTResults
     },
@@ -156,7 +166,7 @@ import * as gpu from "js-gpu";
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         workers.SHTSimpleLookup(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
       render:renderSHTResults
     },
@@ -165,7 +175,7 @@ import * as gpu from "js-gpu";
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         gpu.SHTSimple(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
       render:renderSHTResults
     },
@@ -174,7 +184,7 @@ import * as gpu from "js-gpu";
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         gpu.SHTSimpleLookup(processedData, {
           width: imageData.width,
-          ...options,
+          ...shtOptions,
         }),
       render:renderSHTResults
     }, */
@@ -202,6 +212,6 @@ import * as gpu from "js-gpu";
 
     renderHSpace(results, spaceCanvas);
 
-    config.render(results, resultsCanvas, imageData.width, imageData.height);
+    config.render(results, resultsCanvas);
   }
 })();
