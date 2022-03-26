@@ -52,6 +52,7 @@ $(
 EXPLICIT_SIMD_ARGS="$COMMON_ARGS \
     -msimd128 \
     src/wasm_sequential_simd.cc \
+    src/simd/CHTSimple.cpp \
     src/simd/SHTSimple.cpp \
     src/simd/SHTSimpleLookup.cpp"
     

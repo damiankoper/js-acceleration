@@ -143,8 +143,18 @@ import * as gpu from "js-gpu";
           ...shtOptions,
         }),
       render:renderSHTResults
-    },
+    },*/
     {
+      id: "wasm_simd_cht_seq",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        wasmSequentialSIMD.CHTSimple(processedData, {
+          width: imageData.width,
+          ...chtOptions,
+        }),
+      inputImage: "/circle1.png",
+      render: renderCHTResults,
+    },
+    /*{
       id: "asm_sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         asmSequential.SHTSimple(processedData, {
