@@ -17,6 +17,7 @@ COMMON_ARGS="-Inode_modules/cpp-sequential/include
     -s EXPORT_ES6=1 \
     --no-entry \
     -std=c++17\
+    -ffast-math\
     -O3
     "
 

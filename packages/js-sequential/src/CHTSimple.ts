@@ -85,16 +85,23 @@ const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
 
   const rAccLength = Math.abs(maxR - minR);
   const rAcc = new Uint32Array(rAccLength);
+  const pixels: { x: number; y: number }[] = [];
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const coord = y * width + x;
+      if (binaryImage[coord] == 1) pixels.push({ x, y });
+    }
+  }
+
   results.forEach((result) => {
     rAcc.fill(0);
-    for (let y = 0; y < height; y++)
-      for (let x = 0; x < width; x++) {
-        const coord = y * width + x;
-        if (binaryImage[coord] === 1) {
-          const d = Math.trunc(Math.sqrt(distance2(result.x, result.y, x, y)));
-          if (d <= maxR && d >= minR) ++rAcc[d - minR];
-        }
-      }
+    pixels.forEach((pixel) => {
+      const d = Math.trunc(
+        Math.sqrt(distance2(result.x, result.y, pixel.x, pixel.y))
+      );
+      if (d <= maxR && d >= minR) ++rAcc[d - minR];
+    });
+
     let bestRadiusVotes = 0;
     let bestRadius = 0;
     for (let i = 1; i < rAccLength - 1; i++) {
@@ -152,16 +159,16 @@ function conv2(
   const result = new Int32Array(width * height);
   for (let y = kernelShift; y < height - kernelShift; y++)
     for (let x = kernelShift; x < width - kernelShift; x++) {
-      let sum = 0;
       const coord = y * width + x;
-      for (let ky = 0; ky < kernelSize; ky++)
-        for (let kx = 0; kx < kernelSize; kx++) {
-          const sy = y - kernelShift + ky;
-          const sx = x - kernelShift + kx;
-          const pixel = input[sy * width + sx];
-          sum += kernel[ky][kx] * pixel;
-        }
-      result[coord] = sum;
+      result[coord] =
+        input[(y - 1) * width + x - 1] * kernel[0][0] + //
+        input[(y - 1) * width + x] * kernel[0][1] + //
+        input[(y - 1) * width + x + 1] * kernel[0][2] + //
+        input[y * width + x - 1] * kernel[1][0] + //
+        input[y * width + x + 1] * kernel[1][2] + //
+        input[(y + 1) * width + x - 1] * kernel[2][0] + //
+        input[(y + 1) * width + x] * kernel[2][1] + //
+        input[(y + 1) * width + x + 1] * kernel[2][2];
     }
   return result;
 }

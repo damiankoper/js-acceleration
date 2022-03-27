@@ -90,3 +90,6 @@
 # circles CHT
 
 * pojedyncze pixele, kiedy spleciemy je z sobelem znikają (logiczne w sumie, gradient 0, bo nie mają otoczenia)
+* zbadać wpływ fast-math na wydajność https://clang.llvm.org/docs/UsersManual.html#cmdoption-ffast-math
+* splot warty pokazania .wat - ładowanie kernela przez const bezpośrednio, optymalizacja inline
+* sprawdzić, czy kompilator sam unfolduje loopa w conv2 (chyba nie)

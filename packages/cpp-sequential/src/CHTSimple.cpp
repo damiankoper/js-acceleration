@@ -10,16 +10,15 @@ std::vector<int8_t> conv2(const std::vector<uint8_t> input, uint32_t width,
   std::vector<int8_t> result = std::vector<int8_t>(width * height);
   for (uint32_t y = kernelShift; y < height - kernelShift; y++)
     for (uint32_t x = kernelShift; x < width - kernelShift; x++) {
-      int8_t sum = 0;
       uint32_t coord = y * width + x;
-      for (uint8_t ky = 0; ky < kernelSize; ky++)
-        for (uint8_t kx = 0; kx < kernelSize; kx++) {
-          uint32_t sy = y - kernelShift + ky;
-          uint32_t sx = x - kernelShift + kx;
-          uint8_t pixel = input[sy * width + sx];
-          sum += kernel[ky][kx] * pixel;
-        }
-      result[coord] = sum;
+      result[coord] = input[(y - 1) * width + x - 1] * kernel[0][0] + //
+                      input[(y - 1) * width + x] * kernel[0][1] +     //
+                      input[(y - 1) * width + x + 1] * kernel[0][2] + //
+                      input[y * width + x - 1] * kernel[1][0] +       //
+                      input[y * width + x + 1] * kernel[1][2] +       //
+                      input[(y + 1) * width + x - 1] * kernel[2][0] + //
+                      input[(y + 1) * width + x] * kernel[2][1] +     //
+                      input[(y + 1) * width + x + 1] * kernel[2][2];
     }
   return result;
 }
@@ -28,8 +27,8 @@ std::vector<uint32_t> getBounds(int32_t x, int32_t max, int32_t minR,
                                 int32_t maxR) {
   uint32_t xMinMax = std::clamp(x - maxR, 0, max);
   uint32_t xMinMin = std::clamp(x - minR, 0, max);
-  uint32_t xMaxMax = std::clamp(x + maxR, 0, max);
   uint32_t xMaxMin = std::clamp(x + minR, 0, max);
+  uint32_t xMaxMax = std::clamp(x + maxR, 0, max);
   return std::vector<uint32_t>({
       xMinMax,
       xMinMin,
@@ -135,18 +134,23 @@ CHTResults CHTSimple(const std::vector<uint8_t> binaryImage,
 
   uint32_t rAccLength = std::abs((int32_t)maxR - (int32_t)minR);
   std::vector<uint32_t> rAcc = std::vector<uint32_t>(rAccLength);
+  std::vector<std::pair<float, float>> pixels;
+  for (uint32_t y = 0; y < height; y++) {
+    for (uint32_t x = 0; x < width; x++) {
+      uint32_t coord = y * width + x;
+      if (binaryImage[coord] == 1)
+        pixels.push_back(std::make_pair((float)x, (float)y));
+    }
+  }
+
   for (CHTResult &result : results) {
     std::fill(rAcc.begin(), rAcc.end(), 0);
-    for (uint32_t y = 0; y < height; y++)
-      for (uint32_t x = 0; x < width; x++) {
-        uint32_t coord = y * width + x;
-        if (binaryImage[coord] == 1) {
-          uint32_t d =
-              std::trunc(std::sqrt(distance2(result.x, result.y, x, y)));
-          if (d <= maxR && d >= minR)
-            ++rAcc[d - minR];
-        }
-      }
+    for (const auto pixel : pixels) {
+      uint32_t d = std::trunc(
+          std::sqrt(distance2(result.x, result.y, pixel.first, pixel.second)));
+      if (d <= maxR && d >= minR)
+        ++rAcc[d - minR];
+    }
 
     uint32_t bestRadiusVotes = 0;
     uint32_t bestRadius = 0;
