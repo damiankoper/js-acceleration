@@ -1,4 +1,4 @@
-export type SHTSimpleKernel = {
+export type SHTSimpleLookupKernel = {
   run: (
     hxFrom: number,
     hxTo: number,
@@ -7,7 +7,8 @@ export type SHTSimpleKernel = {
     binaryImage: Uint8Array,
     hsWidth: number,
     houghSpace: Uint32Array,
-    samplingThetaRad: number,
-    samplingRho: number
+    samplingRho: number,
+    sinLookup: Float32Array,
+    cosLookup: Float32Array
   ) => Promise<number>;
 };

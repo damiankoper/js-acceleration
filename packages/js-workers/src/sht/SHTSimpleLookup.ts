@@ -1,5 +1,5 @@
 import { SHTResult, HTResults, SHTParallelOptions, SHTAsync } from "meta";
-import { SHTSimpleLookupKernel } from "../workers/SHTSimple.types";
+import { SHTSimpleLookupKernel } from "../workers/SHTSimpleLookup.types";
 import { wrap, Remote } from "comlink";
 
 const pool: Remote<SHTSimpleLookupKernel>[] = [];

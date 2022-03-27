@@ -1,4 +1,7 @@
-import { SHTSimple /* , SHTSimpleLookup */ } from "../src/main.deno.ts";
+import {
+  SHTSimple,
+  CHTSimple /* , SHTSimpleLookup */,
+} from "../src/main.deno.ts";
 
 /* eslint-disable prettier/prettier */
 const testImage = new Uint8Array([
@@ -22,4 +25,5 @@ const options = {
 
 (async () => {
   console.log(await SHTSimple(testImage, options));
+  console.log(await CHTSimple(testImage, options));
 })();

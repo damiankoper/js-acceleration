@@ -1,4 +1,7 @@
-import { SHTSimple /* , SHTSimpleLookup */ } from "../dist/main.node.mjs";
+import {
+  CHTSimple /* , SHTSimpleLookup */,
+  SHTSimple /* , SHTSimpleLookup */,
+} from "../dist/main.node.mjs";
 
 /* eslint-disable prettier/prettier */
 const testImage = new Uint8Array([
@@ -22,4 +25,5 @@ const options = {
 
 (async () => {
   console.log(await SHTSimple(testImage, options));
+  console.log(await CHTSimple(testImage, options));
 })();

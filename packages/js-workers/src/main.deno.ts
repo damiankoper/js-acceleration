@@ -1,7 +1,19 @@
+import { CHTSimpleFactory } from "./cht/CHTSimple.deno.ts";
 import { SHTSimpleFactory } from "./sht/SHTSimple.deno.ts";
 import { SHTSimpleLookupFactory } from "./sht/SHTSimpleLookup.deno.ts";
 import { wrap } from "https://deno.land/x/importw@0.3.0/src/comlink.ts";
 
+export const CHTSimple = CHTSimpleFactory(() =>
+  wrap(
+    new Worker(
+      new URL(
+        "./workers/adapters/CHTSimple.deno.worker.ts",
+        import.meta.url
+      ).href,
+      { type: "module" }
+    )
+  )
+);
 export const SHTSimple = SHTSimpleFactory(() =>
   wrap(
     new Worker(

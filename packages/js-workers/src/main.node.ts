@@ -1,9 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { CHTSimpleFactory } from "./cht/CHTSimple";
 import { SHTSimpleFactory } from "./sht/SHTSimple";
 import { SHTSimpleLookupFactory } from "./sht/SHTSimpleLookup";
 import { Worker } from "worker_threads";
 import { URL as NodeURL } from "url";
 import nodeEndpoint from "comlink/dist/umd/node-adapter";
+
+export const CHTSimple = CHTSimpleFactory(
+  () =>
+    nodeEndpoint(
+      new Worker(
+        new URL(
+          "./workers/adapters/CHTSimple.node.worker.ts",
+          import.meta.url
+        ) as NodeURL
+      ) as any
+    ) as any
+);
 
 export const SHTSimple = SHTSimpleFactory(
   () =>

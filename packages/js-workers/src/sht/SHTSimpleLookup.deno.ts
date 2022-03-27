@@ -3,8 +3,8 @@ import {
   HTResults,
   SHTParallelOptions,
   SHTAsync,
-} from "../../../meta/src/main.ts";
-import { SHTSimpleLookupKernel } from "../workers/SHTSimple.types.ts";
+} from "../../../meta/src/deno/main.ts";
+import { SHTSimpleLookupKernel } from "../workers/SHTSimpleLookup.types.ts";
 
 const pool: SHTSimpleLookupKernel[] = [];
 const SHTSimpleLookupFactory = (createWorker: () => SHTSimpleLookupKernel) => {
@@ -82,10 +82,12 @@ const SHTSimpleLookupFactory = (createWorker: () => SHTSimpleLookupKernel) => {
 
     return {
       results,
-      hSpace: options.returnHSpace ? {
-        data: houghSpace,
-        width: hsWidth,
-      } : undefined,
+      hSpace: options.returnHSpace
+        ? {
+            data: houghSpace,
+            width: hsWidth,
+          }
+        : undefined,
     };
   };
 

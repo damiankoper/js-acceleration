@@ -200,8 +200,18 @@ import * as gpu from "js-gpu";
           ...shtOptions,
         }),
       render:renderSHTResults
-    },
+    },*/
     {
+      id: "cht_workers",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        workers.CHTSimple(processedData, {
+          width: imageData.width,
+          ...chtOptions,
+        }),
+      inputImage: "/circle1.png",
+      render: renderCHTResults,
+    },
+    /*  {
       id: "sht_gpu",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         gpu.SHTSimple(processedData, {

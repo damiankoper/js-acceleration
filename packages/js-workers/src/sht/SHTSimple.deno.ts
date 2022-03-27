@@ -3,7 +3,7 @@ import {
   HTResults,
   SHTParallelOptions,
   SHTAsync,
-} from "../../../meta/src/main.ts";
+} from "../../../meta/src/deno/main.ts";
 import { SHTSimpleKernel } from "../workers/SHTSimple.types.ts";
 
 const pool: SHTSimpleKernel[] = [];
@@ -71,10 +71,12 @@ const SHTSimpleFactory = (createWorker: () => SHTSimpleKernel) => {
 
     return {
       results,
-      hSpace: options.returnHSpace ? {
-        data: houghSpace,
-        width: hsWidth,
-      } : undefined,
+      hSpace: options.returnHSpace
+        ? {
+            data: houghSpace,
+            width: hsWidth,
+          }
+        : undefined,
     };
   };
 
