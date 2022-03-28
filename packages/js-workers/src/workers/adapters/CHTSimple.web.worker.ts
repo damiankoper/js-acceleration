@@ -1,6 +1,12 @@
 import { expose } from "comlink";
-import { CHTSimpleKernel } from "../CHTSimple.core.worker";
+import {
+  CHTSimpleConv2Kernel,
+  CHTSimpleGradientKernel,
+} from "../CHTSimple.core.worker";
 
-expose({ run: CHTSimpleKernel });
+expose({
+  runConv2: CHTSimpleConv2Kernel,
+  runGradient: CHTSimpleGradientKernel,
+});
 
 export default undefined as unknown;

@@ -242,14 +242,28 @@ import * as gpu from "js-gpu";
     let t2 = performance.now() - t1;
     console.log(t2);
     let h1 = document.querySelector("#" + config.id);
-    h1.innerHTML += " - " + t2;
+    h1.innerHTML += " - " + Math.round(t2 * 100) / 100;
 
     t1 = performance.now();
     results = await config.fn(processedData, imageData);
     t2 = performance.now() - t1;
     console.log(t2);
     h1 = document.querySelector("#" + config.id);
-    h1.innerHTML += " - " + t2;
+    h1.innerHTML += " - " + Math.round(t2 * 100) / 100;
+
+    t1 = performance.now();
+    results = await config.fn(processedData, imageData);
+    t2 = performance.now() - t1;
+    console.log(t2);
+    h1 = document.querySelector("#" + config.id);
+    h1.innerHTML += " - " + Math.round(t2 * 100) / 100;
+
+    t1 = performance.now();
+    results = await config.fn(processedData, imageData);
+    t2 = performance.now() - t1;
+    console.log(t2);
+    h1 = document.querySelector("#" + config.id);
+    h1.innerHTML += " - " + Math.round(t2 * 100) / 100;
 
     renderHSpace(results, spaceCanvas);
     console.log(results.results.map((r) => r.r));
