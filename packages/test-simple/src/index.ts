@@ -229,6 +229,16 @@ import * as gpu from "js-gpu";
         }),
       render:renderSHTResults
     }, */
+    {
+      id: "cht_gpu",
+      fn: (processedData: Uint8Array, imageData: ImageData) =>
+        gpu.CHTSimple(processedData, {
+          width: imageData.width,
+          ...chtOptions,
+        }),
+      inputImage: "/circle1.png",
+      render: renderCHTResults,
+    },
   ];
 
   for (const config of configs) {

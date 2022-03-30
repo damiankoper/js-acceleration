@@ -64,7 +64,7 @@
   * wasm_f32x4_nearest robi half to even
   * std::round robi half up
 
-* benchmarki od theta, mają złożoność liniową, benchmark od rho nie ma praktycznego zastosowania, ponieważ rho jako przekątna jest optymalnym rozwiązaniem, a wahania odległości mają większy wpływ na jakość wykrywania niż próbkowanie kąta
+* benchmarki od theta, mają złożoność liniową, benchmark od rho nie ma praktycznego zastosowania, ponieważ rho jako przekątna jest optymalnym rozwiązaniem, a wahania odległości mają mniejszy wpływ na jakość wykrywania niż próbkowanie kąta
 
 * wycieki pamięci w wasm
 
@@ -93,3 +93,5 @@
 * zbadać wpływ fast-math na wydajność https://clang.llvm.org/docs/UsersManual.html#cmdoption-ffast-math
 * splot warty pokazania .wat - ładowanie kernela przez const bezpośrednio, optymalizacja inline
 * sprawdzić, czy kompilator sam unfolduje loopa w conv2 (chyba nie)
+
+* Dobre rozważania i problemy budowania https://vitejs.dev/guide/why.html
