@@ -1,36 +1,47 @@
 {
   "folders": [
     {
+      "name": "js-acceleration",
       "path": "."
     },
     {
+      "name": "benchmark",
       "path": "packages/benchmark"
     },
     {
+      "name": "js-benchmarks",
       "path": "packages/js-benchmarks"
     },
     {
+      "name": "meta",
       "path": "packages/meta"
     },
     {
+      "name": "js-sequential",
       "path": "packages/js-sequential"
     },
     {
+      "name": "js-workers",
       "path": "packages/js-workers"
     },
     {
+      "name": "js-gpu",
       "path": "packages/js-gpu"
     },
     {
+      "name": "cpp-sequential",
       "path": "packages/cpp-sequential"
     },
     {
+      "name": "node-cpp-sequential",
       "path": "packages/node-cpp-sequential"
     },
     {
+      "name": "wasm-sequential",
       "path": "packages/wasm-sequential"
     },
     {
+      "name": "test-simple",
       "path": "packages/test-simple"
     }
   ],

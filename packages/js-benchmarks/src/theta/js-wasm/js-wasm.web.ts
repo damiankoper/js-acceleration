@@ -5,6 +5,7 @@ wasmSequentialFactory()
   .init()
   .then((wasmSequential) => {
     webBaseFactory(
+      wasmSequential.CHTSimple.bind(wasmSequential),
       wasmSequential.SHTSimple.bind(wasmSequential),
       wasmSequential.SHTSimpleLookup.bind(wasmSequential),
       (name: string, env: string) => `js-wasm_theta_${name}_${env}.csv`

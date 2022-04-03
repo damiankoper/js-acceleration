@@ -36,7 +36,8 @@ export function createCHTSimpleKernel(
     [number[]],
     { width: number; height: number }
   >(
-    function (input: number[]) {
+    // !Prevents minification of kernel for correct transpilation
+    new Function(`return function (input/* : number[] */) {
       const w = this.constants.width;
       const h = this.constants.height;
       const x = Math.trunc(this.thread.x % this.constants.width);
@@ -51,7 +52,7 @@ export function createCHTSimpleKernel(
         2 * input[(y + 1) * w + x] + //
         input[(y + 1) * w + x + 1]
       );
-    },
+    }`)(),
     { output: [width * height], constants: { width, height }, pipeline: true }
   );
 
@@ -67,7 +68,8 @@ export function createCHTSimpleKernel(
         maxRad2: number;
       }
     >(
-      function (gxSpace: number[], gySpace: number[]) {
+      // !Prevents minification of kernel for correct transpilation
+      new Function(`return function (gxSpace/* : number[] */, gySpace/* : number[] */) {
         const w = this.constants.width;
         const h = this.constants.height;
         const x = Math.trunc(this.thread.x % w);
@@ -110,7 +112,7 @@ export function createCHTSimpleKernel(
           }
         }
         return result;
-      },
+      }`)(),
       {
         output: [width * height],
         constants: { width, height, minRad2, maxRad2, minR, maxR },

@@ -1,4 +1,13 @@
-import { SHT, SHTAsync, SHTOptions, SHTParallelOptions } from "meta";
+import {
+  CHT,
+  CHTAsync,
+  CHTOptions,
+  CHTParallelOptions,
+  SHT,
+  SHTAsync,
+  SHTOptions,
+  SHTParallelOptions,
+} from "meta";
 import { getImageData } from "../../utils/node";
 import { Benchmark } from "benchmark";
 import { format } from "fast-csv";
@@ -21,39 +30,60 @@ function mapResult(result: IBenchmarkResult, sizeTheta: number) {
 }
 
 export function nodeBaseFactory(
+  cht: CHT | CHTAsync,
   sht: SHT | SHTAsync,
   shtLookup: SHT | SHTAsync,
   fileFn: (name: string) => string,
   async = false,
-  shtOptions: Partial<SHTOptions | SHTParallelOptions> = {}
+  shtOptions: Partial<SHTOptions | SHTParallelOptions> = {},
+  chtOptions: Partial<CHTOptions | CHTParallelOptions> = {}
 ) {
   (async () => {
     const { imageData, width } = await getImageData(
-      "../../test/threshold/1.jpg"
+      "../../test/threshold/2.png"
     );
 
-    const options: SHTOptions = {
+    const optionsSHT: SHTOptions = {
       width,
       sampling: { rho: 1, theta: 1 },
       votingThreshold: 0.75,
       ...shtOptions,
     };
-    const benchmarkSHTSimple = !async
+
+    const optionsCHT: CHTOptions = {
+      width,
+      gradientThreshold: 0.5,
+      minDist: 50,
+      minR: 20,
+      maxR: 100,
+      ...chtOptions,
+    };
+
+    const benchmarkCHTSimple = !async
       ? new Benchmark(function () {
-          sht(imageData, options);
+          cht(imageData, optionsCHT);
         })
       : new Benchmark(async function () {
-          await sht(imageData, options);
+          await cht(imageData, optionsCHT);
+        });
+
+    const benchmarkSHTSimple = !async
+      ? new Benchmark(function () {
+          sht(imageData, optionsSHT);
+        })
+      : new Benchmark(async function () {
+          await sht(imageData, optionsSHT);
         });
     const benchmarkSHTSimpleLookup = !async
       ? new Benchmark(function () {
-          shtLookup(imageData, options);
+          shtLookup(imageData, optionsSHT);
         })
       : new Benchmark(async function () {
-          await shtLookup(imageData, options);
+          await shtLookup(imageData, optionsSHT);
         });
 
     const configs = [
+      { benchmark: benchmarkCHTSimple, name: "CHT_Simple" },
       { benchmark: benchmarkSHTSimple, name: "SHT_Simple" },
       { benchmark: benchmarkSHTSimpleLookup, name: "SHT_Simple_Lookup" },
     ];
@@ -64,7 +94,9 @@ export function nodeBaseFactory(
       );
 
       for (let theta = size.min; theta <= size.max; theta++) {
-        options.sampling.theta = theta;
+        optionsSHT.sampling.theta = theta;
+        optionsCHT.maxR = 20 + theta * 10;
+
         console.log("Benchmarking", config.name, "size:", theta);
         await new Promise<void>((resolve) => setTimeout(resolve, 200));
 

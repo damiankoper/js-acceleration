@@ -1,5 +1,5 @@
 import { asmSequentialFactory } from "wasm-sequential";
-import { nodeBaseFactory } from "../common/base.node"
+import { nodeBaseFactory } from "../common/base.node";
 
 console.log(asmSequentialFactory());
 
@@ -7,6 +7,7 @@ asmSequentialFactory()
   .init()
   .then((asmSequential) => {
     nodeBaseFactory(
+      asmSequential.CHTSimple.bind(asmSequential),
       asmSequential.SHTSimple.bind(asmSequential),
       asmSequential.SHTSimpleLookup.bind(asmSequential),
       (name: string) =>

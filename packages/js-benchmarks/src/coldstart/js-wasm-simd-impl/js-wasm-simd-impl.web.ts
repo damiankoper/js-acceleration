@@ -5,6 +5,7 @@ wasmSequentialImplicitSIMDFactory()
   .init()
   .then((wasmSequentialImplicitSIMD) => {
     webBaseFactory(
+      wasmSequentialImplicitSIMD.CHTSimple.bind(wasmSequentialImplicitSIMD),
       wasmSequentialImplicitSIMD.SHTSimple.bind(wasmSequentialImplicitSIMD),
       wasmSequentialImplicitSIMD.SHTSimpleLookup.bind(
         wasmSequentialImplicitSIMD

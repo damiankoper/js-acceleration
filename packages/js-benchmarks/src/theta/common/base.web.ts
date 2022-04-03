@@ -1,11 +1,20 @@
-import { SHT, SHTAsync, SHTOptions, SHTParallelOptions } from "meta";
+import {
+  CHT,
+  CHTAsync,
+  CHTOptions,
+  CHTParallelOptions,
+  SHT,
+  SHTAsync,
+  SHTOptions,
+  SHTParallelOptions,
+} from "meta";
 import { getImageData } from "../../utils/web";
 import { Benchmark } from "benchmark";
 import { IBenchmarkResult } from "benchmark/dist/contracts/IBenchmarkResult";
 import { runConfig, size } from "./runConfig";
 import { unparse } from "papaparse";
 import { saveAs } from "file-saver";
-import testImage from "../../../../../test/threshold/1.jpg";
+import testImage from "../../../../../test/threshold/2.png";
 
 function mapResult(result: IBenchmarkResult, sizeTheta: number) {
   return {
@@ -22,39 +31,61 @@ function mapResult(result: IBenchmarkResult, sizeTheta: number) {
 }
 
 export function webBaseFactory(
+  cht: CHT | CHTAsync,
   sht: SHT | SHTAsync,
   shtLookup: SHT | SHTAsync,
   fileFn: (name: string, env: string) => string,
   async = false,
-  shtOptions: Partial<SHTOptions | SHTParallelOptions> = {}
+  shtOptions: Partial<SHTOptions | SHTParallelOptions> = {},
+  chtOptions: Partial<CHTOptions | CHTParallelOptions> = {}
 ) {
   (async () => {
     const { imageData, width } = await getImageData(testImage);
 
-    const options: SHTOptions = {
+    const optionsSHT: SHTOptions = {
       width,
       sampling: { rho: 1, theta: 1 },
       votingThreshold: 0.75,
       ...shtOptions,
     };
+
+    const optionsCHT: CHTOptions = {
+      width,
+      gradientThreshold: 0.5,
+      minDist: 50,
+      minR: 20,
+      maxR: 100,
+      ...chtOptions,
+    };
+
+    const benchmarkCHTSimple = !async
+      ? new Benchmark(function () {
+          cht(imageData, optionsCHT);
+        })
+      : new Benchmark(async function () {
+          await cht(imageData, optionsCHT);
+        });
+
     const benchmarkSHTSimple = !async
       ? new Benchmark(function () {
-          sht(imageData, options);
+          sht(imageData, optionsSHT);
         })
       : new Benchmark(async function () {
-          await sht(imageData, options);
+          await sht(imageData, optionsSHT);
         });
+
     const benchmarkSHTSimpleLookup = !async
       ? new Benchmark(function () {
-          shtLookup(imageData, options);
+          shtLookup(imageData, optionsSHT);
         })
       : new Benchmark(async function () {
-          await shtLookup(imageData, options);
+          await shtLookup(imageData, optionsSHT);
         });
 
     let env = "TBD";
     const csvMap = new Map<string, string>();
     const configs = [
+      { benchmark: benchmarkCHTSimple, name: "CHT_Simple" },
       { benchmark: benchmarkSHTSimple, name: "SHT_Simple" },
       {
         benchmark: benchmarkSHTSimpleLookup,
@@ -64,7 +95,9 @@ export function webBaseFactory(
     for (const config of configs) {
       const results: unknown[] = [];
       for (let theta = size.min; theta <= size.max; theta++) {
-        options.sampling.theta = theta;
+        optionsSHT.sampling.theta = theta;
+        optionsCHT.maxR = 20 + theta * 10;
+
         const msg = `Benchmarking ${config.name} size: ${theta}\n`;
         console.log(msg);
         document.body.innerText += msg;

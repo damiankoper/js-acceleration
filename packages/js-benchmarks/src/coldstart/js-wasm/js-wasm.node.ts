@@ -5,6 +5,7 @@ wasmSequentialFactory()
   .init()
   .then((wasmSequential) => {
     nodeBaseFactory(
+      wasmSequential.CHTSimple.bind(wasmSequential),
       wasmSequential.SHTSimple.bind(wasmSequential),
       wasmSequential.SHTSimpleLookup.bind(wasmSequential),
       (name: string) =>

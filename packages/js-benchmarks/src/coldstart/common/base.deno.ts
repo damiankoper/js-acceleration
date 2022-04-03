@@ -1,5 +1,13 @@
-
-import { SHTOptions, SHT, SHTAsync, SHTParallelOptions} from "../../../../meta/dist/main.mjs";
+import {
+  SHTOptions,
+  SHT,
+  SHTAsync,
+  SHTParallelOptions,
+  CHTOptions,
+  CHT,
+  CHTAsync,
+  CHTParallelOptions,
+} from "../../../../meta/src/deno/main.ts";
 import { getImageData } from "../../utils/deno.ts";
 import { Benchmark } from "../../../../benchmark/dist/main.mjs";
 import { writeCSVObjects } from "https://deno.land/x/csv/mod.ts";
@@ -18,48 +26,66 @@ function mapResult(
 }
 
 export function denoBaseFactory(
+  cht: CHT | CHTAsync,
   sht: SHT | SHTAsync,
   shtLookup: SHT | SHTAsync,
   fileFn: (name: string) => string,
   async = false,
-  shtOptions: Partial<SHTOptions | SHTParallelOptions> = {}
+  shtOptions: Partial<SHTOptions | SHTParallelOptions> = {},
+  chtOptions: Partial<CHTOptions | CHTParallelOptions> = {}
 ) {
   (async () => {
-    const { imageData, width } = await getImageData("../../test/threshold/1.jpg");
+    const { imageData, width } = await getImageData(
+      "../../test/threshold/2.png"
+    );
 
-    const options: SHTOptions = {
+    const optionsSHT: SHTOptions = {
       width,
       sampling: { rho: 1, theta: 1 },
       votingThreshold: 0.75,
       ...shtOptions,
     };
-    const benchmarkSHTSimple = !async
+    const optionsCHT: CHTOptions = {
+      width,
+      gradientThreshold: 0.5,
+      minDist: 50,
+      minR: 20,
+      maxR: 100,
+      ...chtOptions,
+    };
+    const benchmarkCHTSimple = !async
       ? new Benchmark(function () {
-          sht(imageData, options);
+          cht(imageData, optionsCHT);
         })
       : new Benchmark(async function () {
-          await sht(imageData, options);
+          await cht(imageData, optionsCHT);
+        });
+    const benchmarkSHTSimple = !async
+      ? new Benchmark(function () {
+          sht(imageData, optionsSHT);
+        })
+      : new Benchmark(async function () {
+          await sht(imageData, optionsSHT);
         });
     const benchmarkSHTSimpleLookup = !async
       ? new Benchmark(function () {
-          shtLookup(imageData, options);
+          shtLookup(imageData, optionsSHT);
         })
       : new Benchmark(async function () {
-          await shtLookup(imageData, options);
+          await shtLookup(imageData, optionsSHT);
         });
 
     const configs = [
+      { benchmark: benchmarkCHTSimple, name: "CHT_Simple" },
       { benchmark: benchmarkSHTSimple, name: "SHT_Simple" },
       { benchmark: benchmarkSHTSimpleLookup, name: "SHT_Simple_Lookup" },
     ];
     for (const config of configs) {
-      const f = await Deno.open(new URL(fileFn(config.name), import.meta.url),
-        {
-          write: true,
-          create: true,
-          truncate: true,
-        }
-      );
+      const f = await Deno.open(new URL(fileFn(config.name), import.meta.url), {
+        write: true,
+        create: true,
+        truncate: true,
+      });
 
       console.log("Benchmarking", config.name);
       await new Promise<void>((resolve) => setTimeout(resolve, 200));
@@ -68,12 +94,12 @@ export function denoBaseFactory(
       const result = !async
         ? config.benchmark.runTimeIterations(c)
         : await config.benchmark.runTimeIterationsAsync(c);
-      
+
       console.log(config.benchmark.getColdSamples());
       const results: any[] = [];
-      config.benchmark.getColdSamples().forEach((sample:any, i:number) => {
+      config.benchmark.getColdSamples().forEach((sample: any, i: number) => {
         results.push(mapResult(result, sample, i));
-      })
+      });
       await writeCSVObjects(f, results, { header: Object.keys(results[0]) });
       f.close();
     }

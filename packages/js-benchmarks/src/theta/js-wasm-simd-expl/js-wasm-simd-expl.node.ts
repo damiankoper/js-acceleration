@@ -5,6 +5,7 @@ wasmSequentialSIMDFactory()
   .init()
   .then((wasmSequentialSIMD) => {
     nodeBaseFactory(
+      wasmSequentialSIMD.CHTSimple.bind(wasmSequentialSIMD),
       wasmSequentialSIMD.SHTSimple.bind(wasmSequentialSIMD),
       wasmSequentialSIMD.SHTSimpleLookup.bind(wasmSequentialSIMD),
       (name: string) =>

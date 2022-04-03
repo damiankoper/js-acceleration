@@ -5,6 +5,7 @@ asmSequentialFactory()
   .init()
   .then((asmSequential) => {
     nodeBaseFactory(
+      asmSequential.CHTSimple.bind(asmSequential),
       asmSequential.SHTSimple.bind(asmSequential),
       asmSequential.SHTSimpleLookup.bind(asmSequential),
       (name: string) => `../../../../../benchmark/js-asm_theta_${name}_node.csv`
