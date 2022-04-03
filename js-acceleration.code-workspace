@@ -43,6 +43,10 @@
     {
       "name": "test-simple",
       "path": "packages/test-simple"
+    },
+    {
+      "name": "frontend",
+      "path": "packages/frontend"
     }
   ],
   "settings": {
