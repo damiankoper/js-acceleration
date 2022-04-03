@@ -54,7 +54,7 @@ const config = {
   experiments: { outputModule: true },
   externalsType: "module",
   optimization: {
-    minimize: true,
+    minimize: false,
   },
 };
 

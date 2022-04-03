@@ -95,3 +95,7 @@
 * sprawdzić, czy kompilator sam unfolduje loopa w conv2 (chyba nie)
 
 * Dobre rozważania i problemy budowania https://vitejs.dev/guide/why.html
+
+
+## gpu.js
+* argument z kernelem nie działa w gpu.js - ewentualne pole do zbadania

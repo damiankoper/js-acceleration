@@ -88,7 +88,7 @@ import * as gpu from "js-gpu";
         }),
       render: renderSHTResults,
     }, */
-    {
+    /*     {
       id: "wasm_cht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequential.CHTSimple(processedData, {
@@ -97,7 +97,7 @@ import * as gpu from "js-gpu";
         }),
       inputImage: "/circle1.png",
       render: renderCHTResults,
-    },
+    }, */
     /*  {
       id: "wasm_implicit_simd_sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
@@ -116,7 +116,7 @@ import * as gpu from "js-gpu";
         }),
       render:renderSHTResults
     },*/
-    {
+    /*     {
       id: "wasm_implicit_simd_cht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequentialImplicitSIMD.CHTSimple(processedData, {
@@ -125,7 +125,7 @@ import * as gpu from "js-gpu";
         }),
       inputImage: "/circle1.png",
       render: renderCHTResults,
-    },
+    }, */
     /* {
       id: "wasm_simd_sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
@@ -144,7 +144,7 @@ import * as gpu from "js-gpu";
         }),
       render:renderSHTResults
     },*/
-    {
+    /*     {
       id: "wasm_simd_cht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         wasmSequentialSIMD.CHTSimple(processedData, {
@@ -153,7 +153,7 @@ import * as gpu from "js-gpu";
         }),
       inputImage: "/circle1.png",
       render: renderCHTResults,
-    },
+    }, */
     /*{
       id: "asm_sht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
@@ -172,7 +172,7 @@ import * as gpu from "js-gpu";
         }),
       render:renderSHTResults
     },*/
-    {
+    /*     {
       id: "asm_cht_seq",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         asmSequential.CHTSimple(processedData, {
@@ -181,7 +181,7 @@ import * as gpu from "js-gpu";
         }),
       inputImage: "/circle1.png",
       render: renderCHTResults,
-    },
+    }, */
     /*
     {
       id: "sht_workers",
@@ -201,7 +201,7 @@ import * as gpu from "js-gpu";
         }),
       render:renderSHTResults
     },*/
-    {
+    /*     {
       id: "cht_workers",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         workers.CHTSimple(processedData, {
@@ -210,17 +210,17 @@ import * as gpu from "js-gpu";
         }),
       inputImage: "/circle1.png",
       render: renderCHTResults,
-    },
-    /*  {
+    }, */
+    /*     {
       id: "sht_gpu",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         gpu.SHTSimple(processedData, {
           width: imageData.width,
           ...shtOptions,
         }),
-      render:renderSHTResults
-    },
-    {
+      render: renderSHTResults,
+    }, */
+    /*{
       id: "sht_gpu_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         gpu.SHTSimpleLookup(processedData, {
@@ -276,8 +276,10 @@ import * as gpu from "js-gpu";
     h1.innerHTML += " - " + Math.round(t2 * 100) / 100;
 
     renderHSpace(results, spaceCanvas);
-    console.log(results.results.map((r) => r.r));
 
-    config.render(results, resultsCanvas);
+    console.log(results.results.map((r) => ("r" in r ? r.r : r)));
+
+    // @ts-ignore
+    config.render(results, resultsCanvas, imageData.width, imageData.height);
   }
 })();
