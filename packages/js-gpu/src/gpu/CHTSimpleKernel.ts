@@ -1,6 +1,6 @@
 import { GPU, IKernelRunShortcutBase } from "gpu.js";
 
-export const gpu = new GPU({ mode: "cpu" });
+export const gpu = new GPU();
 export function createCHTSimpleKernel(
   width: number,
   height: number,
@@ -73,30 +73,37 @@ export function createCHTSimpleKernel(
         const x = Math.trunc(this.thread.x % w);
         const y = Math.trunc(this.thread.x / w);
 
-        let result = 0;
-        for (let gpy = 0; gpy < h; gpy++) {
-          const dy = Math.abs(y - gpy);
-          for (let gpx = 0; gpx < w; gpx++) {
-            const dx = Math.abs(x - gpx);
-            if (
-              (dx > this.constants.minR && dx <= this.constants.maxR) ||
-              (dy > this.constants.minR && dy <= this.constants.maxR)
-            ) {
-              const d = dx * dx + dy * dy;
-              if (d > this.constants.minRad2 && d <= this.constants.maxRad2) {
-                const coord = w * gpy + gpx;
-                const gx = gxSpace[coord];
-                const gy = gySpace[coord];
-                if (gx * gx + gy * gy >= 1) {
-                  let m = 0;
-                  if (gx != 0 && Math.abs((m = gy / gx)) <= 1) {
-                    if (m == 0)
-                      if (y == Math.trunc(m * x + gpy - m * gpx)) result++;
-                  } else {
-                    m = gx / gy;
-                    if (m == 0)
-                      if (x == Math.trunc(m * y + gpx - m * gpy)) result++;
-                  }
+        const minY = Math.max(y - this.constants.maxR, 0);
+        const maxY = Math.min(y + this.constants.maxR, h);
+        const minX = Math.max(x - this.constants.maxR, 0);
+        const maxX = Math.min(x + this.constants.maxR, w);
+
+        let result = 0.0;
+        for (let gpy = minY; gpy < maxY; gpy++) {
+          const dy = y - gpy;
+          for (let gpx = minX; gpx < maxX; gpx++) {
+            const dx = x - gpx;
+
+            const d = dx * dx + dy * dy;
+            if (d > this.constants.minRad2 && d <= this.constants.maxRad2) {
+              const coord = w * gpy + gpx;
+              const gx = gxSpace[coord];
+              const gy = gySpace[coord];
+              if (gx * gx + gy * gy >= 1) {
+                let m = 0;
+                if (gx != 0 && Math.abs((m = gy / gx)) <= 1) {
+                  if (
+                    (m !== 0 && y == Math.trunc(m * x + gpy - m * gpx)) ||
+                    (m == 0 && y == gpy && gy == 0)
+                  )
+                    result += 1;
+                } else {
+                  m = gx / gy;
+                  if (
+                    (m !== 0 && x == Math.trunc(m * y + gpx - m * gpy)) ||
+                    (m == 0 && x == gpx && gx == 0)
+                  )
+                    result += 1;
                 }
               }
             }
@@ -107,10 +114,9 @@ export function createCHTSimpleKernel(
       {
         output: [width * height],
         constants: { width, height, minRad2, maxRad2, minR, maxR },
-        optimizeFloatMemory: true,
       }
     )
-    .setLoopMaxIterations(width * height);
+    .setOptimizeFloatMemory(true);
 
   return function (binaryImage: Uint8Array) {
     return gradientKernel(sobelXKernel(binaryImage), sobelYKernel(binaryImage));

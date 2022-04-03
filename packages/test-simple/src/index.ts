@@ -211,7 +211,7 @@ import * as gpu from "js-gpu";
       inputImage: "/circle1.png",
       render: renderCHTResults,
     }, */
-    /*     {
+    {
       id: "sht_gpu",
       fn: (processedData: Uint8Array, imageData: ImageData) =>
         gpu.SHTSimple(processedData, {
@@ -219,7 +219,7 @@ import * as gpu from "js-gpu";
           ...shtOptions,
         }),
       render: renderSHTResults,
-    }, */
+    },
     /*{
       id: "sht_gpu_lookup",
       fn: (processedData: Uint8Array, imageData: ImageData) =>

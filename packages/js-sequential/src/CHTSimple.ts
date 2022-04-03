@@ -45,26 +45,22 @@ const CHTSimple: CHT = function (binaryImage: Uint8Array, options: CHTOptions) {
       const gy = gySpace[coord];
       if (gx * gx + gy * gy >= 1) {
         if (gx != 0 && Math.abs((m = gy / gx)) <= 1) {
-          if (m == 0) {
-            const bounds = getBounds(x, width, minR, maxR);
-            for (let i = 0; i < 4; i += 2)
-              for (let px = bounds[i]; px < bounds[i + 1]; px++) {
-                const py = Math.trunc(m * px - x * m + y);
-                if (inBounds(x, y, px, py, height, minRad2, maxRad2))
-                  maxValue = Math.max(maxValue, ++houghSpace[py * width + px]);
-              }
-          }
+          const bounds = getBounds(x, width, minR, maxR);
+          for (let i = 0; i < 4; i += 2)
+            for (let px = bounds[i]; px < bounds[i + 1]; px++) {
+              const py = Math.trunc(m * px - x * m + y);
+              if (inBounds(x, y, px, py, height, minRad2, maxRad2))
+                maxValue = Math.max(maxValue, ++houghSpace[py * width + px]);
+            }
         } else {
           m = gx / gy;
-          if (m == 0) {
-            const bounds = getBounds(y, height, minR, maxR);
-            for (let i = 0; i < 4; i += 2)
-              for (let py = bounds[i]; py < bounds[i + 1]; py++) {
-                const px = Math.trunc(m * py - y * m + x);
-                if (inBounds(y, x, py, px, width, minRad2, maxRad2))
-                  maxValue = Math.max(maxValue, ++houghSpace[py * width + px]);
-              }
-          }
+          const bounds = getBounds(y, height, minR, maxR);
+          for (let i = 0; i < 4; i += 2)
+            for (let py = bounds[i]; py < bounds[i + 1]; py++) {
+              const px = Math.trunc(m * py - y * m + x);
+              if (inBounds(y, x, py, px, width, minRad2, maxRad2))
+                maxValue = Math.max(maxValue, ++houghSpace[py * width + px]);
+            }
         }
       }
     }
