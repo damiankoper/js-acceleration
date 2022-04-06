@@ -26,3 +26,4 @@ export type CHTResults = HTResults<CHTResult>;
 
 export type CHT = HT<CHTOptions, CHTResult>;
 export type CHTAsync = HTAsync<CHTOptions, CHTResult>;
+export type CHTParallelAsync = HTAsync<CHTParallelOptions, CHTResult>;

@@ -29,3 +29,4 @@ export type SHTResults = HTResults<SHTResult>;
 
 export type SHT = HT<SHTOptions, SHTResult>;
 export type SHTAsync = HTAsync<SHTOptions, SHTResult>;
+export type SHTParallelAsync = HTAsync<SHTParallelOptions, SHTResult>;

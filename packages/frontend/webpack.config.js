@@ -6,7 +6,9 @@ import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import { fileURLToPath } from "url";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import { VueLoaderPlugin } from "vue-loader";
-
+import AutoImport from "unplugin-auto-import/webpack";
+import Components from "unplugin-vue-components/webpack";
+import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -33,6 +35,12 @@ const config = {
     }),
     new ForkTsCheckerWebpackPlugin(),
     new VueLoaderPlugin(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()],
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()],
+    }),
   ],
   module: {
     rules: [
@@ -50,8 +58,12 @@ const config = {
         },
       },
       {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      {
         test: /\.s[ac]ss$/i,
-        use: ["style-loader", "css-loader", "sass-loader"],
+        use: ["sass-loader"],
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
@@ -65,7 +77,6 @@ const config = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     fallback: {
-      buffer: false,
       util: false,
       zlib: false,
       assert: false,

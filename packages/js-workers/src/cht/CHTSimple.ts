@@ -1,4 +1,9 @@
-import { CHTAsync, CHTParallelOptions, CHTResult, HTResults } from "meta";
+import {
+  CHTParallelAsync,
+  CHTParallelOptions,
+  CHTResult,
+  HTResults,
+} from "meta";
 import { CHTSimpleKernel } from "../workers/CHTSimple.types";
 import * as Comlink from "comlink";
 
@@ -19,7 +24,7 @@ const kernelShift = Math.trunc(kernelSize / 2);
 
 const pool: Comlink.Remote<CHTSimpleKernel>[] = [];
 const CHTSimpleFactory = (createWorker: () => Worker) => {
-  const CHTSimple: CHTAsync = async function (
+  const CHTSimple: CHTParallelAsync = async function (
     binaryImage: Uint8Array,
     options: CHTParallelOptions
   ): Promise<HTResults<CHTResult>> {

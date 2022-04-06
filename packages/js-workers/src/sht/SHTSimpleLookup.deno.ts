@@ -2,13 +2,13 @@ import {
   SHTResult,
   HTResults,
   SHTParallelOptions,
-  SHTAsync,
+  SHTParallelAsync,
 } from "../../../meta/src/deno/main.ts";
 import { SHTSimpleLookupKernel } from "../workers/SHTSimpleLookup.types.ts";
 
 const pool: SHTSimpleLookupKernel[] = [];
 const SHTSimpleLookupFactory = (createWorker: () => SHTSimpleLookupKernel) => {
-  const SHTSimpleLookup: SHTAsync = async function (
+  const SHTSimpleLookup: SHTParallelAsync = async function (
     binaryImage: Uint8Array,
     options: SHTParallelOptions
   ): Promise<HTResults<SHTResult>> {

@@ -1,15 +1,17 @@
 <template>
-  <div>xd</div>
+  <Camera />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import Camera from "./camera/Camera.vue";
 
 export default defineComponent({
+  components: { Camera },
   setup() {
     return {};
   },
 });
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>

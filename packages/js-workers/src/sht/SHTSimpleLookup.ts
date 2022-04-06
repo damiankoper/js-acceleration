@@ -1,10 +1,15 @@
-import { SHTResult, HTResults, SHTParallelOptions, SHTAsync } from "meta";
+import {
+  SHTResult,
+  HTResults,
+  SHTParallelOptions,
+  SHTParallelAsync,
+} from "meta";
 import { SHTSimpleLookupKernel } from "../workers/SHTSimpleLookup.types";
 import { wrap, Remote } from "comlink";
 
 const pool: Remote<SHTSimpleLookupKernel>[] = [];
 const SHTSimpleLookupFactory = (createWorker: () => Worker) => {
-  const SHTSimpleLookup: SHTAsync = async function (
+  const SHTSimpleLookup: SHTParallelAsync = async function (
     binaryImage: Uint8Array,
     options: SHTParallelOptions
   ): Promise<HTResults<SHTResult>> {

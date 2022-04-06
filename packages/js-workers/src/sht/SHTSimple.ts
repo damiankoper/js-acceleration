@@ -1,10 +1,15 @@
-import { SHTParallelOptions, SHTResult, HTResults, SHTAsync } from "meta";
+import {
+  SHTParallelOptions,
+  SHTResult,
+  HTResults,
+  SHTParallelAsync,
+} from "meta";
 import { SHTSimpleKernel } from "../workers/SHTSimple.types";
 import * as Comlink from "comlink";
 
 const pool: Comlink.Remote<SHTSimpleKernel>[] = [];
 const SHTSimpleFactory = (createWorker: () => Worker) => {
-  const SHTSimple: SHTAsync = async function (
+  const SHTSimple: SHTParallelAsync = async function (
     binaryImage: Uint8Array,
     options: SHTParallelOptions
   ): Promise<HTResults<SHTResult>> {

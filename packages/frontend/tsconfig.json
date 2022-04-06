@@ -1,13 +1,18 @@
 {
   "compilerOptions": {
+    "strict": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "module": "ESNext",
-    "target": "es5",
+    "target": "esnext",
     "allowJs": true,
     "declaration": true,
     "declarationDir": "dist",
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "isolatedModules": true,
+    "types": ["element-plus/global", "webrtc", "@types/w3c-image-capture"]
   },
-  "files": ["src/index.ts", "src/shims-vue.d.ts"]
+  "files": ["src/shims-vue.d.ts"],
+  "include": ["**/*.ts", "**/*.vue"],
+  "exclude": ["node_modules"]
 }
