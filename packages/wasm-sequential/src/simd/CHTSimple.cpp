@@ -179,6 +179,7 @@ CHTResults CHTSimple(const std::vector<uint8_t> binaryImage,
     }
   }
 
+  v128_t vRAccLength = wasm_u32x4_splat(rAccLength);
   for (CHTResult &result : results) {
     std::fill(rAcc.begin(), rAcc.end(), 0);
     v128_t vX = wasm_f32x4_splat(result.x);
@@ -197,11 +198,11 @@ CHTResults CHTSimple(const std::vector<uint8_t> binaryImage,
       v128_t vD = wasm_f32x4_add(vDX, vDY);
       vD = wasm_f32x4_sqrt(vD);
       vD = wasm_i32x4_trunc_sat_f32x4(vD);
-      wasm_v128_store(vIOps, vD);
-
+      vD = wasm_i32x4_sub(vD, vRAccLength);
+      vD = wasm_v128_store(vIOps, vD);
       for (int i = 0; i < 4 && p + i < pixels.size(); i++) {
-        if (vIOps[i] <= maxR && vIOps[i] >= minR)
-          ++rAcc[vIOps[i] - minR];
+        if (vIOps[i] < rAccLength)
+          ++rAcc[vIOps[i]];
       }
     }
 

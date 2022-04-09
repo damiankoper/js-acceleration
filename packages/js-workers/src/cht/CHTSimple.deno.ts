@@ -42,7 +42,7 @@ const CHTSimpleFactory = (createWorker: () => CHTSimpleKernel) => {
     const concurrency = Math.max(options.concurrency || 1, 1);
     const missingWorkers = Math.max(concurrency - pool.length, 0);
     for (let i = 0; i < missingWorkers; i++) {
-      pool.push(Comlink.wrap(createWorker()));
+      pool.push(createWorker());
     }
 
     // Defaults
@@ -56,14 +56,14 @@ const CHTSimpleFactory = (createWorker: () => CHTSimpleKernel) => {
       width,
       height,
       sobelXKernel,
-      options.concurrency
+      options?.concurrency || 1
     );
     const gySpace = await conv2(
       sharedImage,
       width,
       height,
       sobelYKernel,
-      options.concurrency
+      options?.concurrency || 1
     );
 
     const minDist2 = minDist * minDist;
@@ -102,7 +102,7 @@ const CHTSimpleFactory = (createWorker: () => CHTSimpleKernel) => {
       }
 
     candidates
-      .sort((a, b) => b.acc - a.acc)
+      .sort((a, b) => (b?.acc || 0) - (a?.acc || 0))
       .forEach((c) => {
         const distance = results.every(
           (r) => distance2(r.x, r.y, c.x, c.y) >= minDist2

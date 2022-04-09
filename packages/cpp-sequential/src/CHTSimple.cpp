@@ -146,10 +146,11 @@ CHTResults CHTSimple(const std::vector<uint8_t> binaryImage,
   for (CHTResult &result : results) {
     std::fill(rAcc.begin(), rAcc.end(), 0);
     for (const auto pixel : pixels) {
-      uint32_t d = std::trunc(
-          std::sqrt(distance2(result.x, result.y, pixel.first, pixel.second)));
-      if (d <= maxR && d >= minR)
-        ++rAcc[d - minR];
+      uint32_t d = std::trunc(std::sqrt(distance2(result.x, result.y,
+                                                  pixel.first, pixel.second))) -
+                   minR;
+      if (d < rAccLength)
+        ++rAcc[d];
     }
 
     uint32_t bestRadiusVotes = 0;
