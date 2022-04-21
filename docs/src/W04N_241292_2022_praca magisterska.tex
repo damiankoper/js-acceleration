@@ -624,6 +624,27 @@ Listing \thelstlisting: #1\hfill%\hfill%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\includeonly{abbreviations,chapter01} % uncomment it if you with to complile only selected latex files (this will speed up compilation, especially if you focuse on a specific part of the thesis)
 
+\renewcommand{\abstractnamefont}{\normalfont\Large\bfseries}
+\renewcommand{\abstracttextfont}{\normalfont}
+%\AtBeginDocument{% 
+\addto\captionspolish{
+\renewcommand\abstractname{Streszczenie} % niepotrzebne, bo przy polskich ustawieniach jêzykowych jest 'Streszczenie'
+}%}
+
+%\AtBeginDocument{% 
+\addto\captionsenglish{
+\renewcommand\englishabstractname{Abstract} % niepotrzebne, bo przy polskich ustawieniach jêzykowych jest 'Streszczenie'
+}%}
+
+\makeatletter
+\edef\kv{ }
+\newcommand{\kvAdd}[1]{\edef\kv{\kv{}#1 }}
+\newcommand\mykeywords[1]{\kvAdd{#1}\hspace{\absleftindent}%
+\parbox{\linewidth-2.0\absleftindent}{
+       \iflanguage{polish}{\textbf{Słowa kluczowe:} #1}{%
+			  \iflanguage{english}{\textbf{Keywords:} #1}}{}}
+				}
+
 \begin{document}
 % Here you have the commands for setting the spacying (do not change)
 %\SingleSpacing
@@ -636,6 +657,10 @@ Listing \thelstlisting: #1\hfill%\hfill%
 \includepdf[pages={1}]{../out/title}
 
 \cleardoublepage
+\thispagestyle{empty}
+\include{abstract} 
+\pagestyle{outer}
+\clearpage
 
 \chapterstyle{noNumbered}  % Below there are declarations of various lists. Please comment out those which are too short (the list should contain at least 5 items)
 \pagestyle{outer}
@@ -661,6 +686,12 @@ Listing \thelstlisting: #1\hfill%\hfill%
 \include{abbreviations} % If abbreviations list is short, you can comment it out
 \chapterstyle{default}{
 \include{chapters/01-introduction}
+\include{chapters/02-js-env-methods}
+\include{chapters/03-hough}
+\include{chapters/04-benchmarking}
+\include{chapters/05-implementation}
+\include{chapters/06-results}
+\include{chapters/07-summary}
 
 
 
