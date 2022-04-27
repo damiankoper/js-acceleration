@@ -1,39 +1,78 @@
 \chapter{Wstęp}
 
-Obliczenia numeryczne, a konkretnie algorytmy intensywne obliczeniowo
+Prawo Moore'a mówi, że liczba tranzystorów w~układach scalonych podwaja się co około dwa lata. Prawo Koomey'a opisuje natomiast trend wzrostu liczby obliczeń na jeden dżul energii, która podwaja się co 1.57 lat. Choć w~ostatnich latach, w~związku ze zmniejszającym się tempem miniaturyzacji tranzystorów, wartości te przestały być aktualne to wciąż mamy do czynienia ze zjawiskiem ustawicznego wzrostu mocy obliczeniowej. Dodatkowo, zgodnie z~obserwacją nazwaną prawem Huang'a - prezesa firmy NVIDIA, wzrost wydajności układów graficznych wzrasta więcej niż dwukrotnie co dwa lata\cite{tongo}, co świadczy o~obecnym rozwoju możliwości optymalizacji architektur i~programów wykorzystujących przetwarzanie masowo równoległe.  Wzrost wydajności z~kolei zwiększa możliwości wykorzystania algorytmów, które wcześniej były zbyt intensywne obliczeniowo i~nie mogły być wykorzystane w~rozwiązaniach produkcyjnych. Powszechnie dostępne wydajne maszyny dają również możliwości szybszego prototypowania rozwiązań większej liczbie osób, co z~kolei wpływa na rozwój samych algorytmów i~ich zastosowań. Algorytmy i~obliczenia opierają się na osiągnięciach analizy numerycznej oraz matematyki dyskretnej.
 
-- rozumienie ogólne
+Analiza numeryczna zajmuje się opisywaniem i~analizą metod pozyskiwania wyników dla problemów matematycznych. Dzięki jej osiągnięciom możliwe jest budowanie algorytmów, które są kompletnym i~jednoznacznym opisem metody konstruowania rozwiązania owych problemów. Konstruowane algorytmy mogą mieć różne poziomy skomplikowania zaczynając od obliczania wartości funkcji, wielomianów, czy też znajdować rozwiązania układów równań. Dzięki nim możemy aproksymować wartości funkcji - obliczać pochodne oraz całki korzystając z~metod prostokątów, trapezów, czy Simpson'a. Możemy obliczać przybliżenia funkcji trygonometrycznych korzystając z~szeregów Taylor'a. Dzięki obliczeniom opartym o~algebrę liniową i~rachunek różniczkowy mogły rozwinąć się pola związana z~uczeniem maszynowym. Znajdowanie wektorów i~wartości własnych macierzy w~metodzie PCA w~celu redukcji wymiarowości danych, a~w końcu algorytmy propagacji wstecznej szczególnie wykorzystywane w~intensywnie rozwijającym się obszarze uczenia głębokiego\cite{phillips1996theory}.
 
-- charakterystyka
+Niezależnie od skali zaawansowania algorytmów dążą one do stanowienia rozwiązania konkretnych problemów świata rzeczywistego. Przykładem ich zastosowania jest przewidywanie pogody w~oparciu o~modele meteorologiczne, które zaczęło intensywnie rozwijać się wraz z~dostępem do coraz większej mocy obliczeniowej i~udoskonalaniem samych modeli. W~ciągu 15 lat, od 1971 roku, spełnialność prognoz 36-godzinnych zrównała się ze spełnialnością prognoz 72-godzinnych\cite{lynch2008origins}. Kolejnym wartym przytoczenia przykładem jest obszar analizy obrazów z~wyszczególnieniem zagadnienia ich klasyfikacji, gdzie wzrost mocy obliczeniowej pozwolił na rozwój algorytmów. W~ciągu 8 lat metryka dokładności klasyfikacji obrazów na zbiorze danych ImageNet wzrosła z~63\% do 90\%\cite{lynch2008origins,dai2021coatnet}.
 
-- obszary
-
-- konieczność i możliwość akceleracji i optymalizacji
+Dynamiczny rozwój algorytmów napędzany jest przede wszystkim przez poszerzanie i~budowanie wiedzy domenowej, specyficznej dla rozwiązywanego problemu. Jednak, aby uczynić taki rozwój możliwym, musi być on oparty na niezbędnych filarach jakimi są oprogramowanie, które służy do prototypowania, a~następnie wdrażania rozwiązań oraz środowisko sprzętowe, które umożliwia przeprowadzanie obliczeń, wielokrotnych testów, prototypów na małą oraz wdrożeń na dużą skalę. Wraz ze wzrostem złożoności problemu liczba obliczeń niezbędnych do jego rozwiązania również rośnie i~w przypadku ich większości ten wzrost jest wykładniczy lub większy. Niezbędnym zatem jest, aby oprogramowanie potrafiło wykorzystać wszelkie dostępne metody akceleracji zarówno te związane z~optymalizacją samego algorytmu, jak i~te związane z~mechanizmami akceleracji sprzętowej.
 
 \section{Istota rzeczy}
 
-- Środowiska dla obliczeń numerycznych
+Wykonywanie obliczeń wśród obecnie popularnych rozwiązań można podzielić na dwie grupy. Pierwsza z~nich używa specjalnie do tego celu stworzonego języka programowania, często również w~połączeniu ze zintegrowanym środowiskiem programistycznym (Integrated Development Environment, ang. IDE). Przykładem takiego rozwiązania jest środowisko i~język MATLAB\cite{matlab} oraz R\cite{r}, czy też środowisko Mathematica z~językiem Wolfram\cite{mathematica}.
 
-- języki programowania
+Druga grupa używa języka ogólnego przeznaczenia do wykonywania obliczeń w~oparciu o~zewnętrzne biblioteki w~zdecydowanej większości udostępniane jako oprogramowanie open-source, które dostarczają wymagany zestaw funkcjonalności niwelując potrzebę ich ręcznej implementacji. Języki takie możemy podzielić na te niskiego poziomu, zapewniające wysoką wydajność, oraz te wysokiego poziomu, interpretowane, zapewniające większą wygodę użytkowania. Najbardziej popularnym tego typu środowiskiem jest język Python, którego społeczność stworzyła liczne biblioteki (w postaci pakietów) do przetwarzania danych, obliczeń numerycznych i~statystycznych, analizy obrazów, czy uczenia maszynowego. Najpopularniejsze z~nich podane zostały w~tabeli \ref{tab:py-js}. W~nawiasach została ujęta liczba pobrań danego pakietu w~przeciągu ostatniego tygodnia na dzień 2022-04-27. Dla punktu odniesienia warto dodać, że w~przeciągu tego samego tygodnia pobrano łącznie 3.409.997.407 pakietów \cite{pypi-stats}.
 
-- - kompilowane
+Biblioteki takich języków, czego przykładem jest biblioteka OpenCV, często implementowane są w językach kompilowanych bezpośrednio do kodu maszynowego takich jak C++ czy Rust udostępniając jednolity interfejs, którego metody poprzez powiązania wywoływać mogą języki skryptowe wysokiego poziomu takie, jak już wspomniany Python. Takie rozwiązania zapewnia możliwość zbudowania wersji biblioteki kompatybilnej z wieloma środowiskami i językami na podstawie jednego kodu bazowego, poddając adaptacji tylko na linii biblioteki niskopoziomowej i języka wysokiego poziomu. Skompilowana biblioteka poddana może być również procesom optymalizacji, co zwiększyć może jej wydajność. Wadę takiego rozwiązania stanowi konieczność kompilowania biblioteki niskiego poziomu dla wielu systemów operacyjnych, czy architektur procesora. Taka kompilacja odbywać może się przed publikacją samej biblioteki, a gotowe artefakty pobierane są przez użytkownika w momencie instalacji. Kompilacja może odbywać się również bezpośrednio na maszynie użytkownika w momencie instalacji.
 
-- - interpretowane
+Opisany podział nie skłania do uznania przewagi jednej z~grup nad drugą w~żadnym z~aspektów. W~środowiskach specyficznych i~zintegrowanych brakujące funkcjonalności mogą zostać dodane przez twórców jako biblioteki standardowe języka oraz zaimplementowane przez społeczność w~bibliotekach języków ogólnego przeznaczenia. Obie grupy rozwiązań z~reguły są w~stanie działać w~środowisku tego samego systemu operacyjnego i~wchodzić w~interakcje z~tym samym sprzętem, i~wykorzystać idące za tym możliwości akceleracji obliczeń.
 
-\subsection{Duża i rosnąca rola środowisk webowych}
+\subsection{Duża i~rosnąca rola technologii webowych}
 
+Technologie webowe zdefiniować można jako narzędzia i techniki umożliwiające wymianę danych pomiędzy różnymi urządzeniami przez internet. Technologie webowe mogą występować i spełniać różne zadania na wielu poziomach architektury aplikacji. W przypadku architektury klient-serwer środowiskiem frontend'owym umożliwiającym wyświetlanie i obsługę graficznego interfejsu użytkownika zwykle jest przeglądarka internetowa, gdzie za jego implementację na najniższym poziomie abstrakcji odpowiadają języki HTML, CSS i JavaScript. Serwerem może być aplikacja komunikująca się z klientem za pomocą API zaimplementowanego w architekturze REST, czy też za pomocą języka zapytań GraphQL uruchamiana w środowisku NodeJS. 
+
+Warto zaznaczyć, że serwer, jak i klient, nie muszą być zaimplementowane z wykorzystaniem języka JavaScript by być uznawanym jako aplikacja webowa. Języki takie jak PHP, Python, Ruby, Java, czy C\# także oferują zaawansowane frameworki, jednak to język JavaScript, ze względu na historię swojego rozwoju ściśle powiązaną z przeglądarką internetową, uważany jest jako główne narzędzie i czynnik rozwoju technologii webowych zarówno w części klienckiej jak i serwerowej. Potwierdzają to badania, gdzie JavaScript w 2021 roku dziewiąty rok z rzędu został wyłoniony jako najpopularniejsza technologia wśród developerów \cite{stack2021}.
+
+\begin{table}[h]
+    \caption{Popularne biblioteki do przetwarzania danych w~języku Python i~ich odpowiedniki w~języku JavaScript. Dane pochodzą z~serwisów kolejno PyPI Stats oraz NPM, a tygodniowa liczba pobrań znajduje się w nawiasach.}
+    \centering
+    \renewcommand\arraystretch{1.2}
+    \begin{tabularx}{\linewidth}[t]{p{5cm} p{4.5cm} X}
+        \bfseries{Python} & \bfseries{JavaScript} & \bfseries{Zastosowanie} \\ \hline
+        numpy (26.067.844) & numjs (533) & Operacje na macierzach \\ \hline
+        pandas (19.778.648) & danfojs (1.029) & Operacje na strukturach danych \\ \hline
+        scipy (9.986.376) & simple-statistics (87.882) \newline fft.js (8.027) & Operacje związane z~analizą numeryczną, przetwarzanie sygnałów, algebra liniowa. \\ \hline
+        scikit-learn (7.705.438) & ml (156) & Uczenie maszynowe \\ \hline
+        matplotlib (6.457.099) \newline plotly (1.632.246) & plotly.js (149.542) \newline c3 (83.564) & Wizualizacja danych \\ \hline
+        tensorflow (3.348.986) & @tensorflow/tfjs (91.233) & Sieci neuronowe \\ \hline
+        opencv-python (1.236.711) & OpenCV.js (b.d \cite{cv2-js}) \newline jimp (1.479.783) \newline image-js (4.103)        & Operacja na obrazach, computer vision \\ \hline
+
+    \end{tabularx}
+    \label{tab:py-js}
+\end{table}
+
+\subsubsection{JavaScript w obliczeniach numerycznych}
+
+Jednak pomimo swojej popularności, język JavaScript nie zyskał popularności wśród zadań obliczeń inżynierskich, naukowych, statystycznych, obróbki i analizy obrazów w przeciwieństwie do języka Python. Jest on starszy od języka JavaScript i w przeciwieństwie do niego od początku mógł pełnić zadanie narzędzia do implementacji obliczeń, podczas gdy JavaScript ograniczony był jedynie do środowiska przeglądarki internetowej. Dopiero w 2009 roku, wraz z pojawieniem się środowiska NodeJS, możliwe stało się uruchamianie kodu JavaScript po stronie serwera. Innym środowiskiem umożliwiającym uruchamianie kodu języka JavaScript po stronie serwera jest powstały w 2018 roku Deno. 
+
+Innym, czynnikiem % TODO opisać rozwój metod akceleracji
+
+Obecnie, z technicznego punktu widzenia, nie istnieją zasadnicze różnice pomiędzy środowiskami języków Python i JavaScript, które hamowałyby w znacznym stopniu rozwój bibliotek służącym do prototypowania i wdrażania aplikacji zajmującymi się obliczeniami numerycznymi w środowiskach języka JavaScript. 
+
+W tabeli \ref{tab:py-js} przedstawiono porównanie popularnych bibliotek stosowanych przy obliczeniach numerycznych języka Python z ich odpowiednikami z języka JavaScript. Widać wyraźnie dysproporcję w liczbie pobrań bibliotek pomiędzy językami. W wielu przypadkach, kiedy autorowi nie udało się znaleźć dokładnego odpowiednika danej biblioteki, a znalezione zestawy bibliotek języka JavaScript nie pokrywają w całości funkcjonalności biblioteki języka Python.
+
+% https://github.com/iodide-project/awesome-browser-data-science-libraries#mathstatistics
+% https://stackoverflow.com/questions/31412537/numpy-like-package-for-node
 - Czy nadają się do obliczeń
 
 - - pod kątem istniejących rozwiązań
 
-- - pod kątem community, bibliotek i metod interakcji
+- - pod kątem community, bibliotek i~metod interakcji
 
-- problem wielu środowisk i niekompatybilności
+- problem wielu środowisk i~niekompatybilności
 
 - - API
 
 - - budowanie
 
+\section{Cel badań i~zawartość pracy}
+
+\subsection{Analiza obrazów}
+
+\subsection{Analiza obrazów}
+
+\subsection{Analiza obrazów}
 
 \subsection{Analiza obrazów}
 
@@ -44,5 +83,3 @@ Obliczenia numeryczne, a konkretnie algorytmy intensywne obliczeniowo
 - - algorytmy deterministyczne
 
 - potrzeby, zastosowania, ograniczenia
-
-\section{Cel badań i zawartość pracy}
