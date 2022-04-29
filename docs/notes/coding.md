@@ -101,3 +101,5 @@
 * argument z kernelem nie działa w gpu.js - ewentualne pole do zbadania
 * pokazać kod shadera .kernel
 * optymalizacja bounds nic nie daje, architektura SIMT - dwa fory gpx gpy
+
+* napisać o unjs, unified javascript

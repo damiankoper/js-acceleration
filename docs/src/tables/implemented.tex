@@ -1,0 +1,27 @@
+\begin{wraptable}{r}{8.25cm}
+    \begin{threeparttable}
+        \caption{Zaimplementowane metody akceleracji dla badanych środowisk.}
+        \label{tab:implemented}
+        \setlength{\tabcolsep}{0.3em}
+        \begin{tabularx}{8.25cm}{lllll }%
+            \hline
+                         & Chrome                            & Firefox                           & Node                              & Deno                              \\
+            \hline
+            Sequential   & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          \\
+            Native addon & \textcolor{red}{\xmark} \tnote{1} & \textcolor{red}{\xmark} \tnote{1} & \textcolor{blue}{\cmark}          & \textcolor{red}{\xmark} \tnote{2} \\
+            asm.js       & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{red}{\xmark} \tnote{2} \\
+            WASM         & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{red}{\xmark} \tnote{2} \\
+            WASM+SIMD    & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{red}{\xmark} \tnote{2} \\
+            Workers      & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          \\
+            WebGL        & \textcolor{blue}{\cmark}          & \textcolor{blue}{\cmark}          & \textcolor{red}{\xmark} \tnote{2} & \textcolor{red}{\xmark} \tnote{1} \\
+            WebGPU       & \textcolor{red}{\xmark} \tnote{3} & \textcolor{red}{\xmark} \tnote{3} & \textcolor{red}{\xmark} \tnote{1} & \textcolor{red}{\xmark} \tnote{3} \\
+            \hline
+        \end{tabularx}
+
+        \begin{tablenotes}\footnotesize
+            \item [1] Niedostępne w środowisku
+            \item [2] Wymaga zewnętrznych paczek lub kodu bazowego w~języku innym niż C++
+            \item [3] Niestabilne lub eksperymentalne
+        \end{tablenotes}
+    \end{threeparttable}
+\end{wraptable}
