@@ -108,6 +108,8 @@
  \usepackage{longtable}
  \usepackage{xltabular}
  \usepackage{eqexpl}
+ \usepackage{tkz-euclide}
+ \usepackage{scalefnt}
 
  \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
@@ -141,7 +143,7 @@ Listing \thelstlisting: #1\hfill%\hfill%
 \lstdefinelanguage{JavaScript}{
   keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
   keywordstyle=\color{blue}\bfseries,
-  ndkeywords={class, export, boolean, default, extends throw, implements, import, this, void, number, string, public, private, protected, extends, from, constructor},
+  ndkeywords={class, export, boolean, default, extends throw, implements, import, this, void, number, string, public, Promise, private, protected, extends, from, constructor},
   ndkeywordstyle=\color{darkgray}\bfseries,
   identifierstyle=\color{black},
   sensitive=false,
@@ -161,7 +163,7 @@ Listing \thelstlisting: #1\hfill%\hfill%
 	%%showspaces=false,
   breaklines=true,
   postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
-  %%numbers=left,
+  numbers=left,
   %%firstnumber=1,
   %%numberfirstline=true,
 	%%xleftmargin=17pt,

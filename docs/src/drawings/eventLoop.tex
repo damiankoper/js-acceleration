@@ -1,0 +1,68 @@
+
+
+\begin{tikzpicture}
+
+\node[label=below:Event Loop,minimum size=1.9cm] (loop) at (0,-8) {\scalefont{4}$\circlearrowleft$};
+
+% \node[rectangle, draw, minimum width=3cm, minimum height=8cm, anchor=north] (Heap_frame) at (0,0) {};
+% \node[minimum width=3cm, below=0.25 of Heap_frame.north] (Heap)  {Heap} ;
+% \node[rectangle, draw, minimum width=1cm, minimum height=1cm, below right=0.54 and 0.33 of Heap.west] (A) {\lstinline{a}} ;
+% \node[rectangle, draw, minimum width=1cm, minimum height=1cm, right=0.33 of A] (B)  {\lstinline{b}} ;
+% \node[rectangle, draw, minimum width=1cm, minimum height=1cm, below=0.33 of B] (C)  {\lstinline{c}} ;
+% \node[rectangle, draw, minimum width=1cm, minimum height=1cm, left=0.33 of C] (D)  {\lstinline{d}} ;
+% \node[rectangle, draw, minimum width=1cm, minimum height=1cm, below=0.33 of D] (E)  {\lstinline{e}} ;
+% \node[rectangle, draw, minimum width=1cm, minimum height=1cm, right=0.33 of E] (F)  {\lstinline{f}} ;
+% \node[rectangle, draw, minimum width=1cm, minimum height=1cm, below=0.33 of E] (G)  {\lstinline{f}} ;
+
+\node[rectangle, draw, minimum width=3.5cm, minimum height=6cm, anchor=north] (Stack_frame) at (0,0) {};
+\node[minimum width=3cm, minimum height=1cm, below=0 of Stack_frame.north] (Stack)  {Stack} ;
+\node[rectangle, draw, minimum width=3cm, minimum height=0.6cm, below=0 of Stack] (exec) {\lstinline{exec()}} ;
+\node[rectangle, draw, minimum width=3cm, minimum height=0.6cm, below=0 of exec] (A) {\lstinline{function A()}} ;
+\node[rectangle, draw, minimum width=3cm, minimum height=0.6cm, below=0 of A] (B)  {\lstinline{function B()}} ;
+\node[rectangle, draw, minimum width=3cm, minimum height=0.6cm, below=0 of B] (C)  {\lstinline{function C()}} ;
+\node[rectangle, draw, minimum width=3cm, minimum height=0.6cm, below=0 of C] (D)  {\lstinline{function D()}} ;
+\node[rectangle, draw, minimum width=3cm, minimum height=0.6cm, below=0 of D] (E)  {\lstinline{function E()}} ;
+
+% \path[->,thick] (1.5,-7) edge (2,-7);
+% \path[<-,thick] (1.5,-7.5) edge (2,-7.5);
+
+
+\node[rectangle, draw, minimum width=4.5cm, minimum height=5.2cm, anchor=north] (APIs_frame) at (11.5,0) {};
+\node[minimum width=3cm, minimum height=1cm,, below=0 of APIs_frame.north] (APIs)  {APIs} ;
+\node[rectangle, draw, minimum width=4cm, minimum height=0.75cm, below=0 of APIs] (main) {Fetch API} ;
+\node[rectangle, draw, minimum width=4cm, minimum height=0.75cm, below=0 of main] (A) {Image Capture API} ;
+\node[rectangle, draw, minimum width=4cm, minimum height=0.75cm, below=0 of A] (B)  {WebSocket API} ;
+\node[rectangle, draw, minimum width=4cm, minimum height=0.75cm, below=0 of B] (C)  {Clipboard API} ;
+\node[rectangle, draw, minimum width=4cm, minimum height=0.75cm, below=0 of C] (D)  {...} ;
+
+\node[rectangle, draw, minimum width=11cm, minimum height=1cm, anchor=north east] (macro_frame) at (13.75,-6) {};
+\node[ anchor=south east, above left=0 of macro_frame, anchor=south west] {Macro-task queue};
+
+\node[rectangle, draw, minimum height=0.6cm, right=0.2 of macro_frame.west] (macroA)  
+    {\lstinline{setTimeout()}} ;
+\node[rectangle, draw, minimum height=0.6cm, right=0.2 of macroA] (macroB)  
+    {\lstinline{setInterval()}} ;
+\node[rectangle, draw, minimum height=0.6cm, right=0.2 of macroB] (macroC)  
+    {\lstinline{fetch()}} ;
+\node[rectangle, draw, minimum height=0.6cm, right=0.2 of macroC] (macroD)  
+    {\lstinline{...}} ;
+
+\node[rectangle, draw, minimum width=11cm, minimum height=1cm,  anchor=north east, below right=1.5cm and 0cm of macro_frame.west] (micro_frame)  {};
+\node[ anchor=south east, above left=0 of micro_frame, anchor=south west] {Micro-task queue};
+
+\node[rectangle, draw, minimum height=0.6cm, right=0.2 of micro_frame.west] (microA)  
+    {\lstinline{Promise.then()}} ;
+\node[rectangle, draw, minimum height=0.6cm, right=0.2 of microA] (microB)  
+    {\lstinline{queueMicrotask()}} ;
+\node[rectangle, draw, minimum height=0.6cm, right=0.2 of microB] (microC)  
+    {\lstinline{...}} ;
+
+\path [ultra thick,latex-] (loop) edge (macro_frame.west);
+\path [ultra thick,latex-] (loop) edge (micro_frame.west);
+\path [ultra thick,-latex] (loop.north) edge (Stack_frame);
+
+\draw [ultra thick,-latex] (APIs_frame.south) -- (APIs_frame|-macro_frame.north);
+\draw [ultra thick,-latex] (Stack_frame) -- (APIs_frame.west|-Stack_frame);
+
+
+\end{tikzpicture}

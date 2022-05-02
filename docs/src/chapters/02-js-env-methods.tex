@@ -1,11 +1,43 @@
 \chapter{Język JavaScript}
 
+JavaScript od momentu swojego powstania w 1995 roku stanowił jeden z filarów rozwoju technologii webowych, zaczynając od dodania prostych mechanizmów interaktywności do statycznych stron internetowym, a kończąc na byciu nieraz jedynymi samodzielnym budulcem pełnowymiarowych aplikacji działających po stronie klienta i serwera, aplikacji działających w środowisku przeglądarki internetowej, ale też w środowiskach natywnych, desktopowych i mobilnych. Dlatego, aby zrozumieć w pełni specyfikę problemu, który stanowi przystosowanie języka do wykonywania obliczeń numerycznych, w tym rozdziale przybliżone zostały zagadnienia związane z modelem wykonania, środowiskami oraz sposobami na podział kodu na moduły oraz późniejsze ich wykorzystanie. Na końcu opisane zostały metody akceleracji, dla których przeprowadzono badania.
 
-\section{Model wykonywania}
+
+
+\section{Model wykonania}
+
+Model wykonania języka JavaScript skoncentrowany jest w głównej mierze na obsłudze zdarzeń. W przeglądarce internetowej zdarzeniami takimi mogą być interakcje z użytkownikiem, na przykład kiedy naciśnięty zostanie przycisk, albo interakcje z siecią, kiedy otrzymamy odpowiedź na zapytanie z wykorzystaniem obiektu \lstinline{XmlHttprequest} lub skorzystamy z Fetch API. Po stronie serwera zdarzeniami takimi mogą być odebranie zapytania, które serwer musi obsłużyć, obsługa strumieni, ale także wszelkie odpowiedzi na interakcje z systemem operacyjnym. Podstawowymi interakcjami może być obsługa sygnałów, dostęp do plików, czy też obsługa sieci, która umożliwia połączenie na przykład z bazą danych.
+
+Zdarzenia te obsługuje pętla zdarzeń (ang. event loop). Na rysunku \ref{fig:event-loop} pokazano jej uproszczony model. Wyróżnia ona zadania, zwane także makro zadaniami, oraz mikro zadania. Dla każdego typu zadań utworzona zostaje osobna kolejka. Jeśli aktualnie wykonywane przetwarzanie sekwencyjne, którego ramki wywołań śledzone są na stosie, zakończy się, wtedy z pętli zdarzeń pobierane i wykonywane jest makro lub mikro zadanie. W pierwszej kolejności wykonywane są wszystkie mikro zadania, a gdy ich kolejka jest pusta, wykonywane jest kolejne makro zadanie.
+
+Makro zadania dodawane są do kolejki, aby obsłużyć wspomniane już zdarzenia związane z działaniami użytkownika lub inne zewnętrzne zdarzenia. Są one również dodawane do kolejki, kiedy mija czas zadany podczas wywołań funkcji \lstinline{setTimeout()} oraz \lstinline{setInterval()}. Warto zaznaczyć, że wywołania tych funkcji nie gwarantują wykonania dokładnie po zadanym czasie, ale traktują go jako próg czasowy, po jakim zadana funkcja zostanie dodana do kolejki makro zadań \cite{setTimeout}. Makro zadania dodane podczas jednej iteracji pętli nigdy nie zostaną wykonane w tej samej iteracji.
+
+Mikro zadania pochodzą tylko i wyłącznie z kodu użytkownika, bądź bibliotek i wykorzystywane są do obsługi asynchronicznych zadań, zarządzania ich kolejnością i obsługą błędów\cite{runtime}. Do ich tworzenia wykorzystuje się głównie obiekt \lstinline{Promise}}, który reprezentuje zadanie, które w przyszłości zakończy się pomyślnie lub błędem. Dla takiego obiektu zdefiniować możemy funkcje, które wykonają się podczas scenariusza pomyślnego (\lstinline{then}), błędnego (\lstinline{catch}) oraz zawsze (\lstinline{finally}) \cite{promise}. Mikro zadania pochodzić mogą również od obserwatorów na przykład \lstinline{MutationObserver}, czy \lstinline{ResizeObserver}.
+
+Zrozumienie sposobu wykonywania kodu w asynchronicznym modelu języka JavaScript jest kluczowe do efektywnego wykorzystania możliwości, jakie idą za metodami akceleracji, których użycie możliwe jest tylko i wyłącznie poprzez asynchroniczne wywołania. Opisane w sekcji \ref{sec:acc-methods} metody bazujące na Worker'ach oraz WebGL wymagają interakcji poprzez wywołania asynchroniczne. Na listingu \ref{lst:async} pokazano przykład kodu asynchronicznego. Wywołania \lstinline{console.log} wykonają się, zawsze drukując liczby w kolejności od 1 do 6.
+
+\lstinputlisting[language=JavaScript, caption=Przykład kodu demonstrujący mechanizmy asynchroniczności w języku JavaScript., label=lst:async] {./code/async.js}
+
+Linijki 1 oraz 6 zostają wykonene synchronicznie. \lstinline{Promise} w linijce 5 zostaje wykonany jako następny, ponieważ jako mikro zadanie, wykona się zaraz po operacjach synchronicznych. Następnie funkcje \lstinline{setTimeout} wykonają się w kolejności ich wywołania, gdzie w linijkach 2-4 na ich kolejność wpływ maja mechanizm \lstinline{Promise}. Timeout z linijki 3, a potem 4 zostają wywołane jaki pierwsze. Jako ostatni wykonuje się timeout z linijki 2, ponieważ jego wywołanie, w postaci mikro taska, przeniesione zostało na koniec wykonania synchronicznego.
+
+\begin{figure}
+    \centering
+    \input{drawings/eventLoop}
+    \caption{Uproszczony model pętli zdarzeń środowisk języka JavaScript w wariancie z wyróżnieniem API przeglądarek internetowych.}
+    \label{fig:event-loop}
+\end{figure}
 
 \section{Środowiska i modularność kodu}
 \label{sec:env-modules}
 
+% niekompatybilność
+% xhr vs http, przykład axios i adapterów
+% fetch api celem ujednolicenia
+
+https://libevent.org/
+https://libuv.org/
 
 \section{Metody akceleracji}
 \label{sec:acc-methods}
+
+
