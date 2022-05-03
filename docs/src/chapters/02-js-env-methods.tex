@@ -1,41 +1,110 @@
 \chapter{Język JavaScript}
 
-JavaScript od momentu swojego powstania w 1995 roku stanowił jeden z filarów rozwoju technologii webowych, zaczynając od dodania prostych mechanizmów interaktywności do statycznych stron internetowym, a kończąc na byciu nieraz jedynymi samodzielnym budulcem pełnowymiarowych aplikacji działających po stronie klienta i serwera, aplikacji działających w środowisku przeglądarki internetowej, ale też w środowiskach natywnych, desktopowych i mobilnych. Dlatego, aby zrozumieć w pełni specyfikę problemu, który stanowi przystosowanie języka do wykonywania obliczeń numerycznych, w tym rozdziale przybliżone zostały zagadnienia związane z modelem wykonania, środowiskami oraz sposobami na podział kodu na moduły oraz późniejsze ich wykorzystanie. Na końcu opisane zostały metody akceleracji, dla których przeprowadzono badania.
+JavaScript od momentu swojego powstania w~1995 roku stanowił jeden z~filarów rozwoju technologii webowych, zaczynając od dodania prostych mechanizmów interaktywności do statycznych stron internetowym, a~kończąc na byciu nieraz jedynymi samodzielnym budulcem pełnowymiarowych aplikacji działających po stronie klienta i~serwera, aplikacji działających w~środowisku przeglądarki internetowej, ale też w~środowiskach natywnych, desktopowych i~mobilnych. Dlatego, aby zrozumieć w~pełni specyfikę problemu, który stanowi przystosowanie języka do wykonywania obliczeń numerycznych, w~tym rozdziale przybliżone zostały zagadnienia związane z~modelem wykonania, środowiskami oraz sposobami na podział kodu na moduły oraz późniejsze ich wykorzystanie. Na końcu opisane zostały metody akceleracji, dla których przeprowadzono badania.
 
 
 
 \section{Model wykonania}
 
-Model wykonania języka JavaScript skoncentrowany jest w głównej mierze na obsłudze zdarzeń. W przeglądarce internetowej zdarzeniami takimi mogą być interakcje z użytkownikiem, na przykład kiedy naciśnięty zostanie przycisk, albo interakcje z siecią, kiedy otrzymamy odpowiedź na zapytanie z wykorzystaniem obiektu \lstinline{XMLHttpRequest} lub skorzystamy z Fetch API. Po stronie serwera zdarzeniami takimi mogą być odebranie zapytania, które serwer musi obsłużyć, obsługa strumieni, ale także wszelkie odpowiedzi na interakcje z systemem operacyjnym. Podstawowymi interakcjami może być obsługa sygnałów, dostęp do plików, czy też obsługa sieci, która umożliwia połączenie na przykład z bazą danych.
+Model wykonania języka JavaScript skoncentrowany jest w~głównej mierze na obsłudze zdarzeń. W~przeglądarce internetowej zdarzeniami takimi mogą być interakcje z~użytkownikiem, na przykład kiedy naciśnięty zostanie przycisk, albo interakcje z~siecią, kiedy otrzymamy odpowiedź na zapytanie z~wykorzystaniem obiektu \lstinline{XMLHttpRequest} lub skorzystamy z~Fetch API. Po stronie serwera zdarzeniami takimi mogą być odebranie zapytania, które serwer musi obsłużyć, obsługa strumieni, ale także wszelkie odpowiedzi na interakcje z~systemem operacyjnym. Podstawowymi interakcjami może być obsługa sygnałów, dostęp do plików, czy też obsługa sieci, która umożliwia połączenie na przykład z~bazą danych.
 
-Zdarzenia te obsługuje pętla zdarzeń (ang. event loop). Na rysunku \ref{fig:event-loop} pokazano jej uproszczony model. Wyróżnia ona zadania, zwane także makro zadaniami, oraz mikro zadania. Dla każdego typu zadań utworzona zostaje osobna kolejka. Jeśli aktualnie wykonywane przetwarzanie sekwencyjne, którego ramki wywołań śledzone są na stosie, zakończy się, wtedy z pętli zdarzeń pobierane i wykonywane jest makro lub mikro zadanie. W pierwszej kolejności wykonywane są wszystkie mikro zadania, a gdy ich kolejka jest pusta, wykonywane jest kolejne makro zadanie.
+Zdarzenia te obsługuje pętla zdarzeń (ang. event loop). Na rysunku \ref{fig:event-loop} pokazano jej uproszczony model. Wyróżnia ona zadania, zwane także makro zadaniami, oraz mikro zadania. Dla każdego typu zadań utworzona zostaje osobna kolejka. Jeśli aktualnie wykonywane przetwarzanie sekwencyjne, którego ramki wywołań śledzone są na stosie, zakończy się, wtedy z~pętli zdarzeń pobierane i~wykonywane jest makro lub mikro zadanie. W~pierwszej kolejności wykonywane są wszystkie mikro zadania, a~gdy ich kolejka jest pusta, wykonywane jest kolejne makro zadanie.
 
-Makro zadania dodawane są do kolejki, aby obsłużyć wspomniane już zdarzenia związane z działaniami użytkownika lub inne zewnętrzne zdarzenia. Są one również dodawane do kolejki, kiedy mija czas zadany podczas wywołań funkcji \lstinline{setTimeout()} oraz \lstinline{setInterval()}. Warto zaznaczyć, że wywołania tych funkcji nie gwarantują wykonania dokładnie po zadanym czasie, ale traktują go jako próg czasowy, po jakim zadana funkcja zostanie dodana do kolejki makro zadań \cite{setTimeout}. Makro zadania dodane podczas jednej iteracji pętli nigdy nie zostaną wykonane w tej samej iteracji.
+Makro zadania dodawane są do kolejki, aby obsłużyć wspomniane już zdarzenia związane z~działaniami użytkownika lub inne zewnętrzne zdarzenia. Są one również dodawane do kolejki, kiedy mija czas zadany podczas wywołań funkcji \lstinline{setTimeout()} oraz \lstinline{setInterval()}. Warto zaznaczyć, że wywołania tych funkcji nie gwarantują wykonania dokładnie po zadanym czasie, ale traktują go jako próg czasowy, po jakim zadana funkcja zostanie dodana do kolejki makro zadań \cite{setTimeout}. Makro zadania dodane podczas jednej iteracji pętli nigdy nie zostaną wykonane w~tej samej iteracji.
 
-Mikro zadania pochodzą tylko i wyłącznie z kodu użytkownika, bądź bibliotek i wykorzystywane są do obsługi asynchronicznych zadań, zarządzania ich kolejnością i obsługą błędów\cite{runtime}. Do ich tworzenia wykorzystuje się głównie obiekt \lstinline{Promise}}, który reprezentuje zadanie, które w przyszłości zakończy się pomyślnie lub błędem. Dla takiego obiektu zdefiniować możemy funkcje, które wykonają się podczas scenariusza pomyślnego (\lstinline{then}), błędnego (\lstinline{catch}) oraz zawsze (\lstinline{finally}) \cite{promise}. Mikro zadania pochodzić mogą również od obserwatorów na przykład \lstinline{MutationObserver}, czy \lstinline{ResizeObserver}.
+Mikro zadania pochodzą tylko i~wyłącznie z~kodu użytkownika, bądź bibliotek i~wykorzystywane są do obsługi asynchronicznych zadań, zarządzania ich kolejnością i~obsługą błędów\cite{runtime}. Do ich tworzenia wykorzystuje się głównie obiekt \lstinline{Promise}}, który reprezentuje zadanie, które w~przyszłości zakończy się pomyślnie lub błędem. Dla takiego obiektu zdefiniować możemy funkcje, które wykonają się podczas scenariusza pomyślnego (\lstinline{then}), błędnego (\lstinline{catch}) oraz zawsze (\lstinline{finally}) \cite{promise}. Mikro zadania pochodzić mogą również od obserwatorów na przykład \lstinline{MutationObserver}, czy \lstinline{ResizeObserver}.
 
-Zrozumienie sposobu wykonywania kodu w asynchronicznym modelu języka JavaScript jest kluczowe do efektywnego wykorzystania możliwości, jakie idą za metodami akceleracji, których użycie możliwe jest tylko i wyłącznie poprzez asynchroniczne wywołania. Opisane w sekcji \ref{sec:acc-methods} metody bazujące na Worker'ach oraz WebGL wymagają interakcji poprzez wywołania asynchroniczne. Na listingu \ref{lst:async} pokazano przykład kodu asynchronicznego. Wywołania \lstinline{console.log} wykonają się, zawsze drukując liczby w kolejności od 1 do 6.
+Zrozumienie sposobu wykonywania kodu w~asynchronicznym modelu języka JavaScript jest kluczowe do efektywnego wykorzystania możliwości, jakie idą za metodami akceleracji, których użycie możliwe jest tylko i~wyłącznie poprzez asynchroniczne wywołania. Opisane w~sekcji \ref{sec:acc-methods} metody bazujące na Worker'ach oraz WebGL wymagają interakcji poprzez wywołania asynchroniczne. Na listingu \ref{lst:async} pokazano przykład kodu asynchronicznego. Wywołania \lstinline{console.log} wykonają się, zawsze drukując liczby w~kolejności od 1 do 6.
 
-\lstinputlisting[language=JavaScript, caption=Przykład kodu demonstrujący mechanizmy asynchroniczności w języku JavaScript., label=lst:async] {./code/async.js}
+\lstinputlisting[language=JavaScript, caption=Przykład kodu demonstrujący mechanizmy asynchroniczności w~języku JavaScript., label=lst:async] {./code/async.js}
 
-Linijki 1 oraz 6 zostają wykonene synchronicznie. \lstinline{Promise} w linijce 5 zostaje wykonany jako następny, ponieważ jako mikro zadanie, wykona się zaraz po operacjach synchronicznych. Następnie funkcje \lstinline{setTimeout} wykonają się w kolejności ich wywołania, gdzie w linijkach 2-4 na ich kolejność wpływ maja mechanizm \lstinline{Promise}. Timeout z linijki 3, a potem 4 zostają wywołane jaki pierwsze. Jako ostatni wykonuje się timeout z linijki 2, ponieważ jego wywołanie, w postaci mikro taska, przeniesione zostało na koniec wykonania synchronicznego.
+Linijki 1 oraz 6 zostają wykonene synchronicznie. \lstinline{Promise} w~linijce 5 zostaje wykonany jako następny, ponieważ jako mikro zadanie, wykona się zaraz po operacjach synchronicznych. Następnie funkcje \lstinline{setTimeout} wykonają się w~kolejności ich wywołania, gdzie w~linijkach 2-4 na ich kolejność wpływ maja mechanizm \lstinline{Promise}. Timeout z~linijki 3, a~potem 4 zostają wywołane jaki pierwsze. Jako ostatni wykonuje się timeout z~linijki 2, ponieważ jego wywołanie, w~postaci mikro taska, przeniesione zostało na koniec wykonania synchronicznego.
 
 \begin{figure}
     \centering
     \input{drawings/eventLoop}
-    \caption{Uproszczony model pętli zdarzeń środowisk języka JavaScript w wariancie z wyróżnieniem API przeglądarek internetowych.}
+    \caption{Uproszczony model pętli zdarzeń środowisk języka JavaScript w~wariancie z~wyróżnieniem API przeglądarek internetowych.}
     \label{fig:event-loop}
 \end{figure}
 
-\section{Środowiska i modularność kodu}
+\section{Środowiska JavaScript}
 \label{sec:env-modules}
 
+Rosnąca popularność języka JavaScript i~idących za jego stosowaniem możliwości przyspieszyła rozwój środowisk, w~którym kod języka mógł być wykonywany. Pierwszym z~nich była przeglądarka internetowa. 
+
+\subsection{Przeglądarka internetowa}
+
+Głównym zadaniem przeglądarki internetowej jest pobieranie z~sieci i~wyświetlanie zawartości użytkownikowi oraz obsługa jego interakcji. Najważniejszym komponentem przeglądarki jest silnik renderujący, który zawiera silniki odpowiedzialne za parsowanie i~renderowanie struktury modelu DOM, adaptery służące do wywołań dostępnych bibliotek graficznych (OpenGL, Vulcan, DirectX) oraz silnik JavaScript. Z~perspektywy tej pracy to właśnie silnik JavaScript jest najważniejszym komponentem silnika renderującego. Silnik języka zajmuje się parsowaniem, kompilacją do bytecode'u, interpretowaniem oraz późniejszą optymalizacją kodu. Posiada wiele możliwości optymalizacji spekulatywnej z~racji na specyfikę języka, który jest dynamicznie typowany \cite{meurer_2017}.
+
+Popularnymi silnikami renderującymi są Blink z~silnikiem JavaScript V8 \cite{V8} oraz Gecko z~silnikiem JavaScript SpiderMonkey \cite{spidermonkey}. Silniki JavaScript skupione są na szybkim i~efektywnym wykonywaniu kodu i~nie zajmują się asynchronicznością i~pętlą zdarzeń. Odpowiedzialne za to są równolegle biblioteki. W~przeglądarce Google Chrome pętlę zdarzeń implementuje biblioteka LibEvent \cite{libevent}.
+
+\subsection{NodeJS}
+
+NodeJS jest powstałym w~2009 roku środowiskiem, które było odpowiedzią na architekturę pozostałych rozwiązań serwerowych, które angażują wiele procesów i~wątków do obsługi wielu zapytań w~tym samym czasie. Rodzi to problemy związane z~koniecznością przełączania kontekstu pomiędzy procesami oraz większe zapotrzebowanie na pamięć. Również każda operacja wejścia-wyjścia musi być synchroniczna, co prowadzi do zablokowania całego procesu w~oczekiwaniu na odpowiedź \cite{nodejs}.
+
+Problemy te rozwiązało środowisko NodeJS, napisane w~C++ i~oparte na silniku V8. Razem biblioteką LibUv \cite{libuv} implementującą pętlę zdarzeń w~ramach jednego procesu wykonującego kod JavaScript użytkownika oraz wielu wątków, które realizują oczekiwanie na operacje asynchroniczne, pozwoliło rozwiązać problem operacji wejścia-wyjścia pozwalając w~ramach tych samych zasobów sprzętowych osiągnąć lepsza wydajność niż popularny serwer Apache \cite{node-apache}. Na rysunku \ref{fig:nodejs} pokazano architekturę środowiska NodeJS, która stoi pomiędzy aplikacją, a~systemem operacyjnym.
+
+\begin{figure}
+    \centering
+    \input{drawings/node} 
+    \caption{Model architektury środowiska NodeJS.}
+    \label{fig:nodejs}
+\end{figure}
+
+\subsection{Deno}
+
+Deno powstał w~2018 roku, a~jego wersja 1.0.0 wydana została w~2020 roku. Jest to środowisko aspirujące do bycia następcą NodeJS rozwiązując jego problemy związane z~bezpieczeństwem, systemem budowania zależności bibliotek, czy importowania zależności \cite{deno}. Podobnie jak NodeJS do wykonywania kody JavaScript wykorzystuje silnik V8, ale napisany jest w~języku Rust. Do obsługi asynchroniczności i~pętli zdarzeń wykorzystuje bibliotekę Tokio \cite{tokio}. W~przeciwieństwie do NodeJS i~przeglądarek internetowych obsługuje natywnie TypeScript - nadzbiór języka JavaScript umożliwiający wykorzystanie statycznego typowania oraz wszystkie zalety za tym idące.
+
+\section{Modularność i~kompatybilność kodu}
+
+Kolejnym ważnym aspektem rozważań jest modularność i~kompatybilność kodu pomiędzy środowiskami. Rozwój bibliotek języków jest naturalnym krokiem ewolucji ekosystemu i~aby taki ekosystem był ogólnodostępny, biblioteki dostępne są dla wszystkich w~postaci scentralizowanego rejestru paczek. 
+
+\subsection{Modularność}
+
+Dla środowiska NodeJS najpopularniejszym rejestrem jest \textit{npm registry} (npm - node package manager). Za pomocą narzędzia o~tej samej nazwie można instalować i~zatrzaskiwać wersję paczek, które trafiają do folderu \lstinline{node_modules}, w~którym środowisko NodeJS domyślnie poszukuje kodu podczas importu paczek. Zainstalowane paczki są opisane wraz z~ich wersją w~pliku \lstinline{package.json} i~\lstinline{package-lock.json}, gdzie pierwszy z~nich zawiera wymaganą wersję zapisaną w~konwencji Semver \cite{semver}, a~drugi zatrzaśnięte zainstalowane wersje, co pozwala odtworzyć dokładną strukturę zależności.
+
+Przeglądarki internetowe z~kolei pobierają dodatkowe biblioteki poprzez umieszczenie tagów \lstinline{<script/>} w~dowolnym miejscu na stronie, często z~użyciem sieci CDN (ang. content delivery network). \textit{npm} jest również popularnym rozwiązaniem służącym do dostarczania modułów niezbędnych do funkcjonowania stronom internetowym, jednak odbywa się to pośrednio. Za pomocą narzędzi zwanych bundler'ami, ze wszystkich niezbędnych zależności - właściwego kodu strony oraz zewnętrznych bibliotek instalowanych przy pomocy narzędzia \textit{npm}, budowany jest pojedynczy plik, który następnie jest ładowany przez przeglądarkę. Pomaga to zaoszczędzić liczbę połączeń przeglądarki do serwerów, a~co za tym idzie zaoszczędzić czas spędzony na inicjowaniu połączenia i~pobieraniu danych w~szczególności, że liczba możliwych otwartych połączeń przez przeglądarkę internetową jest limitowana (10 w~Google Chrome). Często obecnie budowane są dwa lub więcej plików - jeden z~bibliotekami zewnętrznymi oraz jeden lub więcej z~właściwym kodem strony w~celu wykorzystania mechanizmów pamięci podręcznej przeglądarki oraz dynamicznego i~opóźnionego ładowania niezbędnego kodu, co przyspiesza ładowanie strony. Popularnymi bundler'ami są Webpack, Snowpack, Parcel, Rollup oraz Vite.
+
+Deno próbuje rozwiązać problem importowania modułów w~NodeJS, który wynika z~scentralizowanego rejestru i~paczek oraz z~faktu istnienia plików \lstinline{package*.json} i~konieczności wykonania procesu instalacji. Pobiera on zależności bezpośrednio z~internetu i~wkłada do pamięci podręcznej. Link do zależności jest jej jednoznacznym identyfikatorem, a~to znaczy, że powinien zawierać wersję paczki i~nigdy nie zmienić swojej zawartości. Pobranie i~kompilacja zależności w~czasie wykonania programu likwiduje potrzebę przechowywania listy zależności i~ich wersji oraz niweluje potrzebę ich instalacji. Deno wykorzystuje opisany w~dalszej części rozdziału format modułów ESM.
+
+Niezależnie od tego gdzie przetrzymywane są moduły oraz w~jaki sposób są zarządzane przez środowisko, muszą one być finalnie przez nie skonsumowane. Na przykład mogą być one użyte bezpośrednio, ale też przetransformowane w~procesie budowania biblioteki, która będzie potem dalej konsumowana, czy paczki dla przeglądarki internetowej. W~procesie ewolucji ekosystemu języka JavaScript wykształciło się wiele formatów modułów. Niektóre z~nich są kompatybilne tylko z~przeglądarką internetową, niektóre tylko ze środowiskiem NodeJS bądź Deno.  
+
+\subsubsection{AMD}
+
+AMD (Asynchronous Module Definition) jest sposobem ładowania zależności w~przeglądarkach internetowych. Rozwija wzorzec modułów JavaScript \cite{jsmodulepattern} poprzez dodanie asynchronicznego pobierania i~ładowania zależności. Moduł jest funkcją, dzięki czemu zadeklarowane zmienne nie wyciekają poza jej zakres, a~jej wartość zwracana stanowi wartość, którą taki moduł eksportuje. Zadeklarowanie modułu i~jego zależności w~formacie AMD umożliwia funkcja \lstinline{define}.
+
+\subsubsection{CommonJS}
+
+Format CommonJS utworzony został na potrzeby środowiska NodeJS i~jest tam do dzisiaj wykorzystywany. Używa on globalnie dostępnej funkcji \lstinline{require}, która jako argument przyjmuje nazwę modułu lub relatywną ścieżkę do pliku \lstinline{*.js}, jednak z~pominięciem jego rozszerzenia, co stanowi problem podczas wyszukiwania modułów przez środowisko. Moduł może eksportować funkcje i~wartości poprzez dodanie ich do obiektu \lstinline{module.exports}. Pliki z~modułami w~tym formacie, aby lepiej je identyfikować, mogą mieć rozszerzenie \lstinline{*.cjs}.
+
+\subsubsection{UMD}
+
+UMD (Universal Module Definition) nie stanowi samodzielnego formatu, ale integruje formaty AMD, CommonJS oraz użycie zmiennych globalnych do definicji modułu i~jego zależności. Wyewoluował on z~potrzeby tworzenia bibliotek kompatybilnych z~wieloma środowiskami, dla których nie trzeba budować wielu wersji w~różnych formatach.
+
+\subsubsection{Moduły ECMAScript}
+
+Brak kompatybilności i~wiele formatów modułów, gdzie każde środowisko zaproponowało swój własny spowodowało ich standaryzację. ECMAScript, którego implementacją jest JavaScript, w~wersji 2015 (zwanej również ES6) wprowadza definicję modułów zwanych ESModules, ESM \cite{ESModules}. Obecnie wspierane są one przez wszystkie analizowane tutaj środowiska i~są zalecaną metodą importowania zależności. Używają one słów kluczowych \lstinline{import} oraz \lstinline{export} tak, jak zostało to pokazane na listingu \ref{lst:esm}. Od wersji ES11 specyfikacji możliwe stało się dynamiczne importowanie modułów podczas wykonania, gdzie jako rezultat otrzymujemy obiekt \mbox{\lstinline{Promise}}. Pliki z~modułami w~tym formacie, aby lepiej je identyfikować, mogą mieć rozszerzenie \mbox{\lstinline{*.mjs}}. Wszystkie biblioteki wykorzystujące metody akceleracji badane w tej pracy budowane są z wykorzystaniem ESM.
+
+\begin{lstlisting}[language=JavaScript, caption=Przykład wykorzystania ECMAScript Modules, label=lst:esm]
+// main.mjs
+import { add } from "./module"
+console.log(add(2+2));
+
+// module.mjs
+export function add(foo, bar) { return foo + bar; }
+\end{lstlisting}
+
 % niekompatybilność
-% xhr vs http, przykład axios i adapterów
+% xhr vs http, przykład axios i~adapterów
 % fetch api celem ujednolicenia
 
-https://libevent.org/
-https://libuv.org/
+\subsection{Kompatybilność}
+
+Szerokie starania w~standaryzacji modułów umożliwiają tworzenie kodu kompatybilnego z~wieloma środowiskami. Jeśli jednak kod ten korzysta z~funkcjonalności samego środowiska, która istnieje w~pozostałych środowiskach, ale ich API nie są ze sobą zgodne, problem kompatybilności między środowiskami wciąż występuje. Wprowadza to niechciane mechanizmy do kodu wykrywające środowisko i~wymusza wykorzystanie wzorców projektowych takich jak \textit{adapter}, w~celu obsługi wszystkich wariantów API.
+
+Przykładem takiego rozwiązania jest biblioteka \textit{axios}, która służy do wykonywania zapytań HTTP. W~środowisku przeglądarki internetowej do wykonywania zapytań wykorzystuje obiekt \lstinline{XMLHttpRequest}, a~w środowisku NodeJS wbudowany moduł \textit{http}. Rozwiązaniem problemu w tym przypadku może być użycie Fetch API, które jako pierwsze zadebiutowało w przeglądarkach internetowych oraz zaadaptowane zostało przez NodeJS, a w Deno jest ono domyślnie przewidzianą formą wykonywania zapytań HTTP.
+
+Innym przykładem braku kompatybilności pomiędzy podobnymi funkcjonalnościami jest wielowątkowość, która istnieje pod abstrakcją Worker'ów i dokładnie zostanie omówiona w rozdziale \ref{sec:acc-methods}. Przeglądarki internetowe oraz Deno, który ma na celu możliwie zbliżyć się do nich ze swoim API, implementują Web Worker API. NodeJS z kolei do obsługi Worker'ów wykorzystuje wbudowany moduł \textit{worker\_threads}, który różni się od jego odpowiedników.    
 
 \section{Metody akceleracji}
 \label{sec:acc-methods}

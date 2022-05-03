@@ -1,0 +1,19 @@
+
+
+\begin{tikzpicture}
+
+\node[fill=red!50, draw, rectangle, anchor=north west, minimum width=12cm, minimum height=0.75cm]  at (0,0.85) {Application};
+
+\node[fill=green!50, draw, rectangle, anchor=north west, minimum width=12cm, minimum height=0.75cm] at (0,0) {NodeJS API};
+\node[fill=blue!20, draw, rectangle, anchor=north west, minimum width=7.95cm, minimum height=0.75cm]  at (0,-0.85) {NodeJS Bindings};
+\node[fill=blue!20, draw, rectangle, anchor=north west, minimum width=3.95cm, minimum height=0.75cm]  at (8.05,-0.85) {C/C++ Addons};
+\node[fill=orange!50, draw, rectangle, anchor=north west, minimum width=1.9cm, minimum height=0.75cm] (A)  at (0,-1.7) {V8};
+\node[fill=violet!50, draw, rectangle, anchor=north west, minimum width=1.9cm, minimum height=0.75cm, right=0.1 of A] (B) {LibUv};
+\node[fill=blue!20, draw, rectangle, anchor=north west, minimum width=1.9cm, minimum height=0.75cm, right=0.1 of B] (C) {c-ares};
+\node[fill=blue!20, draw, rectangle, anchor=north west, minimum width=1.9cm, minimum height=0.75cm, right=0.1 of C] (D) {llhttp};
+\node[fill=blue!20, draw, rectangle, anchor=north west, minimum width=1.9cm, minimum height=0.75cm, right=0.1 of D] (E) {OpenSSL};
+\node[fill=blue!20, draw, rectangle, anchor=north west, minimum width=1.9cm, minimum height=0.75cm, right=0.1 of E] (F) {zlib};
+
+\node[fill=black!20, draw, rectangle, anchor=north west, minimum width=12cm, minimum height=0.75cm]  at (0,-2.55) {Operating system};
+
+\end{tikzpicture}
