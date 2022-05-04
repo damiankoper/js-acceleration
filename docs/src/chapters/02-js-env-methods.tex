@@ -83,7 +83,7 @@ UMD (Universal Module Definition) nie stanowi samodzielnego formatu, ale integru
 
 \subsubsection{Moduły ECMAScript}
 
-Brak kompatybilności i~wiele formatów modułów, gdzie każde środowisko zaproponowało swój własny spowodowało ich standaryzację. ECMAScript, którego implementacją jest JavaScript, w~wersji 2015 (zwanej również ES6) wprowadza definicję modułów zwanych ESModules, ESM \cite{ESModules}. Obecnie wspierane są one przez wszystkie analizowane tutaj środowiska i~są zalecaną metodą importowania zależności. Używają one słów kluczowych \lstinline{import} oraz \lstinline{export} tak, jak zostało to pokazane na listingu \ref{lst:esm}. Od wersji ES11 specyfikacji możliwe stało się dynamiczne importowanie modułów podczas wykonania, gdzie jako rezultat otrzymujemy obiekt \mbox{\lstinline{Promise}}. Pliki z~modułami w~tym formacie, aby lepiej je identyfikować, mogą mieć rozszerzenie \mbox{\lstinline{*.mjs}}. Wszystkie biblioteki wykorzystujące metody akceleracji badane w tej pracy budowane są z wykorzystaniem ESM.
+Brak kompatybilności i~wiele formatów modułów, gdzie każde środowisko zaproponowało swój własny spowodowało ich standaryzację. ECMAScript, którego implementacją jest JavaScript, w~wersji 2015 (zwanej również ES6) wprowadza definicję modułów zwanych ESModules, ESM \cite{ESModules}. Obecnie wspierane są one przez wszystkie analizowane tutaj środowiska i~są zalecaną metodą importowania zależności. Używają one słów kluczowych \lstinline{import} oraz \lstinline{export} tak, jak zostało to pokazane na listingu \ref{lst:esm}. Od wersji ES11 specyfikacji możliwe stało się dynamiczne importowanie modułów podczas wykonania, gdzie jako rezultat otrzymujemy obiekt \mbox{\lstinline{Promise}}. Pliki z~modułami w~tym formacie, aby lepiej je identyfikować, mogą mieć rozszerzenie \mbox{\lstinline{*.mjs}}. Wszystkie biblioteki wykorzystujące metody akceleracji badane w~tej pracy budowane są z~wykorzystaniem ESM.
 
 \begin{lstlisting}[language=JavaScript, caption=Przykład wykorzystania ECMAScript Modules, label=lst:esm]
 // main.mjs
@@ -94,19 +94,91 @@ console.log(add(2+2));
 export function add(foo, bar) { return foo + bar; }
 \end{lstlisting}
 
-% niekompatybilność
-% xhr vs http, przykład axios i~adapterów
-% fetch api celem ujednolicenia
-
 \subsection{Kompatybilność}
 
 Szerokie starania w~standaryzacji modułów umożliwiają tworzenie kodu kompatybilnego z~wieloma środowiskami. Jeśli jednak kod ten korzysta z~funkcjonalności samego środowiska, która istnieje w~pozostałych środowiskach, ale ich API nie są ze sobą zgodne, problem kompatybilności między środowiskami wciąż występuje. Wprowadza to niechciane mechanizmy do kodu wykrywające środowisko i~wymusza wykorzystanie wzorców projektowych takich jak \textit{adapter}, w~celu obsługi wszystkich wariantów API.
 
-Przykładem takiego rozwiązania jest biblioteka \textit{axios}, która służy do wykonywania zapytań HTTP. W~środowisku przeglądarki internetowej do wykonywania zapytań wykorzystuje obiekt \lstinline{XMLHttpRequest}, a~w środowisku NodeJS wbudowany moduł \textit{http}. Rozwiązaniem problemu w tym przypadku może być użycie Fetch API, które jako pierwsze zadebiutowało w przeglądarkach internetowych oraz zaadaptowane zostało przez NodeJS, a w Deno jest ono domyślnie przewidzianą formą wykonywania zapytań HTTP.
+Przykładem takiego rozwiązania jest biblioteka \textit{axios}, która służy do wykonywania zapytań HTTP. W~środowisku przeglądarki internetowej do wykonywania zapytań wykorzystuje obiekt \lstinline{XMLHttpRequest}, a~w środowisku NodeJS wbudowany moduł \textit{http}. Rozwiązaniem problemu w~tym przypadku może być użycie Fetch API, które jako pierwsze zadebiutowało w~przeglądarkach internetowych oraz zaadaptowane zostało przez NodeJS, a~w Deno jest ono domyślnie przewidzianą formą wykonywania zapytań HTTP.
 
-Innym przykładem braku kompatybilności pomiędzy podobnymi funkcjonalnościami jest wielowątkowość, która istnieje pod abstrakcją Worker'ów i dokładnie zostanie omówiona w rozdziale \ref{sec:acc-methods}. Przeglądarki internetowe oraz Deno, który ma na celu możliwie zbliżyć się do nich ze swoim API, implementują Web Worker API. NodeJS z kolei do obsługi Worker'ów wykorzystuje wbudowany moduł \textit{worker\_threads}, który różni się od jego odpowiedników.    
+Innym przykładem braku kompatybilności pomiędzy podobnymi funkcjonalnościami jest wielowątkowość, która istnieje pod abstrakcją Worker'ów i~dokładnie zostanie omówiona w~rozdziale \ref{sec:acc-methods}. Przeglądarki internetowe oraz Deno, który ma na celu możliwie zbliżyć się do nich ze swoim API, implementują Web Worker API. NodeJS z~kolei do obsługi Worker'ów wykorzystuje wbudowany moduł \textit{worker\_threads}, który różni się od jego odpowiedników.    
 
 \section{Metody akceleracji}
 \label{sec:acc-methods}
 
+Akceleracja obliczeń jest niekończącą się pogonią za nieskończenie krótkim czasem wykonania algorytmów. Zdaniem autora powinna być ona brana pod uwagę na każdym etapie ich rozwoju - od etapu prototypowania, do wdrożeń produkcyjnych, ponieważ na każdym z~nich może przynieść wymierne korzyści. Wspomnianą w~poprzednim rozdziale akcelerację praca traktuje jako wszelkie metody przyspieszające wykonywanie algorytmu.
 
+\subsection{Optymalizacja wykonania sekwencyjnego}
+
+Pierwszym aspektem, na który trzeba zwrócić uwagę jest sama interakcja z~silnikiem języka i~wykorzystanie jego możliwości oraz tego w~jaki sposób potrafi on optymalizować wykonywany kod. Poprzez kompilację kodu Just-In-Time (JIT), czyli bezpośrednio przed jego wykonaniem oraz możliwość powtarzania tego procesu wykorzystując heurystyki dla zebranych danych, możliwe jest przyspieszenie wykonania kodu \cite{meurer_2017}. W~przypadku silnika V8 kod najpierw trafia do interpretera o~nazwie Ignition, gdzie kompilowany jest do bytecode'u, który zamieniany jest na instrukcje zgodne z~architektura procesora. Równolegle bytecode wysyłany jest do kompilatora TurboFan, gdzie przechodzi optymalizację na poziomie funkcji, w~przeciwieństwie do innych rozwiązań JIT, które identyfikują wielokrotnie wykonywaną część bytecode'u \cite{meurer_2019}. Optymalizacja ta jest ograniczona do funkcji o~maksymalnym rozmiarze bytecode'u równym 60KB, więc ważne jest, aby umiejętnie rozbijać kod algorytmu na funkcje i~moduły.
+
+Osoba projektująca dany algorytm może celowo unikać konstrukcji języka oraz niektórych wzorców, aby wspomóc mechanizmy optymalizacji i~zwiększyć wydajność w~skrajnych przypadkach nawet o~25\% (\cite{gong2015jitprof}, \cite{selakovic2016performance}). Dobrą praktyką jest stosowanie typowanych tablic (Typed Array) do przechowywania danych binarnych oraz danych o~znanym typie. Innym sposobem poprawny wydajności jest modyfikacja algorytmu tak, aby zredukować obciążenie związane z~obliczeniami zmiennoprzecinkowymi, na przykład poprzez stosowanie stablicowanych wartości funkcji trygonometrycznych (LUT).
+
+\subsection{Natywne moduły}
+
+Środowiska NodeJS i~Deno działające po stronie serwera pozwalają na uruchomienie z~ich poziomu bibliotek skompilowanych do kodu maszynowego konkretnej architektury. Deno pozwala uruchomić funkcję ze skompilowanego kodu języka Rust do postaci biblioteki na różnych platformach (\lstinline{*.so}, \lstinline{*.dll}, \lstinline{*.dylib}). NodeJS natomiast posiada własny system budowania natywnych modułów z~kodu C++ o~nazwie \textit{node-gyp}, którego zależnością jest język Python.
+
+Zaletą korzystania z~natywnych modułów jest możliwość wykorzystania metod optymalizacji specyficznych dla platformy sprzętowej, jaki oferują języki niskiego poziomu kompilowane do kodu maszynowego. Metodę tę można rozwinąć o~metody akceleracji dostępne w~językach źródłowych, których przykładem może być wielowątkowość z~wykorzystaniem biblioteki \lstinline{pthreads}. Do wad takiego rozwiązania zaliczyć można konieczność pobierania lub budowania natywnych zależności w~momencie instalacji biblioteki oraz ogólną kompatybilność, która wykracza poza środowisko języka JavaScript. Wadą, która wpływa w~znaczącym stopniu na wydajność w~specyficznych przypadkach jest brak bezpośredniego dostępu do pamięci silnika JavaScript, co skutkuje koniecznością kopiowania danych w~warstwie powiązania natywnego modułu z~kodem języka JavaScript. Dla dużych danych proces ten okazać się może wąskim gardłem algorytmu.
+
+\subsection{WebAssembly}
+
+Kolejną metodą akceleracji wykonania sekwencyjnego jest WebAssembly (WASM), który jest językiem niskiego poziomu. Stanowi on cel kompilacji języków takich jak C++, czy Rust i~pozwala uruchamiać w~środowisku webowym złożonych aplikacji, których wcześniejsze uruchomienie nie było możliwe ze względu na konieczność parsowania i~kompilacji dużej ilości kodu. Umożliwiło to na przykład łatwe przeniesienie aplikacji napisanych w~języku C++ z~wykorzystaniem biblioteki Qt i~uruchomienie ich w~przeglądarce internetowej \cite{qt-wasm}. Inny przykładem jest jeden z~backend'ów biblioteki Tensorflow.js \cite{tensorflowjs}, która umożliwia trenowanie i~wdrażanie modeli uczenia maszynowego.
+
+\begin{lstlisting}[language=C++, caption=Funkcja licząca silnię w~języku C/C++, label=lst:factorial-cpp]
+int factorial(int n) {
+    if (n == 0)
+        return 1;
+    else
+        return n * factorial(n-1);
+}
+\end{lstlisting}
+    
+\begin{lstlisting}[language=WASM, caption=Funkcja licząca silnię w~języku WASM, label=lst:factorial-wasm]
+(func (param i64) (result i64)
+    local.get 0
+    i64.eqz
+    if (result i64)
+        i64.const 1
+    else
+        local.get 0
+        local.get 0
+        i64.const 1
+        i64.sub
+        call 0
+        i64.mul
+    end)
+\end{lstlisting}
+
+Wydajność kodu WebAssembly zbliżona jest do wykonania natywnego. Moduły operują na liniowym modelu danych, który nie jest współdzielony z~kodem języka JavaScript. Podobnie jak w~przypadku natywnych modułów występuje konieczność transformacji i~kopiowania danych do pamięci modułu, co może rodzić problemy z~wydajnością. Na listingu \ref{lst:factorial-cpp} przedstawiono funkcję liczącą silnię, która na listingu \ref{lst:factorial-wasm} została zapisana w~jej odpowiedniku w~WASM. WebAssembly przetwarzany jest w~postaci binarnej i~działa jak maszyna stosowa, a~na potrzeby analizy zapisywany jest w~formacie tekstowym w~postaci S-wyrażeń.
+
+\subsubsection{asm.js}
+
+Poprzednikiem WebAssembly był asm.js - podzbiór języka JavaScript w~procesie kompilacji z~języków źródłowych zoptymalizowany pod kątem wydajności wykonania i~specjalnie interpretowany przez przeglądarki wykorzystując kompilację Ahead-Of-Time. Kompilację tę wspiera do dziś jedynie przeglądarka Firefox, jednak optymalizacje silnika V8 Google Chrome 28 zapewniły dwukrotny wzrost wydajności podczas wykonania asm.js \cite{asm.js-chrome}. Nie jest on już rozwijany i~został wyparty przez WebAssembly.
+
+\subsubsection{SIMD}
+
+WebAssembly jest w~stanie wykorzystać architekturę SIMD (Single Instruction, Multiple Data), używając rejestrów i~instrukcji wektorowych \cite{wasm-simd}. Kompilatory takie jak LLVM potrafią, w procesie auto-wektoryzacji wykorzystać instrukcje wektorowe, aby przyspieszyć działanie pętli oraz połączyć inne masowe operacje logiczne i arytmetyczne. Wektoryzację taką można również przeprowadzić ręcznie wykorzystując funkcje, które operują bezpośrednio na typach wektorowych.
+
+\subsection{Współbieżność}
+
+W środowisku przeglądarki internetowej współbieżność osiągnięta może być tylko na poziomie wielu wątków. Wielowątkowość może zostać osiągnięta poprzez zastosowanie Worker'ów. Każdy Worker funkcjonuje jako osobny wątek w ramach tego jednego procesu. Posiada on własną pętlę zdarzeń i z głównym wątkiem komunikuje się jedynie asynchronicznymi wiadomościami. Poza obiektem \lstinline{SharedArrayBuffer}, wspieranego przez interfejs operacji atomowych \lstinline{Atomic}, aby zapobiec problemowi wyścigów, worker'y nie współdzielą pamięci. Dane w wiadomościach przekazywane są z użyciem algorytmu klonowania strukturalnego, który wspiera natywne typy takie jak tablice, mapy, czy sety \cite{structured-clone}. Nie możliwe jest natomiast kopiowanie funkcji zdefiniowanych przez użytkownika oraz węzłów drzewa DOM, ponieważ tylko wątek główny może być odpowiedzialny za renderowanie widoku strony. Aby uniknąć procesu klonowania dużych zmiennych, które chcemy przenieść do Worker'a, i które nie są potrzebne nam w wątku głównym, możemy użyć obiektów \lstinline{Transferrable}, które jeśli wskazane, zostają przeniesione do kontekstu Worker'a, a nie skopiowane, oszczędzając w ten sposób pamięć i czas procesora.
+
+W środowiskach działających po stronie serwera współbieżne wykonanie możliwe jest przy zastosowaniu Worker'ów, ale również poprzez uruchomienie podprocesów, z którymi można komunikować się poprzez standardowe strumienie wejścia oraz wyjścia, a w przypadku NodeJS, poprzez mechanizm wiadomości, który zajmuje się ich serializacją i parsowaniem. 
+ 
+\subsection{GPGPU}
+
+GPGPU (ang. General-purpose computing on graphics processing units) zakłada użycie układów graficznych do wykonywania obliczeń ogólnego przeznaczenia, które do tej pory wykonywane były na CPU. Środowiska, w zależności od dostępności układów graficznych, w środowiskach desktopowych, możemy wykorzystać takie układy używając rozwiązań powiązanych z architekturą układu, czego przykładem jest NVIDIA CUDA. Możemy również skorzystać z framework'ów współpracującymi z wieloma platformami i architekturami jak na przykład OpenCL. 
+
+Środowiska webowe zorientowane są na jak największą kompatybilność pomiędzy platformami, a pierwotnie interakcja z układami graficznymi możliwa była tylko w środowisku przeglądarki internetowej poprzez wykorzystanie WebGL API do generowania grafiki w elemencie \lstinline{<canvas/>}. Dla obliczeń ogólnego przeznaczenia stworzono standard WebCL, jednak nie zyskał popularności i nie był powszechnie implementowany. Sposobem, który okazał się skuteczny, aby użyć układ graficzny do innych rzeczy niż generowanie grafiki, paradoksalnie okazało się wykorzystanie procesów odpowiedzialnych za generowanie grafiki \cite{sapuan2018general}. Każdy piksel generowanego obrazu stanowić może pojedynczy wynik działania kernela. Dostarczenie danych wejściowych w postaci tekstur oraz konstrukcja programu \texttt{Fragment Shader} wyliczającego kolor każdego wynikowego piksela pozwala wykonać obliczenia w takiej samej abstrakcji jak dedykowane rozwiązania.
+
+% TODO własna wersja pipeline https://www.wisdomjobs.com/userfiles/gp1.png
+
+\begin{figure}
+    \centering
+    
+    \caption{Pipeline graficzny WebGL API, który może byż wykorzystany do obliczeń ogólnego przeznaczenia.}
+    \label{fig:nodejs}
+\end{figure}
+
+
+% TODO wady, random writes niemożliwe, readpixels
+% TODO kompatybilność node (headless), deno (brak)

@@ -155,6 +155,21 @@ Listing \thelstlisting: #1\hfill%\hfill%
   morestring=[b]"
 }
 
+\lstdefinelanguage{WASM}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, func, param, result},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, default, extends throw, implements, import, this, void, number, string, public, Promise, private, protected, extends, from, constructor},
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
 % code style with line numbering (but these are commented out)
 \lstset{
   basicstyle=\footnotesize\ttfamily,
