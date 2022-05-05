@@ -1,0 +1,28 @@
+\begin{tikzpicture}
+
+\node[draw, rectangle, minimum height=0.9cm] (VBO) {Vertex Buffer Objects};
+\node[draw, rectangle, minimum height=0.9cm, right=2 of VBO] (Attr) {Attributes};
+
+\path [draw, latex-, ultra thick,dotted] (VBO) -- node[above] {Points to} (Attr);
+
+\node[draw, rectangle, minimum height=0.9cm, below=1 of Attr] (VS) {Vertex Shader};
+\path [draw, -latex, line width=0.1cm] (Attr) -- node[right] {Input} (VS);
+
+
+\node[draw, rectangle, minimum height=0.9cm, below=1 of VS] (FS) {Fragment Shader};
+\path [draw, -latex, line width=0.1cm] (VS) -- node[right] {} (FS);
+
+\node[draw, rectangle, minimum height=0.9cm, below=1 of FS] (FB) {Frame Buffer};
+\path [draw, -latex, line width=0.1cm] (FS) -- node[right] {} (FB);
+
+\node[draw, rectangle, minimum height=0.9cm, left=2 of VS] (Uniforms) {Uniforms};
+\path [draw, latex-, ultra thick] (VS) -- node[above] {Input} (Uniforms);
+\draw [draw, latex-, ultra thick] (FS) -- node[above] {Input} (Uniforms|-FS);
+\draw [draw, -, ultra thick] (Uniforms) -- node[above] {} (Uniforms|-FS);
+
+\node[draw, rectangle, minimum height=0.9cm, right=2 of VS] (Varyings) {Varyings};
+\path [draw, -latex, ultra thick] (VS) -- node[above] {Output} (Varyings);
+\draw [draw, latex-, ultra thick] (FS) -- node[above] {Input} (Varyings|-FS);
+\draw [draw, -, ultra thick] (Varyings) -- node[above] {} (Varyings|-FS);
+
+\end{tikzpicture}
