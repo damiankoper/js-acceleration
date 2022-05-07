@@ -1,7 +1,58 @@
 \chapter{Transformacja Hough'a}
 \label{sec:hough}
 
+Transformacja Hough'a (czyt. Haf'a) wykorzystywana jest w~procesie analizy obrazów i~służy do wykrywania na nim kształtów parametrycznych oraz nieparametrycznych w~zależności od jej wariantu \cite{mukhopadhyay2015survey}. Samo pojęcie transformacji odnosi się do odwzorowywania pojedynczych pikseli obrazu binarnego lub ich zbioru w~przestrzeni akumulatora. Obraz wejściowy wcześniej poddany być musi procesowi wykrywania krawędzi. Dane zebrane w~akumulatorze biorą następnie udział w~procesie głosowania, w~którym wyłonieni zostają potencjalne kształty poprzez wykrywanie największych wartości w~akumulatorze. W~zależności od specyfiki problemu oraz wykrywanych kształtów głosowanie nad kandydatami może odbywać się na różne sposoby. Użyte może zostać proste progowanie, wykrywanie i~uśrednianie skupisk, czy też filtracja przestrzeni akumulatora. Ogólny schemat przetwarzania przedstawiony jest na rysunku \ref{fig:hough}.
+
+\begin{figure}
+    \centering
+    \input{drawings/hough.tex}
+    \caption{Ogólny schemat przetwarzania obrazu z wykorzystaniem transformacji Hough'a.}
+    \label{fig:hough}
+\end{figure}
+
 \section{Standard Hough Transform}
+
+Pracą, która jako pierwsza opisała tę transformację jest zgłoszony w~1962r. patent Paula Hough'a. Opisał on wykrywanie linii poprzez zastosowanie odwzorowania PTLM (point-to-line mapping). Odwzorowanie to dla każdego piksela rysuje linię w~dwuwymiarowej przestrzeni akumulatora zgodnie z kierunkowym równaniem prostej z~równania (\ref{eq:hough-1}) przekształcone do postaci (\ref{eq:hough-2}). Stosując odwzorowanie odwrotne dla punktów o~największych wartościach możemy otrzymać potencjalne linie na obrazie.
+\begin{align}
+    y &= mx+c \label{eq:hough-1}\\
+    c &= y-mx \label{eq:hough-2}
+\end{align}
+\begin{eqexpl}
+    \item{x, y} współrzędne piksela na obrazie;
+    \item{m} zbocze prostej;
+    \item{c} punkt przecięcia prostej.
+\end{eqexpl}
+
+
+% \begin{figure}
+%     \centering
+%     \input{drawings/houghSlopeA.tex}
+%     \caption{Ogólny schemat przetwarzania obrazu z wykorzystaniem transformacji Hough'a.}
+%     \label{fig:houghSlopeA}
+% \end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \input{drawings/houghSlopeA.tex}
+    \caption{Binarny obraz wejściowy}\label{fig:houghSlopeA}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \input{drawings/houghSlopeB.tex}
+    \caption{Wynik transformacji}\label{fig:houghSlopeB}
+    \end{subfigure}
+
+    \caption{Demonstracja transformacji Hough'a w wariancie równania kierunkowego prostej.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \input{drawings/houghSinCos.tex}
+    \caption{Wynik transformacji Hough'a dla obrazu na rysunku \ref{fig:houghSlopeA} w wariancie współrzędnych biegunowych.}
+    \label{fig:houghSinCos}
+\end{figure}
 
 \section{Circle Hough Transform}
 

@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+
+
+\node[draw, rectangle, minimum height=0.9cm] (e) {Edge detection};
+\node[draw, rectangle, minimum height=0.9cm, right=0.9cm of e] (t) {Hough transform};
+\node[draw, rectangle, minimum height=0.9cm, right=0.9cm of t] (v) {Voting};
+\node[draw, rectangle, minimum height=0.9cm, right=0.9cm of v] (p) {Further processing};
+
+\path [draw, latex-o, ultra thick] (e) -- node[right] {Input image} ++(0,2);
+\path [draw, -latex, ultra thick] (e) -- node[right] {} (t);
+\path [draw, -latex, ultra thick] (t) -- node[right] {} (v);
+\path [draw, -latex, ultra thick] (v) -- node[right] {} (p);
+\path [draw, -latex, ultra thick] (p) -- node[left] {Detected patterns} ++(0,2);
+
+\end{tikzpicture}

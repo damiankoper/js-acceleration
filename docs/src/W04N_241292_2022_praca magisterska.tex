@@ -30,6 +30,9 @@
 %   \renewcommand{\normalsize}{\fontsize{8pt}{10pt}\selectfont}
 
 %\usepackage[cp1250]{inputenc} % for cp1250 file encoding
+
+
+
 \usepackage{amssymb}
 \usepackage{emptypage}
 
@@ -110,6 +113,12 @@
  \usepackage{eqexpl}
  \usepackage{tkz-euclide}
  \usepackage{scalefnt}
+ \usepackage{eqexpl}
+
+ \usetikzlibrary{pgfplots.groupplots} % needs to be loaded exactly like this
+ \usepgfplotslibrary{fillbetween}
+ \usepgfplotslibrary{colorbrewer}
+ \usetikzlibrary{patterns}
 
  \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
@@ -278,10 +287,12 @@ Listing \thelstlisting: #1\hfill%\hfill%
 
 \renewcommand\lstlistlistingname{Spis listingów}
 \makeatletter
+
 %\renewcommand*{\l@lstlisting}[2]{\@dottedtocline{1}{0em}{2.3em}{#1}{#2}}
 \g@addto@macro\insertchapterspace{\addtocontents{lol}{\protect\addvspace{10pt}}}
 \renewcommand*{\l@lstlisting}{\@dottedtocline{1}{0em}{2.3em}}
 \makeatother
+\usepackage{subcaption}
 
 \renewcommand*{\lstlistlistingname}{Spis listingów} \newlistof{lstlistoflistings}{lol}{\lstlistlistingname}
 

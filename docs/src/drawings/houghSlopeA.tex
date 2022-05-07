@@ -1,0 +1,15 @@
+\begin{tikzpicture}[scale=0.8]
+    \begin{scope}[yscale=-1] 
+    \tkzInit[xmax=6,ymax=6,xmin=0,ymin=0]
+    \tkzGrid[]
+    \tikzset{xlabel style/.append style={above=5pt}}
+    \tkzAxeXY[]
+    \draw[gray, ultra thick] (-0.5,0.5) -- (5.5,6.5);
+    \fill (0, 1)  circle[radius=2pt];
+    \fill (1, 2)  circle[radius=2pt];
+    \fill (2, 3)  circle[radius=2pt];
+    \fill (3, 4)  circle[radius=2pt];
+    \fill (4, 5)  circle[radius=2pt];
+    \fill (5, 6)  circle[radius=2pt];
+    \end{scope}
+\end{tikzpicture}
