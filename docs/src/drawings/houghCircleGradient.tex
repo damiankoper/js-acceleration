@@ -1,0 +1,28 @@
+\begin{tikzpicture}[scale=0.9]
+    \begin{scope}[yscale=-1]
+    \tkzInit[xmax=6.2,ymax=6.2,xmin=0,ymin=0]
+    \tkzClip[space=1]
+    \tkzGrid[]
+    \tikzset{xlabel style/.append style={above=5pt}}
+    \tkzAxeXY[]
+
+        \tkzDefPoints{3/3/O,3/5/C}
+        \tkzDefCircle[through](O,C)
+        \tkzGetLength{rOC}
+        \tkzDrawCircle[dashed](O,C)
+        \tkzDrawPoints(O)
+    
+        \tkzDefPoint(3,3){A}\tkzDefPoint(0,0){O}
+        \tkzDefShiftPoint[A](0:4){B}
+        \tkzDefShiftPoint[A](90:4){C}
+        \tkzDefShiftPoint[A](180:4){D}
+        \tkzDefShiftPoint[A](270:4){E}
+        \tkzDefShiftPoint[A](45:4){F}
+        \tkzDefShiftPoint[A](135:4){G}
+        \tkzDefShiftPoint[A](225:4){H}
+        \tkzDefShiftPoint[A](-45:4){I}
+        \tkzDrawSegments[ultra thick, opacity=0.5](A,B A,C A,D A,E A,F A,G A,H A,I)
+  
+    
+    \end{scope}
+\end{tikzpicture}

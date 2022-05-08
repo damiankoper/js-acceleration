@@ -1,58 +1,117 @@
 \chapter{Transformacja Hough'a}
 \label{sec:hough}
 
-Transformacja Hough'a (czyt. Haf'a) wykorzystywana jest w~procesie analizy obrazów i~służy do wykrywania na nim kształtów parametrycznych oraz nieparametrycznych w~zależności od jej wariantu \cite{mukhopadhyay2015survey}. Samo pojęcie transformacji odnosi się do odwzorowywania pojedynczych pikseli obrazu binarnego lub ich zbioru w~przestrzeni akumulatora. Obraz wejściowy wcześniej poddany być musi procesowi wykrywania krawędzi. Dane zebrane w~akumulatorze biorą następnie udział w~procesie głosowania, w~którym wyłonieni zostają potencjalne kształty poprzez wykrywanie największych wartości w~akumulatorze. W~zależności od specyfiki problemu oraz wykrywanych kształtów głosowanie nad kandydatami może odbywać się na różne sposoby. Użyte może zostać proste progowanie, wykrywanie i~uśrednianie skupisk, czy też filtracja przestrzeni akumulatora. Ogólny schemat przetwarzania przedstawiony jest na rysunku \ref{fig:hough}.
+Transformacja Hough'a (czyt. Hafa) wykorzystywana jest w~procesie analizy obrazów i~służy do wykrywania na nim kształtów parametrycznych oraz nieparametrycznych w~zależności od jej wariantu \cite{mukhopadhyay2015survey}. Samo pojęcie transformacji odnosi się do odwzorowywania pojedynczych pikseli obrazu binarnego lub ich zbioru w~przestrzeni akumulatora. Obraz wejściowy wcześniej poddany być musi procesowi wykrywania krawędzi. Dane zebrane w~akumulatorze biorą następnie udział w~procesie głosowania, w~którym wyłonione zostają potencjalne kształty poprzez wykrywanie największych wartości w~akumulatorze. W~zależności od specyfiki problemu oraz wykrywanych kształtów głosowanie nad kandydatami może odbywać się na różne sposoby. Użyte może zostać proste progowanie, wykrywanie i~uśrednianie skupisk, czy też filtracja przestrzeni akumulatora. Ogólny schemat przetwarzania przedstawiony jest na rysunku \ref{fig:hough}.
 
 \begin{figure}
     \centering
     \input{drawings/hough.tex}
-    \caption{Ogólny schemat przetwarzania obrazu z wykorzystaniem transformacji Hough'a.}
+    \caption{Ogólny schemat przetwarzania obrazu z~wykorzystaniem transformacji Hough'a.}
     \label{fig:hough}
 \end{figure}
 
 \section{Standard Hough Transform}
 
-Pracą, która jako pierwsza opisała tę transformację jest zgłoszony w~1962r. patent Paula Hough'a. Opisał on wykrywanie linii poprzez zastosowanie odwzorowania PTLM (point-to-line mapping). Odwzorowanie to dla każdego piksela rysuje linię w~dwuwymiarowej przestrzeni akumulatora zgodnie z kierunkowym równaniem prostej z~równania (\ref{eq:hough-1}) przekształcone do postaci (\ref{eq:hough-2}). Stosując odwzorowanie odwrotne dla punktów o~największych wartościach możemy otrzymać potencjalne linie na obrazie.
+Pracą, która jako pierwsza opisała tę transformację jest zgłoszony w~1962r. patent Paula Hough'a \cite{hough1962method}. Opisał on wykrywanie linii poprzez zastosowanie odwzorowania PTLM (point-to-line mapping). Odwzorowanie to dla każdego piksela rysuje linię w~dwuwymiarowej przestrzeni akumulatora zgodnie z~kierunkowym równaniem prostej z~równania (\ref{eq:hough-1}) przekształcone do postaci (\ref{eq:hough-2}). Stosując odwzorowanie odwrotne dla punktów o~największych wartościach możemy otrzymać potencjalne linie na obrazie. Transformację stosującą pełne odwzorowanie wszystkich punktów obrazu na parametry kształtów nazywamy standardową transformacją Hough'a (Standard Hough Transform, SHT).
 \begin{align}
-    y &= mx+c \label{eq:hough-1}\\
-    c &= y-mx \label{eq:hough-2}
+    y(x) &= mx+c \label{eq:hough-1}\\
+    c(m) &= -xm+y \label{eq:hough-2}
 \end{align}
 \begin{eqexpl}
-    \item{x, y} współrzędne piksela na obrazie;
-    \item{m} zbocze prostej;
-    \item{c} punkt przecięcia prostej.
+    \item{$x, y$} współrzędne piksela na obrazie;
+    \item{$m$} zbocze prostej;
+    \item{$c$} punkt przecięcia prostej z~osią Y.
 \end{eqexpl}
-
-
-% \begin{figure}
-%     \centering
-%     \input{drawings/houghSlopeA.tex}
-%     \caption{Ogólny schemat przetwarzania obrazu z wykorzystaniem transformacji Hough'a.}
-%     \label{fig:houghSlopeA}
-% \end{figure}
 
 \begin{figure}
     \centering
-    \begin{subfigure}{0.4\textwidth}
+    \begin{subfigure}{0.45\textwidth}
         \centering
         \input{drawings/houghSlopeA.tex}
     \caption{Binarny obraz wejściowy}\label{fig:houghSlopeA}
-    \end{subfigure}
-    \begin{subfigure}{0.4\textwidth}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
         \centering
         \input{drawings/houghSlopeB.tex}
     \caption{Wynik transformacji}\label{fig:houghSlopeB}
     \end{subfigure}
 
-    \caption{Demonstracja transformacji Hough'a w wariancie równania kierunkowego prostej.}
-\end{figure}
+    \caption{Demonstracja transformacji Hough'a w~wariancie równania kierunkowego prostej.}
+    \label{fig:houghSlope}
 
-\begin{figure}
+\end{figure}
+\hspace{1cm}
+
+
+Na rysunku \ref{fig:houghSlope} przedstawiono obraz wejściowy (rys. \ref{fig:houghSlopeA}) oraz wynik transformacji (rys. \ref{fig:houghSlopeB}). Na rysunkach reprezentujących obraz oś Y jest skierowana w~dół, co ułatwia interpretację w~zgodności ze sposobem indeksowania pikseli obrazów podczas ich przetwarzania, gdzie punkt $(0,0)$ znajduje się w~lewym górnym rogu. W~wyniku transformacji każdy jasny piksel obrazu $(x, y)$ został odwzorowany na linię zgodnie z~równaniem (\ref{eq:hough-2}). Linie te przecięły się w~jednym punkcie $(1,1)$. W~wariancie dyskretnym transformacji wartość akumulatora w~punkcie $(1,1)$ miałaby największą wartość. W~tym wypadku punkt $(1,1)$ akumulatora przekłada się na prostą o~równaniu $y = x+1$, co zgadza się z~prostą na rysunku \ref{fig:houghSlopeA}.
+\begin{wrapfigure}{r}{7cm}
+    \centering
+    \input{drawings/houghLineAngle.tex}
+    \caption{Prosta opisana za pomocą odległości $\rho$ i~kąta $\theta$ od środka układu współrzędnych biegunowych.}
+    \label{fig:houghLineAngle}
+\end{wrapfigure}
+
+
+
+
+Taka reprezentacja punktu w~przestrzeni akumulatora rodzi jednak problem w~przypadku wykrywania linii pionowych. Piksele obrazu zorientowane w~pionie w~przestrzeni akumulatora utworzą linie równoległe. Brak punktu przecięcia takich linii uniemożliwia wykrycie linii na obrazie. Rozwiązaniem tego problemu jest zaproponowana w~1972 roku zmiana reprezentacji prostej, gdzie zamiast zbocza i~punktu przecięcia z~osią Y użyto biegunowego układu współrzędnych oraz prostej normalnej do wykrywanej prostej \cite{duda1972use}. Przykładowa prosta została zaprezentowana na rysunku \ref{fig:houghLineAngle} i~reprezentowana jest przez wartości odległości $\rho=\frac{5\sqrt{2}}{2}$ i~kąta obrotu $\theta=\frac{\pi}{4}$ wokół środka układu współrzędnych. Prosta odwzorowywana jest na sinusoidę zgodnie z~równaniem \ref{eq:sinCos}.
+\begin{align}
+    \rho(\theta) &= x\cos{\theta} + y\sin{\theta} \label{eq:sinCos}
+\end{align}
+\begin{eqexpl}
+    \item{$x, y$} współrzędne piksela na obrazie;
+    \item{$\rho$} odległość prostej od środka układu współrzędnych ;
+    \item{$\theta$} obrót prostej od wokół układu współrzędnych.
+\end{eqexpl}
+
+Na rysunku \ref{fig:houghSinCos} przedstawiono zawartość akumulatora po transformacji obrazu z~rysunku \ref{fig:houghSlopeA}. Zgodnie z~oczekiwaniami sinusoidy te przecinają się w~punktach, które reprezentują wykryte linie. Dwa punkty $(\frac{3\pi}{4}, \frac{\sqrt{2}}{2})$ oraz $(\frac{7\pi}{4}, -\frac{\sqrt{2}}{2})$, z~racji na okresowość funkcji trygonometrycznych reprezentują tę samą linię. Przestrzeń akumulatora dla kąta obrotu można zatem ograniczyć do $\theta \in \lbrack 0, \pi\rangle$ \cite{immerkaer1998some}.
+
+\begin{figure}[t]
     \centering
     \input{drawings/houghSinCos.tex}
-    \caption{Wynik transformacji Hough'a dla obrazu na rysunku \ref{fig:houghSlopeA} w wariancie współrzędnych biegunowych.}
+    \caption{Wynik transformacji Hough'a dla obrazu na rysunku \ref{fig:houghSlopeA} w~wariancie współrzędnych biegunowych.}
     \label{fig:houghSinCos}
 \end{figure}
 
+
+W czasie transformacji, na końcowy rezultat mają wpływ szumy, które powstały na skutek niedoskonałości procesu wykrywania krawędzi, są bardzo krótkimi krawędziami lub są krawędziami, ale nieuwzględnianymi w~rozwiązywanym problemie. Przykładem mogą być okręgi podczas wykrywania linii na obrazie. Proces głosowania w~przestrzeni akumulatora musi uwzględniać takie sytuacje i~proste progowanie może zostać zastąpione bardziej złożonymi metodami \cite{palmer1997optimizing, perantonis1998robust}.
+
+Na potrzeby prowadzonych badań zaimplementowany został algorytm wykrywania prostych na~obrazie binarnym, który jako wykrywanie maksimów w~akumulatorze wykorzystuje proste progowanie.
+
 \section{Circle Hough Transform}
 
+Prosta do swojej reprezentacji potrzebuje dwóch parametrów - zbocza i~punktu przecięcia z~osią Y. Okrąg natomiast jest kształtem parametrycznym, które potrzebuje trzech parametrów - współrzędnych środka i~promienia. Idąc dalej, możemy rozszerzać liczbę parametrów, zyskując możliwość stosowania transformacji Hough'a do wykrywania coraz bardziej skomplikowanych kształtów.
+
+Akumulator w~Circle Hough Transform (CHT) ma trzy wymiary, po jednym na każdy parametr tak samo jak w~SHT, która do wykrywania linii wykorzystywała dwuwymiarowy akumulator. Dla każdego z~możliwych promieni, dla każdego piksela obrazu w~przestrzeni akumulatora rysujemy okrąg, którego ten piksel jest środkiem. Efektywnie jeden piksel obrazu mapowany jest na stożek w~trójwymiarowej przestrzeni akumulatora. Na rysunku \ref{fig:houghCircleStandard} przedstawiono przykładowe okręgi  w~dwóch wymiarach dla stałego promienia. Wszystkie te narysowane okręgi przecinają się w~środku właściwego okręgu \cite{mukhopadhyay2015survey}. W~takiej trójwymiarowej przestrzeni akumulatora jego największe wartości wskazywać będą na konkretne środki oraz promienie potencjalnych okręgów na obrazie wejściowym.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \input{drawings/houghCircle.tex}
+        \caption{CHT dla stałego promienia w~wariancie standardowym.}
+        \label{fig:houghCircleStandard}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \input{drawings/houghCircleGradient.tex}
+        \caption{CHT w~wariancie gradientowym dla wybranych kierunków.}
+        \label{fig:houghCircleGradient}
+        \vfill
+    \end{subfigure}
+    \caption{Wynik transformacji}\label{fig:houghCircle}
+\end{figure}
+
+\subsection{Wariant z~wykorzystaniem gradientu}
+
+Wraz ze skomplikowaniem kształtu parametrycznego rośnie liczba jego parametrów, których liczba stanowi liczbę wymiarów akumulatora. Dla każdego jasnego piksela obrazu konieczne jest uaktualnienie akumulatora we wszystkich jego wymiarach, co prowadzi do zwiększenia wykładniczej złożoności obliczeniowej. Dlatego dąży się do redukcji wymiarowości problemu zazwyczaj łącząc przetwarzanie charakterystyczna dla SHT z~dodatkową informacją z~przestrzeni obrazu. Biblioteka OpenCV implementuje mniej złożony wariant transformacji \cite{ito2012detection}, który oparty jest na wykorzystaniu gradientu wykrytych krawędzi. W~wariancie tym najpierw w~dwuwymiarowym akumulatorze następuje głosowanie nad centrum potencjalnego okręgu.
+
+W pierwszej kolejności binarny obraz poddawany jest operacji splotu z~filtrem Sobela w~wariancie pionowym oraz poziomym. Pozwala to na uzyskanie pochodnych cząstkowych w~danym punkcie, które razem tworzą gradient, czyli prostopadły kierunek przebiegu krawędzi potencjalnie wskazujący środek wyszukiwanego okręgu. W~dwuwymiarowym akumulatorze od analizowanego punktu w~dwóch kierunkach rysowana jest linia o~długości maksymalnego poszukiwanego promienia. W~przypadku okręgu wszystkie te linie przecinają się w~jednym punkcie, co pokazane zostało na rysunku \ref{fig:houghCircleGradient}. Następnie dla każdego punktu po wykryciu maksimów w~akumulatorze, w~drugim jednowymiarowym akumulatorze, dla każdego możliwego poszukiwanego promienia, następuje głosowanie. Zliczana jest liczba jasnych pikseli obrazu, które znajdują się w~danej odległości od środka, co po wykryciu maksimum w~akumulatorze uzupełnia dane okręgu o~najbardziej prawdopodobny promień.
+
+Na potrzeby prowadzonych badań zaimplementowany został algorytm wykrywania okręgów na~obrazie binarnym, który jako wykrywanie maksimów w~akumulatorze podczas głosowania dla środków jak i~promieni wykorzystuje proste progowanie.
+
+\subsection{Próbkowanie i~złożoność obliczeniowa}
+
+Głównym elementem wpływającym na złożoność obliczeniową transformacji Hough'a jest liczba analizowanych parametrów kształtów. Dla SHT złożoność wynosi $O(n)$ dla procesu głosowania i~$O(S_\rho S_\theta)$ dla procesu wykrywania maksimum, gdzie $n$ jest liczbą jasnych pikseli obrazu, a~$S_\rho$ i~$S_\theta$ parametrami próbkowania parametrów w~przestrzeni akumulatora. Widać zatem, że złożoność w~tym wypadku zależy od jakości danych wejściowych, gdzie wszelkie szumy zwiększają czas wykonania algorytmu, oraz od zakładanej dokładności. Kolejnym elementem jest próbkowanie w~przestrzeni akumulatora. Zwiększenie próbkowania pozwala uzyskać większą precyzję detekcji, ale zwiększa liniowo (dla jednego wymiaru) rozmiar akumulatora, a~co za tym idzie liczbę obliczeń wymaganych w~procesie głosowania. Ważnym czynnikiem jest specyfika problemu, który rozwiązywać ma transformacja Hough'a. Możemy zmniejszyć czas wykonania algorytmu ograniczając zakres poszukiwań głosując w~ustalonej podprzestrzeni akumulatora, na przykład analizując linie nachylone tylko pod określonym zakresem kątów i~odległości od punktu odniesienia.
+
+Transformacja Hough'a użyta została w~algorytmach wspólnych dla wszystkich testów w~środowiskach, które zostały przystosowane do badanych metod akceleracji. Wybrana została do tego celu ze względu na swoją złożoność obliczeniową, podział na wiele etapów oraz, w wariancie SHT, wykorzystania funkcji trygonometrycznych. Operuje ona również na dużych zbiorach danych, co dodatkowo pozwala rzucić światło na konieczność zarządzania pamięcią i transferu danych dla wybranych metod akceleracji. 

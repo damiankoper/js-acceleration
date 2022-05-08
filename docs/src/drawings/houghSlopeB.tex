@@ -1,10 +1,12 @@
-\begin{tikzpicture}[scale=0.8]
+\begin{tikzpicture}[scale=0.9]
     \begin{scope}[yscale=-1] 
-    \tkzInit[xmax=6,ymax=6,xmin=0,ymin=0]
+    \tkzInit[xmax=6.2,ymax=6.2,xmin=0,ymin=0]
     \tkzGrid[]
     \tikzset{xlabel style/.append style={above=5pt}}
-    \tkzAxeXY[]
-    \draw[gray, ultra thick] (-0.5,1) -- (6.5,1);
+    \tkzDrawX[label=$m$]
+    \tkzLabelX
+    \tkzDrawY[label=$c$]
+    \tkzLabelY    \draw[gray, ultra thick] (-0.5,1) -- (6.5,1);
     \draw[gray, ultra thick] (-0.5,2.5) -- (2.5,-0.5);
     \draw[gray, ultra thick] (-0.5,4) -- (1.75,-0.5);
     \draw[gray, ultra thick] (-0.5,5.5) -- (1.5,-0.5);

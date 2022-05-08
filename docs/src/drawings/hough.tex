@@ -4,7 +4,7 @@
 \node[draw, rectangle, minimum height=0.9cm] (e) {Edge detection};
 \node[draw, rectangle, minimum height=0.9cm, right=0.9cm of e] (t) {Hough transform};
 \node[draw, rectangle, minimum height=0.9cm, right=0.9cm of t] (v) {Voting};
-\node[draw, rectangle, minimum height=0.9cm, right=0.9cm of v] (p) {Further processing};
+\node[draw, rectangle, minimum height=0.9cm, right=0.9cm of v] (p) {Peak detection};
 
 \path [draw, latex-o, ultra thick] (e) -- node[right] {Input image} ++(0,2);
 \path [draw, -latex, ultra thick] (e) -- node[right] {} (t);

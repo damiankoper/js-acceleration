@@ -1,16 +1,18 @@
-\begin{tikzpicture}[]
-    \tkzInit[xmax=360,xstep=30,ymax=3,xmin=0,ymin=-3]
-    \tkzGrid[]
-    \tkzClip[space=0.75]
-    \tkzDrawX[label=$\theta$]
-    \tkzLabelX
+\begin{tikzpicture}[xscale=2]
+    \tkzInit[xmax=2*pi,ymax=3,xmin=0,ymin=-3]
+    % \tkzHLine[color=red, dashed]{sqrt(2)/2}
+    % \tkzHLine[color=red, dashed]{-sqrt(2)/2}
+    \tkzGrid[xstep=pi/4]
+    \tkzClip[space=1]
+    \tkzDrawX[label=$\theta$,trig=4]
+    \tkzLabelX[trig=4, below=12pt]
     \tkzDrawY[label=$\rho$]
     \tkzLabelY
 
-    \draw plot[domain=0:360/30,smooth] (\x,{0*cos(\x*30*0.0174532925 r) + 1*sin(\x*30*0.0174532925 r)});
-    \draw plot[domain=0:360/30,smooth] (\x,{1*cos(\x*30*0.0174532925 r) + 2*sin(\x*30*0.0174532925 r)});
-    \draw plot[domain=0:360/30,smooth] (\x,{2*cos(\x*30*0.0174532925 r) + 3*sin(\x*30*0.0174532925 r)});
-    \draw plot[domain=0:360/30,smooth] (\x,{3*cos(\x*30*0.0174532925 r) + 4*sin(\x*30*0.0174532925 r)});
-    \draw plot[domain=0:360/30,smooth] (\x,{4*cos(\x*30*0.0174532925 r) + 5*sin(\x*30*0.0174532925 r)});
-    \draw plot[domain=0:360/30,smooth] (\x,{5*cos(\x*30*0.0174532925 r) + 6*sin(\x*30*0.0174532925 r)});
+    \draw plot[domain=0:2*pi,smooth] (\x,{0*cos(\x r) + 1*sin(\x r)});
+    \draw plot[domain=0:2*pi,smooth] (\x,{1*cos(\x r) + 2*sin(\x r)});
+    \draw plot[domain=0:2*pi,smooth] (\x,{2*cos(\x r) + 3*sin(\x r)});
+    \draw plot[domain=0:2*pi,smooth] (\x,{3*cos(\x r) + 4*sin(\x r)});
+    \draw plot[domain=0:2*pi,smooth] (\x,{4*cos(\x r) + 5*sin(\x r)});
+    \draw plot[domain=0:2*pi,smooth] (\x,{5*cos(\x r) + 6*sin(\x r)});
 \end{tikzpicture}
