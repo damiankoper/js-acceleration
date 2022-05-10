@@ -1,0 +1,144 @@
+@startuml benchmark
+scale 3
+' skinparam linetype ortho
+/' interface IBenchmarkSampleResult {
+    +time: number
+    +totalTime: number
+    +microRuns: number
+} '/
+
+interface IBenchmark {
+    +reset(): void
+    +getSamples(): IBenchmarkSampleResult[]
+    +runIterations(config: GeneralConfig & StartConfig & IterationConfig): \n\tIIBenchmarkResult<BenchmarkResultType.ITERATIONS>
+    +runTimeIterations(config: GeneralConfig & StartConfig & TimeConfig): \n\tIIBenchmarkResult<BenchmarkResultType.TIME_ITERATIONS>
+    +runIterationsAsync(config: GeneralConfig & StartConfig & IterationConfig): \n\tIPromise<IBenchmarkResult<BenchmarkResultType.ITERATIONS>>
+    +runTimeIterationsAsync(config: GeneralConfig & StartConfig & TimeConfig): \n\tIPromise<IBenchmarkResult<BenchmarkResultType.TIME_ITERATIONS>>
+}
+
+class BenchmarkBase {
+    +reset(): void
+    +getSamples(): IBenchmarkSampleResult[]
+    +getColdSamples(): IBenchmarkSampleResult[]
+}
+
+class Benchmark  {
+    IBenchmark members omitted
+}
+
+IBenchmark <|... Benchmark
+BenchmarkBase <|-up- Benchmark
+
+
+
+hide empty members
+class BenchmarkExtracted  {
+    IBenchmark members omitted    
+}
+
+IBenchmark <|... BenchmarkExtracted
+BenchmarkBase <|-up- BenchmarkExtracted
+
+BenchmarkBase *-- ITimer
+
+interface ITimer {
+    +start(): void
+    +stop(): number
+}
+
+class Interval <<chrome>> <<timer>>{
+    +start(): void
+    +stop(): void
+    +microseconds(): number
+}
+
+class Process.HRTime <<node>> <<timer>>{
+    +bigint(): bigint
+}
+
+class Performance <<browser>> <<node>> <<deno>> <<timer>>{
+    +now(): number
+}
+
+class ChromeTimer implements ITimer {
+    -interval?: Interval
+    +start(): void
+    +stop(): number
+    +{static} resolution: 1000000
+    +{static} isAvailable(): boolean
+}
+class NodeHRTimer implements ITimer {
+    -t: bigint
+    +start(): void
+    +stop(): number
+    +{static} resolution: 1000000000
+    +{static} isAvailable(): boolean
+}
+class PerformanceTimer implements ITimer {
+    +performance?: Performance
+    -t: number
+    +start(): void
+    +stop(): number
+    +{static} resolution: 1000000
+    +{static} isAvailable(): boolean
+}
+
+enum BenchmarkResultType {
+    ITERATIONS
+    TIME_ITERATIONS
+}
+
+
+interface IBenchmarkResult<T extends BenchmarkResultType>  {
+    +name: string
+    +type: T
+    +samples: IBenchmarkSampleResult[]
+    +platform: any
+}
+IBenchmark ..> IBenchmarkResult: <<returns>>
+
+IBenchmarkResult --|> BasicMetrics
+IBenchmarkResult --|> ExtendedMetrics
+IBenchmarkResult ...> BenchmarkResultType
+
+interface BasicMetrics {
+    +mean: number
+    +var: number
+    +stdev: number
+}
+interface ExtendedMetrics {
+    +sem: number
+    +moe: number
+    +rme: number
+}
+
+ChromeTimer o-- Interval
+PerformanceTimer ..> Performance
+NodeHRTimer ..> Process.HRTime
+
+
+interface StartConfig {
+    +steadyState?: boolean
+    +cov?: number
+    +covWindow?: number
+}
+interface IterationConfig {
+    +samples?: number
+}
+interface TimeConfig {
+    +minSamples?: number
+    +minTime?: number
+    +maxTime?: number
+}
+interface GeneralConfig {
+    +name?: string
+    +microRuns?: number
+}
+
+StartConfig <.. IBenchmark
+TimeConfig <.. IBenchmark
+IterationConfig <.. IBenchmark
+GeneralConfig <.. IBenchmark
+
+
+@enduml
