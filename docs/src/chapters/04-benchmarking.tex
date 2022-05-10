@@ -1,22 +1,88 @@
 \chapter{Metodologia pomiarów}
 
-Testowanie wydajności języka JavaScript, który głównie wykorzystywany jest w przeglądarkach internetowych, z racji na ich szeroką kompatybilność oraz mnogość środowisk jest szczególnie problematyczny \cite{v8-real-perf}. Pierwotnie testy wydajności wykonywane były za pomocą testów syntetycznych, mikrobenchmarków - krótkich fragmentów kodu, które miały określić wydajność pojedynczej lub małego podzbioru funkcjonalności języka, na przykład porównując wydajność zwykłych tablic \mbox{\lstinline{Array}} do tablic typowanych, której przykładem jest obiekt \lstinline{Int8Array}. Popularnym narzędziem do budowanie takich benchmarków była strona jsPerf \cite{jsperf}, która obecnie nie jest już utrzymywana.
+Testowanie wydajności języka JavaScript, który głównie wykorzystywany jest w~przeglądarkach internetowych, z~racji na ich szeroką kompatybilność oraz mnogość środowisk jest szczególnie problematyczny \cite{v8-real-perf}. Rozdział ten porusza problematykę testowania syntetycznego oraz rzeczywistego. Opisuje również bibliotekę stworzoną na potrzeby prowadzonych badań.
 
-Rosnąca liczba API i elementów ekosystemu wykorzystująca coraz bardziej złożone mechanizmy doprowadziła do ewolucji mikrobenchmarków do statycznych zestawów testów. Przykładami takowych są wspomniany wcześniej Ostrich \cite{ostrich}, który wykonuje różnego rodzaju algorytmy numeryczne takie jak algorytm Bauma-Welcha, czy szybką transformację Fouriera. Innymi przykładami są benchmarki JetStream 2 oraz Octane sprawdzające, oprócz ogólnych algorytmów takich jak algorytmy sortowania, elementy specyficzne dla ekosystemu JavaScript takie jak czas kompilacji kompilatora TypeScript, działanie WebAssembly, czy wyrażeń regularnych \cite{octane, jetstream}.
+Pierwotnie testy wydajności wykonywane były za pomocą testów syntetycznych, mikrobenchmarków - krótkich fragmentów kodu, które miały określić wydajność pojedynczej lub małego podzbioru funkcjonalności języka, na przykład porównując wydajność zwykłych tablic \mbox{\lstinline{Array}} do tablic typowanych, której przykładem jest obiekt \lstinline{Int8Array}. Popularnym narzędziem do budowanie takich benchmarków była strona jsPerf \cite{jsperf}, która obecnie nie jest już utrzymywana.
 
-Jednak w przeglądarkach internetowych z perspektywy ich głównego przeznaczenia liczy się wygoda użytkowania. Czas poświęcony na wykonywanie samego kodu JavaScript, razem z pobocznymi procesami takimi jak Garbage Collector, kompilacja i optymalizacja stanowią ok 40\% całego nakładu obliczeń przeglądarki, która musi oprócz tego parsować i renderować DOM oraz reagować na zdarzenia. Popularnym narzędziem do pomiarów wydajności strony z perspektywy czasu ładowania i renderowania jest Google Lighthouse \cite{lighthouse}. Popularnymi metrykami używanymi w tego typu pomiarach jest First Contentful paint, czyli czas do narysowania czegokolwiek na ekranie, czy Largest Contentful Paint, czyli czas po którym nastąpiła największe przerysowanie elementów strony. W środowiskach serwerowych problem ładowania strony naturalnie nie występuje. Mierzy się natomiast czas zimnego startu, czyli czasu wykonania kodu razem z czasem uruchomienia samego środowiska. Ma to szczególne znaczenie w środowiskach \textit{serverless} takich jak AWS Lambda \cite{aws-lambda}.
+Rosnąca liczba API i~elementów ekosystemu wykorzystująca coraz bardziej złożone mechanizmy doprowadziła do ewolucji mikrobenchmarków do statycznych zestawów testów. Przykładami takowych są wspomniany wcześniej Ostrich \cite{ostrich}, który wykonuje różnego rodzaju algorytmy numeryczne takie jak algorytm Bauma-Welcha, czy szybką transformację Fouriera. Innymi przykładami są benchmarki JetStream 2 oraz Octane sprawdzające, oprócz ogólnych algorytmów takich jak algorytmy sortowania, elementy specyficzne dla ekosystemu JavaScript takie jak czas kompilacji kompilatora TypeScript, działanie WebAssembly, czy wyrażeń regularnych \cite{octane, jetstream}.
 
-Prowadząc badania w ramach tej pracy nie musimy skupiać się na metrykach czasu ładowania strony lub uruchamiania środowiska serwerowego, ponieważ przy intensywnych lub powtarzalnych obliczeniach stanowią one pomijalną składową stałą.
-Problem zimnego startu jednak występuje, choć w różnym stopniu. Wpływ na to mają procesy optymalizacji wykonania sekwencyjnego oraz czas inicjalizacji metod akceleracji \cite{je-benchmarking}.
+Jednak w~przeglądarkach internetowych z~perspektywy ich głównego przeznaczenia liczy się wygoda użytkowania. Czas poświęcony na wykonywanie samego kodu JavaScript, razem z~pobocznymi procesami takimi jak Garbage Collector, kompilacja i~optymalizacja stanowią ok 40\% całego nakładu obliczeń przeglądarki, która musi oprócz tego parsować i~renderować DOM oraz reagować na zdarzenia. Popularnym narzędziem do pomiarów wydajności strony z~perspektywy czasu ładowania i~renderowania jest Google Lighthouse \cite{lighthouse}. Popularnymi metrykami używanymi w~tego typu pomiarach jest First Contentful paint, czyli czas do narysowania czegokolwiek na ekranie, czy Largest Contentful Paint, czyli czas po którym nastąpiła największe przerysowanie elementów strony. W~środowiskach serwerowych problem ładowania strony naturalnie nie występuje. Mierzy się natomiast czas zimnego startu, czyli czasu wykonania kodu razem z~czasem uruchomienia samego środowiska. Ma to szczególne znaczenie w~środowiskach \textit{serverless} takich jak AWS Lambda \cite{aws-lambda}.
 
-Do pomiaru samego czasu wykonania można podejść na kilka sposobów. Dla krótkich fragmentów kodu istnieje ryzyko, że czas ich wykonania nie zmieści się w precyzji pomiaru czasu. Rozwiązaniem tego problemu jest pomiar czasu wykonania $t$ danej liczby iteracji $n$, a finalnym wynikiem pomiary będzie iloraz $\frac{t}{n}$. Innym podejściem jest wykonywanie testów w pętli, aż do osiągnięcia zadeklarowanego całkowitego czasu. Hybrydowym rozwiązaniem jest dynamiczne dostosowanie liczby cykli pojedynczego pomiaru czasu, aby zaspokoić wymagania całkowitego czasu testu.
+Prowadząc badania w~ramach tej pracy nie musimy skupiać się na metrykach czasu ładowania strony lub uruchamiania środowiska serwerowego, ponieważ przy intensywnych lub powtarzalnych obliczeniach stanowią one pomijalną składową stałą.
+Problem zimnego startu jednak występuje, choć w~różnym stopniu. Wpływ na to mają procesy optymalizacji wykonania sekwencyjnego oraz czas inicjalizacji metod akceleracji \cite{je-benchmarking}.
 
-Funkcje i pętle stosowane do sterowania cyklami, analizując krótkie czasy wykonania, mogą stanowić istotną składową stałą wyników. Aby temu zapobiec stosuje się dynamicznie tworzoną funkcję testową na podstawie serializowanej funkcji testowanej, co możliwe jest poprzez wywołania \lstinline{Function.prototype.toString()}. Wywołanie to zwraca funkcję - argumenty i jej ciało w postaci ciągu znaków, a następnie ciało duplikowane jest wymaganą liczbę razy. Rozwiązanie to, w przypadku bibliotek, które w procesie budowania przeszły proces minifikacji może prowadzić do błędów związanych z nazwami symboli. Dzieje się tak ponieważ w procesie minifikacji nazwy symboli, w celu zmniejszenia rozmiaru kodu, zamieniane są na ich krótsze odpowiedniki, często kolejne kombinacje liter alfabetu. Nie jest to możliwe dynamicznie w przypadku funkcji zserializowanej do ciągu znaków.
+Do pomiaru samego czasu wykonania można podejść na kilka sposobów. Dla krótkich fragmentów kodu istnieje ryzyko, że czas ich wykonania nie zmieści się w~precyzji pomiaru czasu. Rozwiązaniem tego problemu jest pomiar czasu wykonania $t$ danej liczby iteracji $n$, a~finalnym wynikiem pomiary będzie iloraz $\frac{t}{n}$. Innym podejściem jest wykonywanie testów w~pętli, aż do osiągnięcia zadeklarowanego całkowitego czasu. Hybrydowym rozwiązaniem jest dynamiczne dostosowanie liczby cykli pojedynczego pomiaru czasu, aby zaspokoić wymagania całkowitego czasu testu.
 
-Problemem wartym rozważenie są również mechanizmy pomiaru czasu. Różnią się one w zależności od środowiska i w celu zapewnienia bezpieczeństwa mają one często ograniczoną rozdzielczość, aby zapobiec atakom czasowym jak Spectre i Meltdown. Standardowym rozwiązaniem kompatybilnym ze wszystkimi analizowanymi środowiskami jest Performance API z metodą \lstinline{performance.now()}, która zwraca liczbę zmiennoprzecinkową reprezentującą czas w milisekundach od załadowania strony. W przeglądarce Firefox wartość ta zaokrąglona jest to 1ms, a w Google Chrome do 0.1ms. Chrome po użyciu flagi \lstinline{--enable-benchmarking} przy uruchomieniu udostępnia obiekt \lstinline{chrome.Interval}, którego pomiary mają rozdzielczość $1 {\mu}s$. Deno po użyciu flagi \lstinline{--allow-hrtime} zwiększa rozdzielczość pomiarów przy użyciu Performance API, a NodeJS udostępnia obiekt \lstinline{process.hrtime}, którego pomiary wykonywane są z rozdzielczością $1ns$.
+Funkcje i~pętle stosowane do sterowania cyklami, analizując krótkie czasy wykonania, mogą stanowić istotną składową stałą wyników. Aby temu zapobiec stosuje się dynamicznie tworzoną funkcję testową na podstawie serializowanej funkcji testowanej, co możliwe jest poprzez wywołania \lstinline{Function.prototype.toString()}. Wywołanie to zwraca funkcję - argumenty i~jej ciało w~postaci ciągu znaków, a~następnie ciało duplikowane jest wymaganą liczbę razy. Rozwiązanie to, w~przypadku bibliotek, które w~procesie budowania przeszły proces minifikacji może prowadzić do błędów związanych z~nazwami symboli. Dzieje się tak ponieważ w~procesie minifikacji nazwy symboli, w~celu zmniejszenia rozmiaru kodu, zamieniane są na ich krótsze odpowiedniki, często kolejne kombinacje liter alfabetu. Nie jest to możliwe dynamicznie w~przypadku funkcji zserializowanej do ciągu znaków.
 
-Biblioteka benchmark.js łączy przedstawione wcześniej rozwiązania, dynamicznie wykrywa środowisko, dynamicznie dostosowuje liczbę iteracji pojedynczego pomiaru czasu zgodnie ze zdefiniowanym czasem minimalnym i maksymalnym całego benchmarku oraz dynamicznie buduje funkcję testującą, która odpakowuje ciało funkcji testowanej, aby uniknąć narzutu związanego ze utworzeniem dodatkowej ramki na stosie, oraz aby móc wykorzystać zdefiniowane zmienne lokalne. Biblioteka ta jednak od 4 lat nie jest utrzymywana. Jako format modułu wykorzystuje format UMD, gdzie założeniem badań jest użycie wyłącznie modułów ECMAScript. Nie ma również możliwości zrezygnowania z dynamicznego budowania funkcji testującej, co prowadzi do błędów związanych z budowaniem środowiska testowego. Z tych powodów zadecydowano o własnej implementacji biblioteki do przeprowadzania benchmarków opartą o moduły ECMAScript oraz kompatybilną z badanymi środowiskami.
+Problemem wartym rozważenie są również mechanizmy pomiaru czasu. Różnią się one w~zależności od środowiska i~w celu zapewnienia bezpieczeństwa mają one często ograniczoną rozdzielczość, aby zapobiec atakom czasowym jak Spectre i~Meltdown. Standardowym rozwiązaniem kompatybilnym ze wszystkimi analizowanymi środowiskami jest Performance API z~metodą \lstinline{performance.now()}, która zwraca liczbę zmiennoprzecinkową reprezentującą czas w~milisekundach od załadowania strony. W~przeglądarce Firefox wartość ta zaokrąglona jest to 1ms, a~w Google Chrome do 0.1ms. Chrome po użyciu flagi \lstinline{--enable-benchmarking} przy uruchomieniu udostępnia obiekt \lstinline{chrome.Interval}, którego pomiary mają rozdzielczość $1 {\mu}s$. Deno po użyciu flagi \lstinline{--allow-hrtime} zwiększa rozdzielczość pomiarów przy użyciu Performance API, a~NodeJS udostępnia obiekt \lstinline{process.hrtime}, którego pomiary wykonywane są z~rozdzielczością $1ns$.
+
+Biblioteka benchmark.js łączy przedstawione wcześniej rozwiązania, dynamicznie wykrywa środowisko, dynamicznie dostosowuje liczbę iteracji pojedynczego pomiaru czasu zgodnie ze zdefiniowanym czasem minimalnym i~maksymalnym całego benchmarku oraz dynamicznie buduje funkcję testującą, która odpakowuje ciało funkcji testowanej, aby uniknąć narzutu związanego ze utworzeniem dodatkowej ramki na stosie, oraz aby móc wykorzystać zdefiniowane zmienne lokalne. Biblioteka ta jednak od 4 lat nie jest utrzymywana. Jako format modułu wykorzystuje format UMD, gdzie założeniem badań jest użycie wyłącznie modułów ECMAScript. Nie ma również możliwości zrezygnowania z~dynamicznego budowania funkcji testującej, co prowadzi do błędów związanych z~budowaniem środowiska testowego. Z~tych powodów zadecydowano o~własnej implementacji biblioteki do przeprowadzania benchmarków opartą o~moduły ECMAScript oraz kompatybilną z~badanymi środowiskami.
 
 \section{Biblioteka benchmark}
 
-% TODO plant diagram
+Biblioteka \textit{benchmark}, której diagram klas przedstawiono na rysunku \ref{fig:benchmark-puml}, pozwala wykonywać testy w~dwóch wariantach wywołania - \textit{zwykłym} i~\textit{extracted}. Tryb \textit{zwykły} wykonuje funkcję testową dostarczoną bezpośrednio w~konstrukcji klasy \lstinline{Benchmark}. Tryb \textit{extracted} odpakowuje funkcję dostarczoną do obiektu \lstinline{BenchmarkExtracted} i~umieszcza jej ciało w~budowanej funkcji testującej. Na listingu \ref{lst:benchmark-fn} pokazano szablon takiej funkcji. Jako argumenty funkcja ta przyjmuje jeden obiekt kontekstu. W~jej ciele definiowane są zmienne liczby iteracji oraz klasa timer'a. Następnie w~pętli \lstinline{while} umieszczone zostaje ciało funkcji testowanej. Całą pętlę otaczają definiowalne funkcje \lstinline{setup} oraz \lstinline{teardown}, oraz rozpoczęcie i~zakończenie pomiaru czasu. Funkcja ta budowana jest dla każdej iteracji testu za każdym razem zastępując znaki \lstinline{@} innym numerem, co efektywnie zmienia nazwy zmiennych. Działanie to jest charakterystyczne dla trybu extracted i~pozwala na uniemożliwienie silnikowi optymalizacji kodu, co umożliwia za każdym razem uwzględnienie czasu zimnego startu.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{diagrams/out/benchmark.png}
+  \caption{Diagram klas biblioteki Benchmark.}
+  \label{fig:benchmark-puml}
+\end{figure}
+\clearpage
+
+
+\begin{lstlisting}[language=JavaScript, label=lst:benchmark-fn, caption=Kompozycja funkcji w~trybie \textit{extracted}.]
+const template = `
+  return (
+    ${async ? "async " : ""}function(@context) {
+      let @n = @context.config.microRuns;
+      let @t = new @context.timer()
+      ${setupString}
+      @t.start();
+      while(@n--){
+          ${fnString}
+      }
+      let @tt = @t.stop();
+      ${teardownString}
+      return @tt;
+    }
+  )`.replace(/@/g, config.name + (this.nameCounter++).toString());
+\end{lstlisting}
+
+Oprócz podziału na dwie klasy, które reprezentują obydwa tryby, każda z~nich może wykonać testy będąc w~wariancie \textit{Iterations} ograniczonym liczbą iteracji. W~wariancie \textit{TimeIterations} test ograniczony jest czasem minimalnym i~maksymalnym, a~liczba iteracji dobierana jest dynamicznie jedynie na podstawie minimalnej ich liczby, aby spełnić warunek minimalnego czasu testu. Na diagramie klas (rys. \ref{fig:benchmark-puml}) przedstawiony interfejs \lstinline{IBenchmark} definiuje metody klas biblioteki dla dwóch trybów, dodatkowo w~wariantach synchronicznym i~asynchronicznym.
+
+W trybie \textit{zwykłym} istnieje możliwość wyeliminowania problemu zimnego startu. Pierwsze wykonania, które cechować się mogą dłuższym niż reszta czasem są pomijane. Kryterium decydującym o~rozpoczęciu właściwego zbierania próbek jest próg współczynnika wariancji dla czasów próbek z~okna o~konfigurowalnej długości, który zdefiniowany jest wzorem (\ref{eq:cov}) \cite{georges2007statistically}.
+
+\begin{align}
+ c_v &= \frac{\sigma}{\mu} \approx \widehat{c_v} = \frac{s}{\overline{x}} \label{eq:cov}
+\end{align}
+\begin{eqexpl}[1cm]
+  \item{$c_v, \widehat{c_v}$} współczynnik wariancji i~jego estymator;
+  \item{$\sigma, s$} odchylenie standardowe z~populacji i~próby;
+  \item{$\mu, \overline{x}$} średnia arytmetyczna z~populacji i~próby.
+\end{eqexpl}
+\vspace{0.5cm}
+Na listingu \ref{lst:benchmark-example} przedstawiono przykładowe wywołanie benchmarku. Możliwe do ustawienia parametry wraz z ich opisem pokazane zostały w tabeli \ref{tab:bench-params}.
+
+\begin{lstlisting}[language=JavaScript, label=lst:benchmark-example, caption=Przykładowy benchmark mierzący czas wykonania funkcji \lstinline{Function.prototype()} 2000 razy.]
+const ben = new Benchmark(function () {
+  for (let index = 0; index < 2000; index++) Function.prototype();
+});
+const results = ben.runTimeIterations({
+  minTime: 200,
+  minSamples: 30,
+  microRuns: 20,
+  steadyState: true,
+  cov: 0.01,
+  covWindow: 10,
+});
+\end{lstlisting}
+
+
+Ze względu na to, że problem zimnego startu stanowi pomijalną część algorytmów intensywnych obliczeniowo, które dodatkowo, jak to ma miejsce w~przypadku przetwarzania obrazów, często są wykonywane wielokrotnie w~ramach tej samej instancji aplikacji, przeprowadzone badania w~pierwszej części nie uwzględniają tego czynnika oraz dodatkowo go eliminują wykorzystując wyżej opisany mechanizm. 
+
+\input{tables/versions}
+Badania wykonano tylko w~trybie \textit{zwykłym} w~wariancie \textit{TimeIterations}. Zaimplementowano i~zbadano czasy wykonania algorytmów transformacji Hough'a w~wariancie SHT z~zastosowaniem tablic LUT dla funkcji trygonometrycznych oraz bez. Takie same badana wykonano również dla wariantu CHT. Dla każdej z~metod akceleracji zbadano również czas zimnego startu, który różni się pomiędzy metodami akceleracji. W~tabeli \ref{tab:bench-params} opisano parametry benchmarków biblioteki \textit{benchmark}, z~jakimi wykonano testy, a~w tabeli \ref{tab:versions} opisano dokładne wersje środowisk wraz z~wersjami ich silników JavaScript, na których przeprowadzono testy.
+
+\input{tables/bench-params}

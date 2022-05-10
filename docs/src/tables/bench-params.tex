@@ -1,0 +1,21 @@
+\begin{table}
+    \caption{Opis parametrów uruchomienia benchmarku w bibliotece \textit{benchmark}.}
+    \centering
+    \renewcommand\arraystretch{1.1}
+    \begin{tabularx}{\linewidth}[t]{l>{\raggedleft\arraybackslash}p{1.9cm} X}
+        \bfseries{Parametr} & \bfseries{Wartość dla testów} & \bfseries{Opis} \\ \hline
+        \lstinline{GeneralConfig.name} & --- & Nazwa identyfikująca benchmark. \\ 
+        \lstinline{GeneralConfig.microRuns} & 1 & Liczba iteracji $n$ pojedynczej próbki, której rzeczywisty czas $t_r$ kalkulowany jest wg. wzoru \mbox{$t_r = \frac{n}{t_c}$} na podstawie czasu całkowitego $t_c$. Wartość jest dostosowywana dynamicznie w wariancie \textit{TimeIterations} i~dotyczy wtedy pierwszej próbki.\\ \hline
+        %
+        \lstinline{StartConfig.steadyState} & \lstinline{true} & Czy pomijać pierwsze wykonania na podstawie progowania CoV. \\
+        \lstinline{StartConfig.cov} & 0.01 & Próg stabilności czasu wykonania. \\
+        \lstinline{StartConfig.covWindow} & 5 & Szerokość okna CoV. \\ \hline
+        \lstinline{IterationsConfig.samples} & 0.01 & Liczba iteracji w wariancie \textit{Iterations}. \\ \hline
+        \lstinline{TimeConfig.minSample} & 50 & Minimalna zebrana liczba próbek w wariancie \textit{TimeIterations}. \\
+        \lstinline{TimeConfig.minTime} & 1000 & Minimalny czas benchmarku w wariancie \textit{TimeIterations} w milisekundach. \\
+        \lstinline{TimeConfig.maxTime} & 30000 & Maksymalny czas benchmarku w wariancie \textit{TimeIterations} w milisekundach. \\  \hline
+
+
+    \end{tabularx}
+    \label{tab:bench-params}
+\end{table}

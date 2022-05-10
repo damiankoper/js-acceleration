@@ -24,23 +24,7 @@ Technologie webowe zdefiniować można jako narzędzia i~techniki umożliwiając
 
 Warto zaznaczyć, że serwer, jak i~klient, nie muszą być zaimplementowane z~wykorzystaniem języka JavaScript by być uznawanym jako aplikacja webowa. Języki takie jak PHP, Python, Ruby, Java, czy C\# także oferują zaawansowane frameworki, jednak to język JavaScript, ze względu na historię swojego rozwoju ściśle powiązaną z~przeglądarką internetową, uważany jest jako główne narzędzie i~czynnik rozwoju technologii webowych zarówno w~części klienckiej jak i~serwerowej. Potwierdzają to badania, gdzie JavaScript w~2021 roku dziewiąty rok z~rzędu został wyłoniony jako najpopularniejsza technologia wśród developerów \cite{stack2021}.
 
-\begin{table}
-    \caption{Popularne biblioteki do przetwarzania danych w~języku Python i~ich odpowiedniki w~języku JavaScript. Dane pochodzą z~serwisów kolejno PyPI Stats oraz NPM, a~w~nawiasach znajduje się tygodniowa liczba pobrań biblioteki.}
-    \centering
-    \renewcommand\arraystretch{1.2}
-    \begin{tabularx}{\linewidth}[t]{p{5cm} p{4.5cm} X}
-        \bfseries{Python} & \bfseries{JavaScript} & \bfseries{Zastosowanie} \\ \hline
-        numpy (26.067.844) & numjs (533) & Operacje na macierzach \\ \hline
-        pandas (19.778.648) & danfojs (1.029) & Operacje na strukturach danych \\ \hline
-        scipy (9.986.376) & simple-statistics (87.882) \newline fft.js (8.027) & Operacje związane z~analizą numeryczną, przetwarzanie sygnałów, algebra liniowa. \\ \hline
-        scikit-learn (7.705.438) & ml (156) & Uczenie maszynowe \\ \hline
-        matplotlib (6.457.099) \newline plotly (1.632.246) & plotly.js (149.542) \newline c3 (83.564) & Wizualizacja danych \\ \hline
-        tensorflow (3.348.986) & @tensorflow/tfjs (91.233) & Sieci neuronowe \\ \hline
-        opencv-python (1.236.711) & OpenCV.js (b.d \cite{cv2-js}) \newline jimp (1.479.783) \newline image-js (4.103)        & Operacja na obrazach, computer vision \\ \hline
-
-    \end{tabularx}
-    \label{tab:py-js}
-\end{table}
+\input{tables/libraries}
 
 \subsubsection{JavaScript w~obliczeniach numerycznych}
 
@@ -77,6 +61,8 @@ Innym punktem widzenia jest kompatybilność budowanych bibliotek w~wielu środo
 \subsection{Perspektywa wygody użytkowania}
 
 Celem autorów bibliotek jest dostarczenie rozwiązań, które przede wszystkim będą aktywnie wykorzystywane. Autor, razem z~opisem implementacji algorytmów i~ich późniejszego wykorzystania, w~rozdziale \ref{sec:implementation} analizuje możliwości i~sposoby interakcji ze środowiskami, wyświetlanie wyników, ładowanie danych oraz wewnętrzne mechanizmy przetwarzania danych związane również z~modelem wykonania języka JavaScript.
+
+Aspektem łączącym budowanie bibliotek, kompatybilność oraz wygody użytkowania jest użycie języka TypeScript, nadzbioru języka JavaScript umożliwiający wykorzystanie statycznego typowania oraz wszystkie zalety za tym idące, którymi są między innymi typy generyczne, dekoratory, czy zmienne wyliczeniowe. W~momencie budowania biblioteki, w~procesie transpilacji kodu do języka JavaScript, do kodu dodane mogą być mechanizmy zapewniające kompatybilność ze starszymi wersjami języka oraz środowiskami.
 
 \subsection{Transformacja Hough'a jako wspólny mianownik analizy}
 
