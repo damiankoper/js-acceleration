@@ -14,7 +14,8 @@ import { IBenchmarkResult } from "benchmark/dist/contracts/IBenchmarkResult";
 import { runConfig, size } from "./runConfig";
 import { unparse } from "papaparse";
 import { saveAs } from "file-saver";
-import testImage from "../../../../../test/threshold/2.png";
+import testImageSHT from "../../../../../test/threshold/1.jpg";
+import testImageCHT from "../../../../../test/threshold/2.png";
 
 function mapResult(result: IBenchmarkResult, sizeTheta: number) {
   return {
@@ -40,17 +41,22 @@ export function webBaseFactory(
   chtOptions: Partial<CHTOptions | CHTParallelOptions> = {}
 ) {
   (async () => {
-    const { imageData, width } = await getImageData(testImage);
+    const { imageData: imageDataSHT, width: widthSHT } = await getImageData(
+      testImageSHT
+    );
+    const { imageData: imageDataCHT, width: widthCHT } = await getImageData(
+      testImageCHT
+    );
 
     const optionsSHT: SHTOptions = {
-      width,
+      width: widthSHT,
       sampling: { rho: 1, theta: 1 },
       votingThreshold: 0.75,
       ...shtOptions,
     };
 
     const optionsCHT: CHTOptions = {
-      width,
+      width: widthCHT,
       gradientThreshold: 0.5,
       minDist: 50,
       minR: 20,
@@ -60,26 +66,24 @@ export function webBaseFactory(
 
     const benchmarkCHTSimple = !async
       ? new Benchmark(function () {
-          cht(imageData, optionsCHT);
+          cht(imageDataCHT, optionsCHT);
         })
       : new Benchmark(async function () {
-          await cht(imageData, optionsCHT);
+          await cht(imageDataCHT, optionsCHT);
         });
-
     const benchmarkSHTSimple = !async
       ? new Benchmark(function () {
-          sht(imageData, optionsSHT);
+          sht(imageDataSHT, optionsSHT);
         })
       : new Benchmark(async function () {
-          await sht(imageData, optionsSHT);
+          await sht(imageDataSHT, optionsSHT);
         });
-
     const benchmarkSHTSimpleLookup = !async
       ? new Benchmark(function () {
-          shtLookup(imageData, optionsSHT);
+          shtLookup(imageDataSHT, optionsSHT);
         })
       : new Benchmark(async function () {
-          await shtLookup(imageData, optionsSHT);
+          await shtLookup(imageDataSHT, optionsSHT);
         });
 
     let env = "TBD";

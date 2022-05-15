@@ -20,6 +20,7 @@ Problemem wartym rozważenie są również mechanizmy pomiaru czasu. Różnią s
 Biblioteka benchmark.js łączy przedstawione wcześniej rozwiązania, dynamicznie wykrywa środowisko, dynamicznie dostosowuje liczbę iteracji pojedynczego pomiaru czasu zgodnie ze zdefiniowanym czasem minimalnym i~maksymalnym całego benchmarku oraz dynamicznie buduje funkcję testującą, która odpakowuje ciało funkcji testowanej, aby uniknąć narzutu związanego ze utworzeniem dodatkowej ramki na stosie, oraz aby móc wykorzystać zdefiniowane zmienne lokalne. Biblioteka ta jednak od 4 lat nie jest utrzymywana. Jako format modułu wykorzystuje format UMD, gdzie założeniem badań jest użycie wyłącznie modułów ECMAScript. Nie ma również możliwości zrezygnowania z~dynamicznego budowania funkcji testującej, co prowadzi do błędów związanych z~budowaniem środowiska testowego. Z~tych powodów zadecydowano o~własnej implementacji biblioteki do przeprowadzania benchmarków opartą o~moduły ECMAScript oraz kompatybilną z~badanymi środowiskami.
 
 \section{Biblioteka benchmark}
+\label{sec:benchmark}
 
 Biblioteka \textit{benchmark}, której diagram klas przedstawiono na rysunku \ref{fig:benchmark-puml}, pozwala wykonywać testy w~dwóch wariantach wywołania - \textit{zwykłym} i~\textit{extracted}. Tryb \textit{zwykły} wykonuje funkcję testową dostarczoną bezpośrednio w~konstrukcji klasy \lstinline{Benchmark}. Tryb \textit{extracted} odpakowuje funkcję dostarczoną do obiektu \lstinline{BenchmarkExtracted} i~umieszcza jej ciało w~budowanej funkcji testującej. Na listingu \ref{lst:benchmark-fn} pokazano szablon takiej funkcji. Jako argumenty funkcja ta przyjmuje jeden obiekt kontekstu. W~jej ciele definiowane są zmienne liczby iteracji oraz klasa timer'a. Następnie w~pętli \lstinline{while} umieszczone zostaje ciało funkcji testowanej. Całą pętlę otaczają definiowalne funkcje \lstinline{setup} oraz \lstinline{teardown}, oraz rozpoczęcie i~zakończenie pomiaru czasu. Funkcja ta budowana jest dla każdej iteracji testu za każdym razem zastępując znaki \lstinline{@} innym numerem, co efektywnie zmienia nazwy zmiennych. Działanie to jest charakterystyczne dla trybu extracted i~pozwala na uniemożliwienie silnikowi optymalizacji kodu, co umożliwia za każdym razem uwzględnienie czasu zimnego startu.
 
@@ -50,7 +51,7 @@ const template = `
   )`.replace(/@/g, config.name + (this.nameCounter++).toString());
 \end{lstlisting}
 
-Oprócz podziału na dwie klasy, które reprezentują obydwa tryby, każda z~nich może wykonać testy będąc w~wariancie \textit{Iterations} ograniczonym liczbą iteracji. W~wariancie \textit{TimeIterations} test ograniczony jest czasem minimalnym i~maksymalnym, a~liczba iteracji dobierana jest dynamicznie jedynie na podstawie minimalnej ich liczby, aby spełnić warunek minimalnego czasu testu. Na diagramie klas (rys. \ref{fig:benchmark-puml}) przedstawiony interfejs \lstinline{IBenchmark} definiuje metody klas biblioteki dla dwóch trybów, dodatkowo w~wariantach synchronicznym i~asynchronicznym.
+Oprócz podziału na dwie klasy, które reprezentują obydwa tryby, każda z~nich może wykonać testy będąc w~wariancie \textit{Iterations}, ograniczonym liczbą iteracji. W~wariancie \textit{TimeIterations} test ograniczony jest czasem minimalnym i~maksymalnym, a~liczba iteracji dobierana jest dynamicznie jedynie na podstawie minimalnej ich liczby, aby spełnić warunek minimalnego czasu testu. Na diagramie klas (rys. \ref{fig:benchmark-puml}) przedstawiony interfejs \lstinline{IBenchmark} definiuje metody klas biblioteki dla dwóch trybów, dodatkowo w~wariantach synchronicznym i~asynchronicznym.
 
 W trybie \textit{zwykłym} istnieje możliwość wyeliminowania problemu zimnego startu. Pierwsze wykonania, które cechować się mogą dłuższym niż reszta czasem są pomijane. Kryterium decydującym o~rozpoczęciu właściwego zbierania próbek jest próg współczynnika wariancji dla czasów próbek z~okna o~konfigurowalnej długości, który zdefiniowany jest wzorem (\ref{eq:cov}) \cite{georges2007statistically}.
 
@@ -63,7 +64,7 @@ W trybie \textit{zwykłym} istnieje możliwość wyeliminowania problemu zimnego
   \item{$\mu, \overline{x}$} średnia arytmetyczna z~populacji i~próby.
 \end{eqexpl}
 \vspace{0.5cm}
-Na listingu \ref{lst:benchmark-example} przedstawiono przykładowe wywołanie benchmarku. Możliwe do ustawienia parametry wraz z ich opisem pokazane zostały w tabeli \ref{tab:bench-params}.
+Na listingu \ref{lst:benchmark-example} przedstawiono przykładowe wywołanie benchmarku. Możliwe do ustawienia parametry wraz z~ich opisem pokazane zostały w~tabeli \ref{tab:bench-params}.
 
 \begin{lstlisting}[language=JavaScript, label=lst:benchmark-example, caption=Przykładowy benchmark mierzący czas wykonania funkcji \lstinline{Function.prototype()} 2000 razy.]
 const ben = new Benchmark(function () {
@@ -86,3 +87,13 @@ Ze względu na to, że problem zimnego startu stanowi pomijalną część algory
 Badania wykonano tylko w~trybie \textit{zwykłym} w~wariancie \textit{TimeIterations}. Zaimplementowano i~zbadano czasy wykonania algorytmów transformacji Hough'a w~wariancie SHT z~zastosowaniem tablic LUT dla funkcji trygonometrycznych oraz bez. Takie same badana wykonano również dla wariantu CHT. Dla każdej z~metod akceleracji zbadano również czas zimnego startu, który różni się pomiędzy metodami akceleracji. W~tabeli \ref{tab:bench-params} opisano parametry benchmarków biblioteki \textit{benchmark}, z~jakimi wykonano testy, a~w tabeli \ref{tab:versions} opisano dokładne wersje środowisk wraz z~wersjami ich silników JavaScript, na których przeprowadzono testy.
 
 \input{tables/bench-params}
+
+\section{Badane aspekty}
+
+Jednym z~analizowanych aspektów jest czas wykonania algorytmu dla stałego rozmiaru problemu. W~przypadku transformacji Hough'a rozmiarem problemu jest liczba jasnych pikseli obrazu, ale także częstotliwość próbkowania akumulatora, która odpowiada za dokładność detekcji. Czas wykonania dla tego samego rozmiaru problemu został porównany pomiędzy środowiskami i~metodami akceleracji.
+
+Kolejnym aspektem jest zmiana czasu wykonania algorytmu w~zależności od rozmiaru problemu, również w~odniesieniu do metod akceleracji i~środowiska. Zmiana rozmiaru problemu została dobrana tak, że czas wykonania powinien rosnąć liniowo. Pozwoli to zaobserwować wszelkie optymalizacje i~odchylenia od liniowego wzrostu czasu wykonania. Rozmiarem problemu dla algorytmu w~wariancie SHT jest próbkowanie kąta obrotu wokół środka układu współrzędnych $S_\theta$, którego wartość mówi ile pikseli wymiaru akumulatora przypada na jeden stopień. Dla wariantu CHT rozmiarem problemu jest zakres długości wykrywanych promieni, co skutkuje koniecznością rysowania dłuższych linii wzdłuż kierunku gradientu.
+
+Ostatnim z~badanych aspektów jest zjawisko zimnego startu i~jego wpływ na pierwsze wykonania algorytmu. Pierwszy wykonania, które w~poprzednich przypadkach są pomijane, aż do ustabilizowania się ich czasów, są będą przeanalizowane. 
+
+Testy wykonane zostały na maszynie wyposażoną w~procesor Intel\textsuperscript{\tiny\textregistered} Core\textsuperscript{\tiny\texttrademark} i7-12700KF i~układ graficzny Nvidia 970 GTX w~systemie operacyjnym Ubuntu 20.04.1. Procesor na potrzeby testów miał wyłączone skalowanie częstotliwości oraz ze względu na swoją hybrydową architekturę tylko 4 rdzenie typu P-Core były włączone dla procesów testowych, co zostało osiągnięte przez wykorzystanie narzędzia \lstinline{taskset}. Testy wykonania sekwencyjnego zostały wykonane przy pomocy biblioteki \textit{google/benchmark} \cite{google-benchmark}.

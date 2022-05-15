@@ -1,0 +1,28 @@
+@startuml files
+scale 2
+salt
+{
+{T
++      root             | Główny katalog projektu
+++ benchmark            | Pliki *.csv z wynikami pomiarów
+++ node_modules         | Zainstalowane zależności, w tym narzędzie <i>Lerna</i>
+++ packages             | Lokalizacja wszystkich paczek
++++ benchmark           |\t Biblioteka <i>benchmark</i>
++++ <color:red>cpp-sequential      |\t Implementacja metody sekwencyjnej w C++
++++ frontend            |\t Rzeczywisty przykład użycia
++++ js-benchmarks       |\t Testy
++++ <color:red>js-gpu              |\t Implementacja metody WebGL
++++ <color:red>js-sequential       |\t Implementacja metody sekwencyjnej w JavaScript
++++ <color:red>js-workers          |\t Implementacja metody Workers
++++ meta                |\t Typy języka TypeScript współdzielone pomiędzy implementacje
++++ <color:red>node-cpp-sequential |\t Implementacja metody Native C++ Addon w NodeJS
++++ test-simple         |\t Strona testowa dla implementowanych metod
++++ <color:red>wasm-sequential     |\t Implementacja metody WASM oraz jej wariantów
+++ test                 | Katalog z obrazami testowymi
+++ js-acceleration      | Konfiguracja <i>workspace</i> IDE VsCode
+++ lerna.json           | Konfiguracja narządzia <i>Lerna</i>
+++ package.json         | Konfiguracja instalowanych zależności 
+++ package-lock.json    | Zablokowane wersje instalowanych zależności 
+}
+}
+@enduml

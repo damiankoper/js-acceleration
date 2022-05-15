@@ -1,0 +1,54 @@
+
+
+\begin{figure}
+    \groupBenchmark{
+        \plotBenchmark{cpp_theta_SHT_Simple.csv}{cppColor}{{}}
+        \addlegendentry{C++}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_deno.csv}{denoColor}{{}}
+        \addlegendentry{Deno}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome}
+
+    } {
+        \plotBenchmark{cpp_theta_SHT_Simple_Lookup.csv}{cppColor}{{}}
+        \addlegendentry{C++}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Lookup_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Lookup_deno.csv}{denoColor}{{}}
+        \addlegendentry{Deno}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Lookup_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox}
+
+        \plotBenchmark{js-sequential_theta_SHT_Simple_Lookup_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome}
+    } {
+        \plotBenchmark{cpp_theta_CHT_Simple.csv}{cppColor}{{}}
+        \addlegendentry{C++}
+
+        \plotBenchmark{js-sequential_theta_CHT_Simple_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \plotBenchmark{js-sequential_theta_CHT_Simple_deno.csv}{denoColor}{{}}
+        \addlegendentry{Deno}
+
+        \plotBenchmark{js-sequential_theta_CHT_Simple_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox}
+
+        \plotBenchmark{js-sequential_theta_CHT_Simple_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome}
+    }
+    [3400][850][14]
+    \caption{Wyniki pomiarów czasu wydajności dla wykonania sekwencyjnego SHT i CHT.}
+    \label{plot:sequential}
+\end{figure}

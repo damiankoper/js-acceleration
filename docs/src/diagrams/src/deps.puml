@@ -1,0 +1,39 @@
+@startuml deps
+
+hide empty members
+rectangle "benchmark" as benchmark
+rectangle "cpp-sequential" as cpp_sequential #pink
+rectangle "frontend" as frontend
+rectangle "js-benchmarks" as js_benchmarks
+rectangle "js-gpu" as js_gpu  #pink
+rectangle "js-sequential" as js_sequential  #pink
+rectangle "js-workers" as js_workers  #pink
+rectangle "meta" as meta
+rectangle "node-cpp-sequential" as node_cpp_sequential  #pink
+rectangle "test-simple" as test_simple
+rectangle "wasm-sequential" as wasm_sequential  #pink
+
+frontend ..>js_gpu
+frontend ..>js_workers
+frontend ..>js_sequential
+frontend ..>wasm_sequential
+
+test_simple ..>meta
+test_simple ..>js_gpu
+test_simple ..>js_workers
+test_simple ..>js_sequential
+test_simple ..>wasm_sequential
+
+js_benchmarks ..>meta
+js_benchmarks ..>js_gpu
+js_benchmarks ..>js_workers
+js_benchmarks ..>js_sequential
+js_benchmarks ..>wasm_sequential
+js_benchmarks ..>node_cpp_sequential
+
+js_benchmarks ..> benchmark
+
+wasm_sequential ...>cpp_sequential
+node_cpp_sequential ..>cpp_sequential
+
+@enduml

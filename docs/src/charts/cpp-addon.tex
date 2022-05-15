@@ -1,0 +1,23 @@
+
+
+\begin{figure}[ht]
+    \groupBenchmark{
+        \plotBenchmark{cpp-addon_theta_SHT_Simple_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \seqReference
+    } {
+        \plotBenchmark{cpp-addon_theta_SHT_Simple_Lookup_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \seqReferenceLookup
+    }{
+        \plotBenchmark{cpp-addon_theta_CHT_Simple_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \seqReferenceCircle
+    }[1400][350][6]
+
+    \caption{Wyniki pomiarów czasu wydajności dla wykonania SHT i CHT z wykorzystaniem natywnego modułu C++ w środowisku NodeJS.}
+    \label{plot:cpu-addon}
+\end{figure}

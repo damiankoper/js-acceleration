@@ -1,0 +1,63 @@
+@startuml meta
+
+hide empty members
+left to right direction
+scale 2
+interface HTOptions {
+    +width: number
+    +returnHSpace?: boolean
+}
+interface HTParallelOptions {
+    +concurrency?: number
+}
+interface HTResults<HTResult> {
+    +results: HTResult[]
+    +hSpace?: { data: Uint32Array; width: number; }
+}
+interface SHTSampling {
+    +rho?: number
+    +theta?: number
+}
+interface SHTResult {
+    +rho: number
+    +theta: number
+}
+interface SHTSpecificOptions {
+    +sampling?: SHTSampling
+    +votingThreshold?: number
+}
+interface SHTOptions
+interface SHTParallelOptions
+interface CHTResult {
+    +x: number
+    +y: number
+    +r: number
+}
+interface CHTSpecificOptions {
+    +gradientThreshold?: number
+    +minDist: number
+    +minR: number
+    +maxR: number
+}
+interface CHTOptions
+interface CHTParallelOptions
+
+SHTSpecificOptions *-- SHTSampling
+
+SHTOptions <|-- HTOptions
+SHTOptions <|-- SHTSpecificOptions
+
+CHTOptions <|-- HTOptions
+CHTOptions <|-- CHTSpecificOptions
+
+SHTParallelOptions <|-- HTParallelOptions
+CHTParallelOptions <|-- HTParallelOptions
+SHTParallelOptions <|-- SHTSpecificOptions
+CHTParallelOptions <|-- CHTSpecificOptions
+
+HTResults ..> SHTResult : <<HTResult>>
+HTResults ..> CHTResult : <<HTResult>>
+
+HTParallelOptions <|-- HTOptions
+
+@enduml

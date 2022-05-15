@@ -15,8 +15,11 @@ const benchmarks = new Map();
                 const nameRest = data.name.split('/')
                 const sizeThetaStat = nameRest[1].split('_')
                 const name = nameRest[0]
-                const sizeTheta = sizeThetaStat[0]
+                let sizeTheta = sizeThetaStat[0]
                 const stat = sizeThetaStat[1]
+
+                if (name.includes('CHT'))
+                    sizeTheta/=10
 
                 const key = `${name}_${sizeTheta}`
                 const b = benchmarks.get(key) || { key, name, sizeTheta: +sizeTheta };

@@ -1,0 +1,87 @@
+\chapter{Implementacja metod akceleracji i~rezultaty pomiarów}
+\label{sec:methods-results}
+
+W rozdziale tym opisane zostały sposoby implementacji badanych metod akceleracji obliczeń oraz zaprezentowany zostały rezultaty przeprowadzonych testów wydajności. Wskazane zostały również na wszelkie aspekty, na które trzeba zwrócić uwagę w~procesie budowania bibliotek z~daną metodę akceleracji oraz ich możliwości i~ograniczenia. Wszystkie wyniki pomiarów porównane zostały do wykonania sekwencyjnego w~C++, a~dla pozostałych metod akceleracji na wykresach kolorem szarym zaznaczony został zakres czasów wykonania sekwencyjnego wszystkich środowisk języka JavaScript.
+
+Jak już wcześniej wspomniano w~rozdziale \ref{sec:benchmark}, dla każdej z~metod akceleracji zaimplementowano trzy algorytmy. Niżej przedstawiono nazwy i~oznaczenia używane na potrzeby implementacji i~prezentacji wyników.
+
+\begin{itemize}
+    \item Standard Hough Transform (SHT \textit{non-LUT}, \lstinline{SHT_Simple}) - algorytm detekcji linii wykorzystujący intensywne obliczenia z~użyciem funkcji trygonometrycznych.
+    \item Standard Hough Transform (SHT \textit{LUT}, \lstinline{SHT_Simple_Lookup}) - algorytm detekcji linii wykorzystujący tablicę LUT do zapisanie potrzebnych wartości funkcji trygonometrycznych.
+    \item Circle Hough Transform (CHT, \lstinline{CHT_Simple}) - algorytm detekcji okręgów wykorzystujący metodę gradientu w~celu redukcji złożoności obliczeniowej (rozmiaru akumulatora). Zmienny parametr maksymalnego promienia obliczany jest ze wzoru $r_{max} = 20+10n$, gdzie $n$ to współczynnik inkrementowany w~kolejnych iteracjach pomiarów.
+\end{itemize}
+
+
+\section{Wykonanie sekwencyjne}
+
+Implementacja procesu budowania biblioteki z~algorytmem transformacji w~wariancie wykonania sekwencyjnego nie wymagała zmian w~procesie budowania w~porównaniu do biblioteki \textit{benchmark}, będącej punktem odniesienia. Na rysunku \ref{plot:sequential} pokazano rezultaty pomiarów czasu wykonania w~postaci wykresów dla każdego z~implementowanych algorytmów.
+
+We wszystkich wariantach transformacji implementacja w~C++ osiągnęła najlepsze czasy wykonania, co jest oczekiwanym rezultatem. Dla algorytmu SHT Najlepiej zoptymalizowanym okazało się środowisko przeglądarki Chrome będące \tms{3.71} wolniejsze od implementacji w~C++ dla wariantu \textit{non-LUT} i~$S_\theta = 1$. Dla wszystkich algorytmów środowiska serwerowe NodeJS oraz Deno osiągnęło porównywalne wyniki z~minimalną przewagą środowiska NodeJS, która była powtarzalna pomiędzy wieloma uruchomieniami testów, jednak jest pomijalnie mała. Najgorzej zoptymalizowana okazuje się przeglądarka Firefox, będąc \tms{1.71} wolniejszą od Chrome dla $S_\theta = 1$. Interesującym dla niej zjawiskiem jest optymalizacja zachodząca dla SHT \textit{LUT} i~$S_\theta \geq 5$. 
+
+Analizując różnice pomiędzy wykonaniami wariantów \textit{non-LUT} i~\textit{LUT} widać, że wszystkie środowiska zyskują na optymalizacji związanej z~używaniem zmiennych do przechowywania wartości funkcji trygonometrycznych, ponieważ optymalizacja ta stanowi jedyną różnicę w~implementacji. Jednak przeglądarka Firefox zdecydowanie gorzej radzi sobie z~wykorzystaniem tej optymalizacji, co prowadzi do zwiększenia przewagi NodeJS i~Deno z~\tms{1.05} do \tms{1.99} większego czasu wykonania dla $S_\theta = 1$.
+
+Dla algorytmu CHT środowiska NodeJS i~Deno, jak i~przeglądarka Chrome dają porównywalne rezultaty. Również i~tutaj przeglądarka Firefox okazała się być wolniejsza od pozostałych środowisk wykonując ten sam algorytm na tych samych danych.
+
+Zbadano również różnicę pomiędzy wartościami akumulatorów, która pomiędzy wariantami \textit{non-LUT} i~\textit{LUT} powinna być równa zero. Wykryto jednak różnicę dla jednego piksela, która widoczna jest na rysunku \ref{fig:diff:seq_lut}. Pochodzić ona może z~różnicy w~precyzji operacji zmiennoprzecinkowych. Tablica LUT funkcji trygonometrycznych zbudowana została z~wykorzystaniem pojedynczej precyzji i~obiektu tablicy typu \lstinline{Float32Array}. JavaScript wewnętrznie do reprezentacji liczb zmiennoprzecinkowych używa podwójnej precyzji.
+
+\input{charts/sequential}
+
+\begin{figure}[ht]
+    \begin{subfigure}{0.3\textwidth}
+        \includegraphics[width=\linewidth] {../../packages/js-benchmarks/img/diff_seq_seq_lookup.png}
+        \caption{SHT Sekwencyjny \textit{LUT}}\label{fig:diff:seq_lut}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.3\textwidth}
+        \includegraphics[width=\linewidth] {../../packages/js-benchmarks/img/diff_seq_wasm.png}
+        \caption{SHT WASM}\label{fig:diff:wasm}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.3\textwidth}
+        \includegraphics[width=\linewidth] {../../packages/js-benchmarks/img/diff_seq_gpu.png}
+        \caption{SHT WebGL}\label{fig:diff:gpu}
+    \end{subfigure}
+    \caption{Znormalizowana do przedziału $\lbrack 0, 255\rbrack$ absolutna różnica wartości akumulatorów z~wynikiem głosowania pomiędzy wykonaniem sekwencyjnym SHT \textit{non-LUT}.}\label{fig:diff}
+\end{figure}
+
+\section{NodeJS Native C++ Addon}
+
+Implementacja natywnego modułu w~środowisko NodeJS wymaga utworzenia, oprócz właściwego kodu w~języku C++, warstwy abstrakcji, która zapewnia obsługę interfejsu po stronie języka JavaScript, pozwala na określenie typów zmiennych, kopiowanie danych, czy wywoływanie funkcji. Warstwa ta zaimplementowana została za pomocą Node-API, która dostarcza niezbędne interfejsy i~funkcje w~języku C++, aby efektywnie powiązać kod C++ i~JavaScript~\cite{napi}. Implementacja natywnych modułów korzysta dokładnie z~tego samego kodu, dla którego przeprowadzony pomiary w~natywnym C++. Kod ten został skompilowany do postaci bibliotek współdzielonych, które w~procesie linkowania jest dołączany do natywnego modułu NodeJS. 
+
+Na listingu \ref{fig:nodejs} przedstawiony został plik z~paczki \textit{node-cpp-sequential}, który dołącza nagłówki z~paczki \textit{cpp-sequential}. Funkcja \lstinline{Napi::Object Init(Napi::Env env, Napi::Object exports)} zwraca obiekt, który definiuje wartości eksportowane przez moduł. W~niej właśnie definiowane są funkcje takie jak \lstinline{SHTSimple}, której implementację stanowi \lstinline{SHTSimpleBind}. Funkcja ta odpowiedzialna jest za stworzenie obiektów z~danymi wejściowymi zgodnie z~interfejsem dołączanych bibliotek (\lstinline{getTestImage} oraz \lstinline{getSHTOptions}), wywołania właściwej funkcji oraz zbudowanie obiektu z~odpowiedzią (\lstinline{getSHTResultBind}).
+
+\begin{lstlisting}[language=C++, float=ht, caption=Plik powiązania kodu C++ z~JavaScript, label=lst:cpp-js]
+#define NAPI_DISABLE_CPP_EXCEPTIONS
+#include "CHTSimple.h"
+#include "SHTSimple.h"
+#include "SHTSimpleLookup.h"
+#include "napi.h"
+#include <cstdint>
+
+using namespace Napi;
+    
+Napi::Object SHTSimpleBind(const Napi::CallbackInfo &info) {
+    Napi::Env env = info.Env();
+    auto testImageBind = info[0].As<Napi::Uint8Array>();
+    auto testImage = getTestImage(testImageBind);
+    auto optionsBind = info[1].As<Napi::Object>();
+    SHTOptions options = getSHTOptions(optionsBind);
+    SHTResults results = SHTSimple(testImage, options);
+  
+    return getSHTResultBind(env, options, results);
+  }
+// ...
+Napi::Object Init(Napi::Env env, Napi::Object exports) {
+    exports.Set(Napi::String::New(env, "SHTSimple"),
+                Napi::Function::New(env, SHTSimpleBind));
+    // ...
+    return exports;
+}
+  
+NODE_API_MODULE(addon, Init)
+\end{lstlisting}
+
+
+\input{charts/cpp-addon}
+
+Na rysunku \ref{plot:cpu-addon} widać, że wykorzystanie tej metody akceleracji w~każdym przypadku przyspieszyło działania algorytmu względem odpowiadającego mu wykonania sekwencyjnego w~środowisku NodeJS. Przyspieszenie nastąpiło również względem wszystkich innych środowisk poza przypadkiem wariantu SHT \textit{LUT}, gdzie wydajność osiągnęła poziom wydajności odpowiednika wykonania sekwencyjnego w przeglądarce Chrome.
+
+Wariant SHT \textit{LUT} był \tms{4.40} szybszy od SHT \textit{non-LUT}, co wraz z wynikami algorytmu CHT pozwala wyciągnąć wniosek, że jeśli w algorytmie nie znamy z góry niezbędnych wartości funkcji trygonometrycznych lub obliczenia są oparte głównie na liczbach całkowitych, to wykorzystanie tej metody akceleracji przynosi poprawę wydajności algorytmów. Oczywiście nie można zapominać o wadach takiego rozwiązania, jaką stanowi konieczność implementacji warstwy wiążącej obydwa języki. Istnieje również konieczność zapewnienia kompatybilności biblioteki z różnymi środowiskami uruchomieniowymi, dla których biblioteka musi zostać zbudowana zawczasu, lub w momencie instalacji.

@@ -60,7 +60,7 @@ Taka reprezentacja punktu w~przestrzeni akumulatora rodzi jednak problem w~przyp
 \end{align}
 \begin{eqexpl}
     \item{$x, y$} współrzędne piksela na obrazie;
-    \item{$\rho$} odległość prostej od środka układu współrzędnych ;
+    \item{$\rho$} odległość prostej od środka układu współrzędnych;
     \item{$\theta$} obrót prostej od wokół układu współrzędnych.
 \end{eqexpl}
 
@@ -106,7 +106,7 @@ Akumulator w~Circle Hough Transform (CHT) ma trzy wymiary, po jednym na każdy p
 
 Wraz ze skomplikowaniem kształtu parametrycznego rośnie liczba jego parametrów, których liczba stanowi liczbę wymiarów akumulatora. Dla każdego jasnego piksela obrazu konieczne jest uaktualnienie akumulatora we wszystkich jego wymiarach, co prowadzi do zwiększenia wykładniczej złożoności obliczeniowej. Dlatego dąży się do redukcji wymiarowości problemu zazwyczaj łącząc przetwarzanie charakterystyczna dla SHT z~dodatkową informacją z~przestrzeni obrazu. Biblioteka OpenCV implementuje mniej złożony wariant transformacji \cite{ito2012detection}, który oparty jest na wykorzystaniu gradientu wykrytych krawędzi. W~wariancie tym najpierw w~dwuwymiarowym akumulatorze następuje głosowanie nad centrum potencjalnego okręgu.
 
-W pierwszej kolejności binarny obraz poddawany jest operacji splotu z~filtrem Sobela w~wariancie pionowym oraz poziomym. Pozwala to na uzyskanie pochodnych cząstkowych w~danym punkcie, które razem tworzą gradient, czyli prostopadły kierunek przebiegu krawędzi potencjalnie wskazujący środek wyszukiwanego okręgu. W~dwuwymiarowym akumulatorze od analizowanego punktu w~dwóch kierunkach rysowana jest linia o~długości maksymalnego poszukiwanego promienia. W~przypadku okręgu wszystkie te linie przecinają się w~jednym punkcie, co pokazane zostało na rysunku \ref{fig:houghCircleGradient}. Następnie dla każdego punktu po wykryciu maksimów w~akumulatorze, w~drugim jednowymiarowym akumulatorze, dla każdego możliwego poszukiwanego promienia, następuje głosowanie. Zliczana jest liczba jasnych pikseli obrazu, które znajdują się w~danej odległości od środka, co po wykryciu maksimum w~akumulatorze uzupełnia dane okręgu o~najbardziej prawdopodobny promień.
+W pierwszej kolejności binarny obraz poddawany jest operacji splotu z~filtrem Sobela w~wariancie pionowym oraz poziomym. Pozwala to na uzyskanie pochodnych cząstkowych w~danym punkcie, które razem tworzą gradient, czyli prostopadły kierunek przebiegu krawędzi potencjalnie wskazujący środek wyszukiwanego okręgu. W~dwuwymiarowym akumulatorze od analizowanego punktu w~dwóch kierunkach rysowana jest linia o~długości maksymalnego poszukiwanego promienia. W~przypadku okręgu wszystkie te linie przecinają się w~jednym punkcie, co pokazane zostało na rysunku \ref{fig:houghCircleGradient}. Kolejnym krokiem jest wykrycie maksimów w~akumulatorze. Aby zmniejszyć szumy i~liczbę okręgów leżących blisko siebie, po procesie progowania środki leżące bliżej siebie niż ustalona odległość są łączona w~jeden. Następnie dla każdego punktu po wykryciu maksimów w~akumulatorze, w~drugim jednowymiarowym akumulatorze, dla każdego możliwego poszukiwanego promienia, następuje głosowanie. Zliczana jest liczba jasnych pikseli obrazu, które znajdują się w~danej odległości od środka, co po wykryciu maksimum w~akumulatorze uzupełnia dane okręgu o~najbardziej prawdopodobny promień.
 
 Na potrzeby prowadzonych badań zaimplementowany został algorytm wykrywania okręgów na~obrazie binarnym, który jako wykrywanie maksimów w~akumulatorze podczas głosowania dla środków jak i~promieni wykorzystuje proste progowanie.
 

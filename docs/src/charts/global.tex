@@ -1,0 +1,182 @@
+\pgfplotsset{
+    table/search path={./../../benchmark},
+    every pin edge/.style={solid},
+    compat=newest
+}
+\definecolor{cppColor}{rgb}{0,0,0}
+\definecolor{nodeColor}{rgb}{0,0.6,0}
+\definecolor{denoColor}{rgb}{0,0,1}
+\definecolor{chromeColor}{rgb}{1,0,0}
+\definecolor{firefoxColor}{rgb}{1,0.5,0}
+
+\newcommand{\plotBenchmark}[3]{%
+    \addplot+ [
+        #2,
+        #3,
+        mark=*,
+        mark options={solid,fill=#2, scale=0.5},
+        error bars/.cd,
+        error bar style={mark size=3pt, solid, #2},
+        y dir=both,
+        y explicit,
+    ]
+    table [
+            x=sizeTheta,
+            y=mean,
+            y error=stdev,
+            col sep=comma
+        ] {#1};
+}
+
+\newenvironment{chartBenchmark}
+{\begin{tikzpicture}
+        \begin{axis} [
+                width=\linewidth,
+                height=0.45\linewidth,
+                legend style={font=\tiny},
+                grid,
+                grid style=dashed,
+                xlabel={$S_\theta$ [pixels per degree]},
+                ylabel={Time [ms]},
+                mark options={solid},
+                legend pos=north west
+            ] }
+            %
+            {
+        \end{axis}
+    \end{tikzpicture}
+}
+
+\newcommandx\groupBenchmark[6][4=1000, 5=800, 6=100]{
+    \begin{tikzpicture}
+        \begin{groupplot}[
+                group style={
+                    group size=2 by 2,
+                    vertical sep=2cm
+                },
+                width=0.5\linewidth,
+                height=0.405\linewidth,
+                grid,
+                grid style=dashed,
+                legend style={
+                        legend columns=1,
+                    },
+                tick label style={font=\tiny},
+                every axis title shift=0pt,
+                max space between ticks=20,
+                ymin=0
+            ]
+
+            \nextgroupplot[
+                title={SHT \textit{non-LUT}},
+                ylabel={Time [ms]},
+                legend to name={CommonLegend},
+                xlabel={$S_\theta$ [pikseli na stopień]},
+                ymax=#4
+            ]
+            #1
+
+            \nextgroupplot[
+                title={SHT \textit{LUT}},
+                xlabel={$S_\theta$ [pikseli na stopień]},
+                legend to name={CommonLegend},
+                ymax=#5
+            ]
+            #2
+
+            \nextgroupplot[
+                title={CHT},
+                xlabel={współczynnik max. promienia $n$},
+                ylabel={Time [ms]},
+                legend to name={CommonLegend},
+                ymax=#6,
+                legend cell align={left}
+            ]
+            #3
+            
+        \end{groupplot}
+        \path (group c1r2.east) -- node[right, xshift=0.83cm] {\ref{CommonLegend}} (group c1r2.east);
+    \end{tikzpicture}
+}
+
+
+\newcommand\seqReference{
+    \plotBenchmark{cpp_theta_SHT_Simple.csv}{cppColor}{dashed}
+    \addlegendentry{C++ Sequential};
+    \plotBenchmark
+    {js-sequential_theta_SHT_Simple_Firefox.csv}
+    {firefoxColor}
+    {name path=Firefox_Seq,opacity=0}
+    \plotBenchmark
+    {js-sequential_theta_SHT_Simple_Chrome.csv}
+    {chromeColor}
+    {name path=Chrome_Seq,opacity=0}
+    \addplot [black,opacity=0.1] fill between [of=Chrome_Seq and Firefox_Seq];
+}
+
+\newcommand\seqReferenceLookup{
+    \plotBenchmark{cpp_theta_SHT_Simple_Lookup.csv}{cppColor}{dashed}
+    \addlegendentry{C++ Sequential};
+    \plotBenchmark
+    {js-sequential_theta_SHT_Simple_Lookup_Firefox.csv}
+    {firefoxColor}
+    {name path=Firefox_Seq_Lookup,opacity=0}
+    \plotBenchmark
+    {js-sequential_theta_SHT_Simple_Lookup_Chrome.csv}
+    {chromeColor}
+    {name path=Chrome_Seq_Lookup,opacity=0}
+    \addplot [black,opacity=0.1] fill between [of=Chrome_Seq_Lookup and Firefox_Seq_Lookup];
+}
+
+\newcommand\seqReferenceCircle{
+    \plotBenchmark{cpp_theta_CHT_Simple.csv}{cppColor}{dashed}
+    \addlegendentry{C++ Sequential};
+    \plotBenchmark
+    {js-sequential_theta_CHT_Simple_Firefox.csv}
+    {firefoxColor}
+    {name path=Firefox_Seq,opacity=0}
+    \plotBenchmark
+    {js-sequential_theta_CHT_Simple_Chrome.csv}
+    {chromeColor}
+    {name path=Chrome_Seq,opacity=0}
+    \addplot [black,opacity=0.1] fill between [of=Chrome_Seq and Firefox_Seq];
+}
+
+\newcommand{\plotColdstart}[2]{%
+    \addplot+ [
+        #2,
+        mark=*,
+        mark options={solid, scale=0.75},
+        line width=0.75pt
+    ]
+    table [
+            x=nth,
+            y=time,
+            col sep=comma
+        ] {#1};
+}
+
+
+\newcommand{\plotMethod}[4]{%
+    \addplot
+    plot [error bars/.cd, y dir=both, y explicit]
+    table [
+            x=name,
+            y=mean,
+            y error=stdev,
+            col sep=comma
+        ] {methods/#1.csv};
+    \pgfplotsset{cycle list shift=-#2}
+    \addlegendentry{#3}
+    \addplot+ [
+        postaction={pattern=north east lines}
+    ]
+    plot [error bars/.cd, y dir=both, y explicit]  table [
+            x=name,
+            y=mean,
+            y error=stdev,
+            col sep=comma
+        ] {methods/#1-lookup.csv};
+
+    \addlegendentry{#4}
+}
