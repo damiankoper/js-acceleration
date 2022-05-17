@@ -1,0 +1,24 @@
+\begin{wraptable}{r}{7.9cm}
+    \caption{Przyspieszenie i jego efektywność dla metody akceleracji z wykorzystaniem Worker'ów \mbox{($S_\theta = 1, p = 4$)}.}
+    \label{tab:speedup}
+    \begin{tabular}{rlrr}%
+        \hline
+        Alg.                 & Środ.   & Przysp. & Efek. \\
+        \hline
+        SHT \textit{non-LUT} & Chrome  & 2.78    & 0.69  \\
+        SHT \textit{non-LUT} & Firefox & 2.89    & 0.72  \\
+        SHT \textit{non-LUT} & Node    & 3.19    & \textcolor{green!70!black}{0.80}  \\
+        SHT \textit{non-LUT} & Deno    & 2.56    & \textcolor{red!70!black}{0.64}  \\
+        \hline
+        SHT \textit{LUT}     & Chrome  & 1.84    & 0.46  \\
+        SHT \textit{LUT}     & Firefox & 1.83    & 0.46  \\
+        SHT \textit{LUT}     & Node    & 1.66    & \textcolor{red!70!black}{0.41}  \\
+        SHT \textit{LUT}     & Deno    & 1.94    & \textcolor{green!70!black}{0.48}  \\
+        \hline
+        CHT                  & Chrome  & 1.19    & \textcolor{red!70!black}{0.30} \\
+        CHT                  & Firefox & 1.29    & \textcolor{green!70!black}{0.32}  \\
+        CHT                  & Node    & 1.20    & \textcolor{red!70!black}{0.30}  \\
+        CHT                  & Deno    & 1.22    & 0.31  \\
+        \hline
+    \end{tabular}
+\end{wraptable}

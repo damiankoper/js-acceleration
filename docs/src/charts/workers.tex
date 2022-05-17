@@ -1,0 +1,49 @@
+
+
+\begin{figure}[h]
+    \groupBenchmark{
+        \plotBenchmark{js-workers_theta_SHT_Simple_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \plotBenchmark{js-workers_theta_SHT_Simple_deno.csv}{denoColor}{{}}
+        \addlegendentry{Deno}
+
+        \plotBenchmark{js-workers_theta_SHT_Simple_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox}
+
+        \plotBenchmark{js-workers_theta_SHT_Simple_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome}
+
+        \seqReference
+    } {
+        \plotBenchmark{js-workers_theta_SHT_Simple_Lookup_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \plotBenchmark{js-workers_theta_SHT_Simple_Lookup_deno.csv}{denoColor}{{}}
+        \addlegendentry{Deno}
+
+        \plotBenchmark{js-workers_theta_SHT_Simple_Lookup_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox}
+
+        \plotBenchmark{js-workers_theta_SHT_Simple_Lookup_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome}
+
+        \seqReferenceLookup
+    }{
+        \plotBenchmark{js-workers_theta_CHT_Simple_node.csv}{nodeColor}{{}}
+        \addlegendentry{Node}
+
+        \plotBenchmark{js-workers_theta_CHT_Simple_deno.csv}{denoColor}{{}}
+        \addlegendentry{Deno}
+
+        \plotBenchmark{js-workers_theta_CHT_Simple_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox}
+
+        \plotBenchmark{js-workers_theta_CHT_Simple_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome}
+
+        \seqReferenceCircle
+    }[1700][500][10]
+    \caption{Wyniki pomiarów czasu wydajności dla wykonania SHT i CHT z wykorzystaniem czterech Worker'ów.}
+    \label{plot:workers}
+\end{figure}

@@ -1,0 +1,36 @@
+@startuml workers
+'skinparam linetype ortho
+left to right direction
+scale 2
+
+component main.deno
+component main.web
+component main.node
+
+component SHTSimple.deno
+component SHTSimple
+
+component SHTSimple.deno.worker <<adapter>>
+component SHTSimple.node.worker <<adapter>>
+component SHTSimple.web.worker <<adapter>>
+
+component SHTSimple.core.worker
+
+
+main.deno ..> SHTSimple.deno.worker : > provides factory of
+main.deno ..> SHTSimple.deno : > provides factory to
+SHTSimple.deno ..> SHTSimple.deno.worker : <<creates>>
+
+main.node ..> SHTSimple.node.worker : > provides factory of
+main.node ..> SHTSimple : > provides factory to
+SHTSimple ..> SHTSimple.node.worker : <<creates>>
+
+main.web ..> SHTSimple.web.worker : > provides factory of
+main.web ..> SHTSimple : > provides factory to
+SHTSimple ..> SHTSimple.web.worker : <<creates>>
+
+SHTSimple.web.worker ..> SHTSimple.core.worker : executes >
+SHTSimple.node.worker ..> SHTSimple.core.worker : executes >
+SHTSimple.deno.worker ..> SHTSimple.core.worker : executes >
+
+@enduml
