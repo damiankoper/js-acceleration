@@ -89,7 +89,7 @@ export function webBaseFactory(
     let env = "TBD";
     const csvMap = new Map<string, string>();
     const configs = [
-      { benchmark: benchmarkCHTSimple, name: "CHT_Simple" },
+      // { benchmark: benchmarkCHTSimple, name: "CHT_Simple" },
       { benchmark: benchmarkSHTSimple, name: "SHT_Simple" },
       {
         benchmark: benchmarkSHTSimpleLookup,

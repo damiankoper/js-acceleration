@@ -13,7 +13,7 @@ export function createCHTSimpleKernel(
     [number[]],
     { width: number; height: number }
   >(
-    function (input: number[]) {
+    new Function(`return function (input/* : number[] */) {
       const w = this.constants.width;
       const h = this.constants.height;
       const x = Math.trunc(this.thread.x % this.constants.width);
@@ -28,7 +28,7 @@ export function createCHTSimpleKernel(
         -input[(y + 1) * w + x - 1] + //
         input[(y + 1) * w + x + 1]
       );
-    },
+    }`)(),
     { output: [width * height], constants: { width, height }, pipeline: true }
   );
 

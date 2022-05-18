@@ -248,5 +248,109 @@ Worker'y współdzielą pamięć akumulatora w~postaci obiektu \lstinline{Shared
 
 \section{GPGPU}
 
+Implementacja akceleracji z~użyciem układu graficznego wymaga dostosowania algorytmu do masowego zrównoleglenia wydzielając funkcje jądra (kernel), która wykonywać się będzie równolegle na setkach rdzeni jednocześnie zawsze rozwijając wszystkie gałęzie wyrażeń warunkowych. Stworzona implementacja korzysta z~mechanizmów generowania grafiki WebGL API, co nakłada dodatkowe ograniczenia w~przeciwieństwie do standardowego podejścia. Kernel nie ma możliwości modyfikacji danych w~pamięci współdzielonej, a~jego jedynym wynikiem jest wektor liczb. W~zależności od algorytmu liczby te mogą być różnie interpretowane - jako zmienne logiczne, liczby stało i~zmiennoprzecinkowe, czy też w~standardowy sposób jako kolor piksela.
+
+\subsection{Standard Hough Transform}
+
+Przystosowanie procesu głosowania dla wariantu SHT wymagało podejście skoncentrowanego na generowaniu jednej wartości elementu akumulatora. Proces ten jest masowo zrównoleglony przez układ graficzny równolegle generując wszystkie wartości w~akumulatorze. 
+
+Jeśli jeden piksel na obrazie odwzorowywany jest na sinusoidę w~przestrzeni akumulatora, a~jeden punkt w~przestrzeni akumulatora to jedna linia na obrazie, to odwrotnym podejściem do głosowania jest zliczenie, dla jednego elementu akumulatora, ile pikseli na obrazie przechodzi przez potencjalną linię, na którą może być on odwzorowany. Żeby uwzględnić wszystkie piksele linii, których zbocze $m > 1$, iteracja po przestrzeni obrazu odbywa się również w~wariancie, w~którym układ współrzędnych jest obrócony o~$90^\circ$. Dlatego równania (\ref{eq:gpuD}) i~(\ref{eq:gpuE}) różnią się obliczające sumę zapalonych pikseli, w~zależności kąta nachylenia zamieniają współrzędne $x$ i~$y$ miejscami.
+Końcowy wzór na wartość pola akumulatora przedstawiony został na równaniu (\ref{eq:gpuF}).
+\begin{align}
+    \rho(\theta) &= x\cos{\theta} + y\sin{\theta} \label{eq:gpuA} \\
+    y_a(\rho,\theta,x) &= \frac{\rho-x\sin{\theta}}{\cos{\theta}} \label{eq:gpuB}\\
+    x_a(\rho,\theta,y) &= \frac{\rho-y\cos{\theta}}{\sin{\theta}} \label{eq:gpuC}\\
+    A_x(\rho, \theta) &= 
+    \begin{cases} 
+    \sum^{w-1}_{x=0}I(x, y_a(\rho,\theta,x)),&\rho \in \left[\frac{\pi}{4}, \frac{3\pi}{4}\right) \lor \rho \in \left[\frac{5\pi}{4}, \frac{7\pi}{4}\right) \\
+    0,& \text{dla pozostałych }\rho
+    \end{cases} \label{eq:gpuD}\\
+    A_y(\rho, \theta) &= 
+    \begin{cases} 
+    \sum^{h-1}_{y=0} I(x_a(\rho,\theta,y), y),& \rho \in \left[0, \frac{\pi}{4}\right) \lor \rho \in \left[\frac{3\pi}{4}, \frac{5\pi}{4}\right) \lor \rho \in \left[\frac{7\pi}{4}, 2\pi\right) \\
+    0,& \text{dla pozostałych }\rho
+    \end{cases} \label{eq:gpuE}\\
+    A(\rho, \theta) &= A_x(\rho, \theta) + A_y(\rho, \theta) \label{eq:gpuF}
+\end{align}
+\begin{eqexpl}
+    \item{$x, y$} współrzędne piksela na obrazie;
+    \item{$I(x, y)$} wartość piksela na obrazu.
+    \item{$A_x, A_y$} częściowa zawartość akumulatora w~zależności od kąta padania prostej;
+    \item{$A$} zawartość akumulatora.
+    \item{$w, h$} szerokość i~wysokość obrazu;
+    \item{$x_a, y_a$} funkcje obliczające drugą współrzędną linii na podstawie odwzorowania z~akumulatora;
+    \item{$\rho$} odległość prostej od środka układu współrzędnych;
+    \item{$\theta$} obrót prostej od wokół układu współrzędnych;
+\end{eqexpl}
+\vspace{0.5cm}
+
+
+Zbudowanie biblioteki nie wymagało dodatkowych zmian konfiguracji bazowej narzędzia Webpack. Do implementacji obliczeń z~wykorzystaniem WebGL wykorzystano bibliotekę \textit{gpu.js}. Listing \ref{lst:gpu-sht} przedstawia funkcję tworzącą kernel dla wariantu SHT\textit{non-LUT}. Jedynym argumentem funkcji kernela jest tablica z~wejściowym obrazem. Pozostałe parametry dostarczane są jako stałe, co przyspiesza do nich dostęp. Sprawia to jednak, że dla każdego zestawu opcji istnieje konieczność stworzenia nowego kernela. W~implementowanym algorytmie kernele zapisywane są w~mapie, której kluczem są wartości opcji. Kernel zwraca jedną liczbę stanowiącą wynik równania (\ref{eq:gpuF}).
+
+Na listingu również zobaczyć możemy utworzenie funkcji za pomocą konstruktora, która zwraca właściwa funkcję i~jest od razu wykonywana - \lstinline{new Function(`return function (testImage/* : number[] */){/*...*/}`)()}. Jest to niezbędne, aby mieć pełną kontrolę nad wejściem do mechanizmów transpilacji biblioteki \textit{gpu.js}, ponieważ kod w~procesie budowania biblioteki jest minifikowany, co zmienia nazwy zmiennych i~stosuje skrócone notacje, z~którymi biblioteka \textit{gpu.js} nie umie sobie poradzić. Na listingu \ref{lst:gpu-mini} widać przykład zminifikowanego kodu błędnie transpilowanego do języka GLSL, gdzie problem stanowi połączenie post-inkrementacji z~wyrażeniem logicznym.
+
+\begin{lstlisting}[language=JavaScript, float=ht, label=lst:gpu-mini, caption=Przykład minifikacji kodu błędnie transpilowanego do języka GLSL przez bibliotekę \textit{gpu.js}]
+// before
+if(offset < this.constants.width * this.constants.height &&
+                testImage[offset] == 1) {
+    acc+=1;
+}
+// after
+t<this.constants.width*this.constants.height&&1==e[t]&&a++;
+\end{lstlisting}
+
+% TODO: new Function  ze stringa czemu
+
+\begin{lstlisting}[language=JavaScript, float=ht, label=lst:gpu-sht, caption=Funkcja tworząca kernel dla wariantu SHT \textit{non-LUT}]
+
+import { GPU, IKernelRunShortcutBase } from "gpu.js";
+
+export const gpu = new GPU();
+export function createSHTSimpleKernel(
+    hsWidth: number, hsHeight: number, width: number, height: number,
+    samplingRho: number, samplingTheta: number
+) {
+  return gpu
+    .createKernel(
+      new Function(`return function (testImage/* : number[] */) {
+        // ...
+        let acc = 0;
+        // ...
+        return acc;
+      }`)(),
+      {
+        output: [hsWidth * hsHeight],
+        constants: {hsWidth, width, height, samplingRho, samplingTheta},
+      }
+    )
+    .setLoopMaxIterations(Math.max(width, height))
+    .setOptimizeFloatMemory(true) as IKernelRunShortcutBase<Float32Array>;
+}
+\end{lstlisting}
+
+\subsection{Circle Hough Transform}
+
+W wariancie CHT zaimplementowano łącznie 3 kernele. Dwa z~nich odpowiedzialne są za obliczenie splotu obrazu z~operatorem Sobela, aby wyznaczyć gradient krawędzi. Zwracają one wynik w~postaci tekstury, której dane znajdują się bezpośrednio na GPU. Tekstury te są następnie wejściem do kernela wyznaczającego wartość pola akumulatora w~procesie głosowania na środki okręgów. Dzięki takiemu złożeniu kerneli dane splotów nie przechodzą przez CPU, aby trafić z~powrotem do układ graficznego. Wartość piksela wyznaczana jest na podstawie liczby linii, o~długości wyznaczanej na podstawie maksymalnego i~minimalnego wyszukiwanego promienia, przechodzących przez dany punkt w~przestrzeni akumulatora.
+
 \subsection{Wyniki pomiarów}
 
+Na rysunku \ref{plot:gpu} przedstawiono wyniki pomiarów czasu wykonania w wykorzystaniem biblioteki \textit{gpu.js}. Widać, że metoda ta cechuje się bardzo niestabilnymi czasami wykonania. Brak dużego odchylenia standardowego sugeruje, że czas zależeć może od ogólnego obciążenia systemu oraz od optymalizacji wykorzystanych zasobów procesora graficznego, co sugeruje podobny czas wykonania dla $S_\theta \in \{5,6,7\}$ w wariancie SHT \textit{LUT}. Dla SHT w każdym środowisku i wariancie algorytmu udało się przyspieszyć czas wykonania bądź osiągnąć porównywalny względem wykonania sekwencyjnego w języku C++. Przyspieszenie wynosi \tms{3.81} dla wariantu SHT \textit{non-LUT} i oscyluje w okolicy \tms{1} dla SHT \textit{LUT} oraz $S_\theta = 1$. Ze względu na odwrotne podejście do generowania wartości w akumulatorze oraz na zmniejszoną precyzje obliczeń dla liczb zmiennoprzecinkowych w procesorach graficznych, różnica pomiędzy wygenerowanym akumulatorem dla tej metody, a wariantem sekwencyjnym jest znacząca i została pokazana na rysunku \ref{fig:diff:gpu}. Nie wpływa ona jednak znacząco na jakoś detekcji. 
+
+Wąskim gardłem w metodach akceleracji z wykorzystaniem układów graficznych jest komunikacja CPU z GPU. Wysyłanie i odbieranie danych zajmuje nieproporcjonalnie dużo czasu, co widać na rysunku \ref{fig:profiler-gpu}. 
+
+\input{charts/gpu}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img/gpu-profiler.png}
+    \caption{Wynik profilowania wykonania algorytmu CHT w~przeglądarce Google Chrome z wykorzystaniem biblioteki \textit{gpu.js}.}
+    \label{fig:profiler-gpu}
+\end{figure}
+
+
+W przypadku wersji CHT nie udało się uzyskać przyspieszenia, a dodatkowo implementacja w taki sam sposób zwiększyła złożoność obliczeniową, która stała się ponad-liniowa. Dla każdego punktu akumulatora wszystkie punkty wokół niego na obrazie, nie dalej niż maksymalnie szykany promień, muszą zostać sprawdzone pod kątem generowania linii, która przecina generowany punkt akumulatora. Na tej podstawie można oszacować złożoność jako $O(n^2)$. Dla dużych promieni rzędu 220 pikseli, czas wykonania potrafi wynieść 25s. W ramach pracy nie analizowano dalej tego problemu, a wszelkie próby poprawy złożoności algorytmu nie przyniosły efektu. Doświadczenia z udaną akceleracją wariantu SHT algorytmu pozwala sądzić, że zaimplementowanie wersji z jednym trójwymiarowym akumulatorem przyniosłoby oczekiwane rezultaty. Ograniczeniem w takiej implementacji byłby rozmiar akumulatora. W obydwu przeglądarkach maksymalny rozmiar wyjścia to $16384\times16384$. Rozwiązaniem tego problemu może być podział wykonania na części, gdzie każda z nich generuje maksymalny możliwy fragment akumulatora.
+
+\section{Problem zimnego startu}
+
+
+\section{Przykład przetwarzania obrazu w przeglądarce internetowej}

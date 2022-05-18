@@ -1,0 +1,31 @@
+
+
+\begin{figure}
+    \groupBenchmark{
+        \plotBenchmark{js-gpu_theta_SHT_Simple_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox}
+
+        \plotBenchmark{js-gpu_theta_SHT_Simple_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome}
+
+        \seqReference
+    } {
+        \plotBenchmark{js-gpu_theta_SHT_Simple_Lookup_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox}
+
+        \plotBenchmark{js-gpu_theta_SHT_Simple_Lookup_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome}
+
+        \seqReferenceLookup
+    }{
+        \plotBenchmark{js-gpu_theta_CHT_Simple_Firefox.csv}{firefoxColor}{{}}
+        \addlegendentry{Firefox}
+
+        \plotBenchmark{js-gpu_theta_CHT_Simple_Chrome.csv}{chromeColor}{{}}
+        \addlegendentry{Chrome}
+
+        \seqReferenceCircle
+    }[550][130][27000]
+    \caption{Wyniki pomiarów czasu wydajności dla wykonania SHT i CHT z wykorzystaniem biblioteki \textit{gpu.js}.}
+    \label{plot:gpu}
+\end{figure}
