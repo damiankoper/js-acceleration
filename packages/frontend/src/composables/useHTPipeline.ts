@@ -33,10 +33,10 @@ export function useHTPipeline(
   }));
   const chtOptionsComputed = computed<CHTParallelOptions>(() => ({
     width: resultCanvas.value?.width || 1,
-    gradientThreshold: 0.8,
+    gradientThreshold: 0.6,
     minR: 15,
     maxR: 35,
-    minDist: 60,
+    minDist: 50,
     concurrency: 4,
     ...chtOptions.value,
   }));

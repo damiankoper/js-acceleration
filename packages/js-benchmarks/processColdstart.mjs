@@ -12,7 +12,7 @@ readdir(testFolder, (err, files) => {
       console.log(file);
       const str = readFileSync(join(testFolder, file), { encoding: "utf-8" });
       const parsed = papaparse.parse(str, { header: true });
-      const max = Math.max(...parsed.data.map((r) => +r.time));
+      const max = parsed.data[0].time;
       parsed.data.forEach((data) => {
         data.time /= max;
       });

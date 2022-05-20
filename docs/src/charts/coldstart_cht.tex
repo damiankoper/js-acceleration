@@ -1,0 +1,50 @@
+\begin{figure}[h]
+    \groupColdstart{
+        \plotColdstart{coldstart/js-sequential_coldstart_CHT_Simple_Chrome.csv}{}
+        \addlegendentry{JS Seq.}
+        \plotColdstart{coldstart/js-asm_coldstart_CHT_Simple_Chrome.csv}{{}}
+        \addlegendentry{asm.js}
+        \plotColdstart{coldstart/js-wasm_coldstart_CHT_Simple_Chrome.csv}{{}}
+        \addlegendentry{WASM}
+        \plotColdstart{coldstart/js-wasm_simd_explicit_coldstart_CHT_Simple_Chrome.csv}{{}}
+        \addlegendentry{WASM SIMD (expl.)}
+        \plotColdstart{coldstart/js-workers_coldstart_CHT_Simple_Chrome.csv}{{}}
+        \addlegendentry{Workers}
+        \pgfplotsset{cycle list shift=1}
+        \plotColdstart{coldstart/js-gpu_coldstart_CHT_Simple_Chrome.csv}{{}}
+        \addlegendentry{WebGL}
+    } {
+        \plotColdstart{coldstart/js-sequential_coldstart_CHT_Simple_Firefox.csv}{}
+        \addlegendentry{JS Seq.}
+        \plotColdstart{coldstart/js-asm_coldstart_CHT_Simple_Firefox.csv}{{}}
+        \addlegendentry{asm.js}
+        \plotColdstart{coldstart/js-wasm_coldstart_CHT_Simple_Firefox.csv}{{}}
+        \addlegendentry{WASM}
+        \plotColdstart{coldstart/js-wasm_simd_explicit_coldstart_CHT_Simple_Firefox.csv}{{}}
+        \addlegendentry{WASM SIMD (expl.)}
+        \plotColdstart{coldstart/js-workers_coldstart_CHT_Simple_Firefox.csv}{{}}
+        \addlegendentry{Workers}
+        \pgfplotsset{cycle list shift=1}
+        \plotColdstart{coldstart/js-gpu_coldstart_CHT_Simple_Firefox.csv}{{}}
+        \addlegendentry{WebGL}
+    } {
+        \plotColdstart{coldstart/js-sequential_coldstart_CHT_Simple_node.csv}{}
+        \addlegendentry{JS Seq.}
+        \plotColdstart{coldstart/js-asm_coldstart_CHT_Simple_node.csv}{{}}
+        \addlegendentry{asm.js}
+        \plotColdstart{coldstart/js-wasm_coldstart_CHT_Simple_node.csv}{{}}
+        \addlegendentry{WASM}
+        \plotColdstart{coldstart/js-wasm_simd_explicit_coldstart_CHT_Simple_node.csv}{{}}
+        \addlegendentry{WASM SIMD (expl.)}
+        \plotColdstart{coldstart/js-workers_coldstart_CHT_Simple_node.csv}{{}}
+        \addlegendentry{Workers}
+    } {
+        \plotColdstart{coldstart/js-sequential_coldstart_CHT_Simple_deno.csv}{}
+        \addlegendentry{JS Seq.}
+        \pgfplotsset{cycle list shift=3}
+        \plotColdstart{coldstart/js-workers_coldstart_CHT_Simple_deno.csv}{{}}
+        \addlegendentry{Workers}
+    }
+\caption{Wyniki pomiarów pierwszych czasów wykonania algorytmu CHT znormalizowane do przedziału $\left[0, 1\right]$ dla $n=1$.}
+\label{plot:coldstart-cht}
+\end{figure}

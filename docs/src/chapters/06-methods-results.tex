@@ -232,7 +232,7 @@ Pomiary dla wykonania wielowątkowego przeprowadzone były przy przeznaczonych d
 \input{charts/workers}
 
 \input{tables/worker_speedup}
-Na rysunku \ref{plot:workers} pokazane zostały wykresy z~wynikami pomiarów czasów wykonania z~wykorzystaniem czterech Worker'ów. Jak w~większości przypadków również i~tutaj, dla obydwu wariantów SHT, prym we wzroście wydajności wiedzie przeglądarka Google Chrome. Przy krótszych czasach wykonania dla wariantu CHT uwydatnia się większa niż dla poprzednich metod wartość odchylenia standardowego. Szczególnie widoczna jest w~przypadku przeglądarki Mozilla Firefox. Spowodowane jest to asynchronicznością komunikacji z~Worker'em, gdzie wiadomości nie są obsługiwane od razu, a~trafiają do pętli zdarzeń. W~zależności od implementacji, jak i~liczby zdarzeń do obsłużenia przez pętlę, czasy te mogą się różnić. Kod Worker'ów jest również osobno optymalizowany, co zwiększa skalę zjawiska zimnego startu w~przypadku tej metody akceleracji.  Na rysunku \ref{fig:profiler-workers} widać wynik profilowania pierwszych wykonań kody na stworzonych instancjach Worker'ów. W~pierwszych wykonaniach widać bloki \textit{Optimise Code}, a~dalsze wykonania wykonują się już po optymalizacji. Podczas długiej przerwy pomiędzy wykonaniami proces optymalizacji zachodził dla wątku głównego.
+Na rysunku \ref{plot:workers} pokazane zostały wykresy z~wynikami pomiarów czasów wykonania z~wykorzystaniem czterech Worker'ów. Jak w~większości przypadków również i~tutaj, dla obydwu wariantów SHT, prym we wzroście wydajności wiedzie przeglądarka Google Chrome. Przy krótszych czasach wykonania dla wariantu CHT uwydatnia się większa niż dla poprzednich metod wartość odchylenia standardowego. Szczególnie widoczna jest w~przypadku przeglądarki Mozilla Firefox. Spowodowane jest to asynchronicznością komunikacji z~Worker'em, gdzie wiadomości nie są obsługiwane od razu, a~trafiają do pętli zdarzeń. W~zależności od implementacji, jak i~liczby zdarzeń do obsłużenia przez pętlę, czasy te mogą się różnić. Kod Worker'ów jest również osobno optymalizowany, co zwiększa skalę zjawiska zimnego startu w~przypadku tej metody akceleracji.  Na rysunku \ref{fig:profiler-workers} widać wynik profilowania pierwszych wykonań kody na stworzonych instancjach Worker'ów. W~pierwszych wykonaniach widać bloki \textit{Optimize Code}, a~dalsze wykonania wykonują się już po optymalizacji. Podczas długiej przerwy pomiędzy wykonaniami proces optymalizacji zachodził dla wątku głównego.
 
 \begin{figure}[h]
     \centering
@@ -334,23 +334,88 @@ W wariancie CHT zaimplementowano łącznie 3 kernele. Dwa z~nich odpowiedzialne 
 
 \subsection{Wyniki pomiarów}
 
-Na rysunku \ref{plot:gpu} przedstawiono wyniki pomiarów czasu wykonania w wykorzystaniem biblioteki \textit{gpu.js}. Widać, że metoda ta cechuje się bardzo niestabilnymi czasami wykonania. Brak dużego odchylenia standardowego sugeruje, że czas zależeć może od ogólnego obciążenia systemu oraz od optymalizacji wykorzystanych zasobów procesora graficznego, co sugeruje podobny czas wykonania dla $S_\theta \in \{5,6,7\}$ w wariancie SHT \textit{LUT}. Dla SHT w każdym środowisku i wariancie algorytmu udało się przyspieszyć czas wykonania bądź osiągnąć porównywalny względem wykonania sekwencyjnego w języku C++. Przyspieszenie wynosi \tms{3.81} dla wariantu SHT \textit{non-LUT} i oscyluje w okolicy \tms{1} dla SHT \textit{LUT} oraz $S_\theta = 1$. Ze względu na odwrotne podejście do generowania wartości w akumulatorze oraz na zmniejszoną precyzje obliczeń dla liczb zmiennoprzecinkowych w procesorach graficznych, różnica pomiędzy wygenerowanym akumulatorem dla tej metody, a wariantem sekwencyjnym jest znacząca i została pokazana na rysunku \ref{fig:diff:gpu}. Nie wpływa ona jednak znacząco na jakoś detekcji. 
+Na rysunku \ref{plot:gpu} przedstawiono wyniki pomiarów czasu wykonania w~wykorzystaniem biblioteki \textit{gpu.js}. Widać, że metoda ta cechuje się bardzo niestabilnymi czasami wykonania. Brak dużego odchylenia standardowego sugeruje, że czas zależeć może od ogólnego obciążenia systemu oraz od optymalizacji wykorzystanych zasobów procesora graficznego, co sugeruje podobny czas wykonania dla $S_\theta \in \{5,6,7\}$ w~wariancie SHT \textit{LUT}. Dla SHT w~każdym środowisku i~wariancie algorytmu udało się przyspieszyć czas wykonania bądź osiągnąć porównywalny względem wykonania sekwencyjnego w~języku C++. Przyspieszenie wynosi \tms{3.81} dla wariantu SHT \textit{non-LUT} i~oscyluje w~okolicy \tms{1} dla SHT \textit{LUT} oraz $S_\theta = 1$. Ze względu na odwrotne podejście do generowania wartości w~akumulatorze oraz na zmniejszoną precyzje obliczeń dla liczb zmiennoprzecinkowych w~procesorach graficznych, różnica pomiędzy wygenerowanym akumulatorem dla tej metody, a~wariantem sekwencyjnym jest znacząca i~została pokazana na rysunku \ref{fig:diff:gpu}. Nie wpływa ona jednak znacząco na jakoś detekcji. 
 
-Wąskim gardłem w metodach akceleracji z wykorzystaniem układów graficznych jest komunikacja CPU z GPU. Wysyłanie i odbieranie danych zajmuje nieproporcjonalnie dużo czasu, co widać na rysunku \ref{fig:profiler-gpu}. 
+Wąskim gardłem w~metodach akceleracji z~wykorzystaniem układów graficznych jest komunikacja CPU z~GPU. Wysyłanie i~odbieranie danych zajmuje nieproporcjonalnie dużo czasu, co widać na rysunku \ref{fig:profiler-gpu}. Widać na nim również proces transpilacji kodu kernela (bloki \lstinline{createKernel} i~\lstinline{build}). Konieczność zbudowania kernela zwiększa czas zimnego startu, który jest szczególnie duży w~przypadku tej metody akceleracji, co zostanie opisane w~sekcji \ref{sec:coldstart}.
 
 \input{charts/gpu}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{img/gpu-profiler.png}
-    \caption{Wynik profilowania wykonania algorytmu CHT w~przeglądarce Google Chrome z wykorzystaniem biblioteki \textit{gpu.js}.}
+    \caption{Wynik profilowania wykonania algorytmu CHT w~przeglądarce Google Chrome z~wykorzystaniem biblioteki \textit{gpu.js}.}
     \label{fig:profiler-gpu}
 \end{figure}
 
 
-W przypadku wersji CHT nie udało się uzyskać przyspieszenia, a dodatkowo implementacja w taki sam sposób zwiększyła złożoność obliczeniową, która stała się ponad-liniowa. Dla każdego punktu akumulatora wszystkie punkty wokół niego na obrazie, nie dalej niż maksymalnie szykany promień, muszą zostać sprawdzone pod kątem generowania linii, która przecina generowany punkt akumulatora. Na tej podstawie można oszacować złożoność jako $O(n^2)$. Dla dużych promieni rzędu 220 pikseli, czas wykonania potrafi wynieść 25s. W ramach pracy nie analizowano dalej tego problemu, a wszelkie próby poprawy złożoności algorytmu nie przyniosły efektu. Doświadczenia z udaną akceleracją wariantu SHT algorytmu pozwala sądzić, że zaimplementowanie wersji z jednym trójwymiarowym akumulatorem przyniosłoby oczekiwane rezultaty. Ograniczeniem w takiej implementacji byłby rozmiar akumulatora. W obydwu przeglądarkach maksymalny rozmiar wyjścia to $16384\times16384$. Rozwiązaniem tego problemu może być podział wykonania na części, gdzie każda z nich generuje maksymalny możliwy fragment akumulatora.
+W przypadku wersji CHT nie udało się uzyskać przyspieszenia, a~dodatkowo implementacja w~taki sam sposób zwiększyła złożoność obliczeniową, która stała się ponad-liniowa. Dla każdego punktu akumulatora wszystkie punkty wokół niego na obrazie, nie dalej niż maksymalnie szykany promień, muszą zostać sprawdzone pod kątem generowania linii, która przecina generowany punkt akumulatora. Na tej podstawie można oszacować złożoność jako $O(n^2)$. Dla dużych promieni rzędu 220 pikseli, czas wykonania potrafi wynieść 25s. W~ramach pracy nie analizowano dalej tego problemu, a~wszelkie próby poprawy złożoności algorytmu nie przyniosły efektu. Doświadczenia z~udaną akceleracją wariantu SHT algorytmu pozwala sądzić, że zaimplementowanie wersji z~jednym trójwymiarowym akumulatorem przyniosłoby oczekiwane rezultaty. Ograniczeniem w~takiej implementacji byłby rozmiar akumulatora. W~obydwu przeglądarkach maksymalny rozmiar wyjścia to $16384\times16384$. Rozwiązaniem tego problemu może być podział wykonania na części, gdzie każda z~nich generuje maksymalny możliwy fragment akumulatora.
 
 \section{Problem zimnego startu}
+\label{sec:coldstart}
 
+Problem zimnego startu związany jest z~narzutem czasowym występującym przy uruchomieniu środowiska, kompilacji i~optymalizacji kodu, czy też uruchomienia dodatkowych mechanizmów obsługujących wątki lub komunikację z~GPU. W~zależności od sytuacji może być on pomijalny, ale i~krytyczny. Pominąć można go w~procesie prototypowania, kiedy wielokrotnie uruchamiamy środowisko po zamianach w~algorytmie co jakiś czas. Wtedy dodatkowy czas nie stanowi problemu, oczywiście jeśli jest akceptowalnie krótki. Krytyczny okazać się może w~produkcyjnych rozwiązaniach \textit{serverless}, gdzie każdemu wykonaniu funkcji towarzyszy osobna instancja środowiska, a~optymalizacje nie są przeprowadzane. Oczywiście w~zależności od obciążenia pojedyncza instancja środowiska może obsługiwać wiele zapytań, co przy odpowiednio długim czasie trwania pozwala na optymalizację kodu i~kompilację JIT.
 
-\section{Przykład przetwarzania obrazu w przeglądarce internetowej}
+Każda z~badanych metod akceleracji posiada inną charakterystykę zimnego startu. Na rysunku \ref{plot:coldstart-sht} i~\ref{plot:coldstart-sht-lut} przedstawiono czasy wykonania algorytmu SHT kolejno \textit{non-LUT} i~\textit{LUT} znormalizowane do przedziału $\left[0, 1\right]$ dla $S_\theta=1$. Pomiary wykonywano, dopóki współczynnik wariancji dla okna o~długości 5 był mniejszy lub równy 0.01. Na wykresach pokazano tylko sześć pierwszych pomiarów, ponieważ to dla nich występuje największa zmiana czasu wykonania. Widać, że największa różnica w~czasie występuje dla metod wywoływanych asynchronicznie - Worker'ów oraz WebGL. Metody też mają problem z~osiągnięciem stabilnych czasów również po stabilizacji wykrytej przez metrykę współczynnika wariancji.
+
+Metody wykorzystujące WebAssembly nie zyskują na wydajności w~kolejnych pomiarach. Jest to zrozumiałe, ponieważ skompilowany kod nie jest już optymalizowany przez silnik. Oznacza to jednak również, że optymalizacji nie ulegają mechanizmy powiązania kodu JavaScript i~WebAssembly - głównie mechanizmy kopiowania danych. Dla wariantu SHT \textit{LUT} dla metod akceleracji wykonujących kod JavaScript wydać wyraźną poprawę wydajności w~kolejnych pomiarach. Kolejny raz widać zatem, że funkcje trygonometryczne i~ich wielokrotne wywoływanie spowalniają czas wykonania, a~dodatkowo wpływają negatywnie na optymalizację związaną z~pierwszymi uruchomieniami algorytmu w~ramach tej samej instancji środowiska.
+
+\input{charts/coldstart_sht_non_lut}
+\input{charts/coldstart_sht_lut}
+\input{charts/coldstart_cht}
+
+Analizując przyspieszenie związane z~optymalizacją na rysunku \ref{plot:coldstart-cht} przedstawiającym pierwsze czasy wykonania algorytmu CHT dla $n=1$, możemy zobaczyć dużo większe przyspieszenie dla kolejnych uruchomień niż dla algorytmów SHT. Z~racji na mniejszy rozmiar problemu i~krótszy czas iteracji implementacja ta lepiej pokazuje możliwości optymalizacji środowisk, ponieważ obliczenia nie są skupione tak bardzo na powtarzających się iteracjach. W~wariancie sekwencyjnym wspólną cechą środowisk opartych na silniku V8 jest zwiększenie czasu wykonania dla drugiego wywołania funkcji, gdzie kolejne są już optymalizowane. Widać dla metod wykorzystujących WebAssembly, optymalizację instrukcji wywołania modułów WebAssembly, która raz wykonana daje stałe czasy w~kolejnych wykonaniach algorytmu. Środowiska oparte na silniku V8 cechują się ogólną skutecznością w~optymalizacji kodu JavaScript w~porównaniu do silnika SpiderMonkey środowiska przeglądarki Mozilla Firefox.
+
+\section{Przykład przetwarzania obrazu z~kamery w~przeglądarce internetowej}
+
+Implementacja przetwarzania obrazu z~kamery w~przeglądarce wykonana została w~celu zbadania i~wykrycia ewentualnych problemów z~integracją zbudowanych bibliotek z~aplikacją SPA oraz z~procesem pozyskiwania obrazu z~kamery. Obraz na potrzeby testów dostarczany był w~formie strumieniowania plików \lstinline{*.mp4} do wirtualnego urządzenia kamery stworzonego w~wykorzystaniem narzędzia \textit{v4l2loopback}.
+
+Pobranie obrazu z~kamery wymaga skorzystania z~WebRTC API, które pozwala uzyskać dostęp do kamery i~mikrofonu użytkownika i~zarządzać nimi w~abstrakcjach strumieni, które zawierają ścieżki audio i~wideo. Jednym ze standardowych sposobów na uzyskanie obrazu do przetworzenia jest utworzenie obiektu HTML5 \lstinline{<video/>} z~atrybutem \lstinline{srcObject}, który przyjąć musi wartość obiektu zwróconego przez zapytanie \lstinline{navigator.MediaDevices.getUserMedia(...)}. Następnie, na podstawie obiektu \lstinline{<video/>}, na obiekcie \lstinline{<canvas/>} narysować możemy wyświetlaną obecnie klatkę. Aby pobrać taką klatkę do przetwarzania w~formie binarnej pliku obrazu w~wybranym formacie należy użyć metody \lstinline{canvas.toBlob(...)}. Aby pobrać wartości konkretnych pikseli należy użyć metody kontekstu rysowania obiektu \lstinline{<canvas/>} - \lstinline{ctx.getImageData(...)}. 
+
+Przechodząc od obrazu źródłowego z~kamery do wartości konkretnych pikseli musimy przejść przez formy pośrednie obiektu \lstinline{<video/>} i~\lstinline{<canvas/>}. Wpływa to na wydajność i~wygodę użytkowania, która jest zdecydowanie mniejsza, jeśli do niezbędnych operacji trzeba wykorzystać obiekty modelu DOM. Rozwiązaniem, które nie wykorzystuje modelu DOM jest zaimplementowane w~ramach przykładu ImageCapture API. Działa on jako wrapper ścieżki wideo pochodzącej z~strumienia uzyskanego za pomocą metody \lstinline{getUserMedia} i~dzięki metodzie \lstinline{grabFrame} możemy pobrać obiekt \lstinline{ImageBitmap}. Rozwiązanie to wciąż wykorzystuje obiekt \lstinline{<canvas/>} do narysowania na nim obiektu \lstinline{ImageBitmap}, a~następnie pobrania poszczególnych pikseli. ImageCapture API jest specyfikacją eksperymentalną, która wspierana jest tylko w~przeglądarkach opartych na Chromium.
+
+Przetwarzanie zostało zaimplementowane dla obydwu algorytmów i~przetestowane z~dwoma obrazami wejściowymi (rys. \ref{fig:road-money}). Wejściem algorytmu detekcji kształtów wykorzystujący transformację Hough'a jest binarny obraz z~wykrytymi krawędziami. Obraz z~kamery musi zatem zostać pozyskany, narysowany na obiekcie \lstinline{<canvas/>}, przekształcony do skali szarości, a~następnie poddany operacji wykrywania krawędzi. Implementacja wykorzystuje bibliotekę \textit{image-js}\cite{image-js} oraz \textit{canny-edge-detector}\cite{canny}, które odpowiadają kolejno za ogólne przetwarzanie obrazów oraz za implementację operatora Canny, który służy do wykrywania krawędzi na obrazie. 
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/road.png}
+        \caption{SHT}\label{fig:road}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/money.png}
+        \caption{CHT}\label{fig:money}
+    \end{subfigure}
+    \caption{Wizualizacja wykrytych kształtów na podstawie obrazu z~kamery w~przeglądarce internetowej.}
+    \label{fig:road-money}
+\end{figure}
+
+\begin{lstlisting}[language=JavaScript, float=ht, label=lst:loop, caption=Funkcja przetwarzająca w~pętli kolejne klatki obrazu z~kamery.]
+async function loop() {
+    if (resultCtx && imageCapture.value) {
+        const imageBitmap = await imageCapture.value.grabFrame();
+        resultCtx.drawImage(imageBitmap, 0, 0);
+        image.data.set(resultCtx.getImageData(0, 0, width, height).data);
+        const grayImage = image.grey();
+        const canny = cannyEdgeDetector(grayImage, {
+            lowThreshold: 50,
+            highThreshold: 50,
+        }) as Image;
+        const inputImage = canny.data.map((v) => (v > 0 ? 1 : 0))
+        await runHT(inputImage);
+    }
+    !stopLoop ? requestAnimationFrame(loop) : console.log("Loop stop");
+}
+\end{lstlisting}
+
+Na listingu \ref{lst:loop} przedstawiona została główna pętla przetwarzania obrazu. Na podstawie tego przykładu i~wyników profilowania wykonania widać bowiem, jak ważne jest zapewnienie wydajności całego łańcucha przetwarzania. Na rysunku \ref{fig:road-profiler} widać, że zdecydowaną większość czasu przetwarzania, które trwało 173ms, przeglądarka poświęciła 120ms na wykonanie zewnętrznej i~niezoptymalizowanej pod względem wydajności metodzie \lstinline{CannyEdgeDetector} (69\% czasu). Wstępne przetwarzanie obrazu trwało 7.5ms (4\% czasu), a~implementowana detekcja linii 40ms (23\% czasu).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img/road-profiler.png}
+    \caption{Wynik profilowania wykonania sekwencyjnego algorytmu SHT \textit{LUT} wraz z~procesem pozyskania obrazu, przetwarzania wstępnego, wykrywania krawędzi i~wyświetlenia wyników.}
+    \label{fig:road-profiler}
+\end{figure}
+
+Ta próba implementacji procesu od pozyskania obrazu, przez jego przetwarzanie, aż do wyświetlenie wyników pokazuje nieprzystosowanie środowiska przeglądarki internetowej do przetwarzania obrazów. Również wiele do życzenia pozostawia cały ekosystem bibliotek, którym często brakuje kompatybilności i popularności na tle ich odpowiedników w języku Python. 

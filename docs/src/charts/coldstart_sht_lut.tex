@@ -1,0 +1,50 @@
+\begin{figure}[h]
+    \groupColdstart{
+        \plotColdstart{coldstart/js-sequential_coldstart_SHT_Simple_Lookup_Chrome.csv}{}
+        \addlegendentry{JS Seq.}
+        \plotColdstart{coldstart/js-asm_coldstart_SHT_Simple_Lookup_Chrome.csv}{{}}
+        \addlegendentry{asm.js}
+        \plotColdstart{coldstart/js-wasm_coldstart_SHT_Simple_Lookup_Chrome.csv}{{}}
+        \addlegendentry{WASM}
+        \plotColdstart{coldstart/js-wasm_simd_explicit_coldstart_SHT_Simple_Lookup_Chrome.csv}{{}}
+        \addlegendentry{WASM SIMD (expl.)}
+        \plotColdstart{coldstart/js-workers_coldstart_SHT_Simple_Lookup_Chrome.csv}{{}}
+        \addlegendentry{Workers}
+        \pgfplotsset{cycle list shift=1}
+        \plotColdstart{coldstart/js-gpu_coldstart_SHT_Simple_Lookup_Chrome.csv}{{}}
+        \addlegendentry{WebGL}
+    } {
+        \plotColdstart{coldstart/js-sequential_coldstart_SHT_Simple_Lookup_Firefox.csv}{}
+        \addlegendentry{JS Seq.}
+        \plotColdstart{coldstart/js-asm_coldstart_SHT_Simple_Lookup_Firefox.csv}{{}}
+        \addlegendentry{asm.js}
+        \plotColdstart{coldstart/js-wasm_coldstart_SHT_Simple_Lookup_Firefox.csv}{{}}
+        \addlegendentry{WASM}
+        \plotColdstart{coldstart/js-wasm_simd_explicit_coldstart_SHT_Simple_Lookup_Firefox.csv}{{}}
+        \addlegendentry{WASM SIMD (expl.)}
+        \plotColdstart{coldstart/js-workers_coldstart_SHT_Simple_Lookup_Firefox.csv}{{}}
+        \addlegendentry{Workers}
+        \pgfplotsset{cycle list shift=1}
+        \plotColdstart{coldstart/js-gpu_coldstart_SHT_Simple_Lookup_Firefox.csv}{{}}
+        \addlegendentry{WebGL}
+    } {
+        \plotColdstart{coldstart/js-sequential_coldstart_SHT_Simple_Lookup_node.csv}{}
+        \addlegendentry{JS Seq.}
+        \plotColdstart{coldstart/js-asm_coldstart_SHT_Simple_Lookup_node.csv}{{}}
+        \addlegendentry{asm.js}
+        \plotColdstart{coldstart/js-wasm_coldstart_SHT_Simple_Lookup_node.csv}{{}}
+        \addlegendentry{WASM}
+        \plotColdstart{coldstart/js-wasm_simd_explicit_coldstart_SHT_Simple_Lookup_node.csv}{{}}
+        \addlegendentry{WASM SIMD (expl.)}
+        \plotColdstart{coldstart/js-workers_coldstart_SHT_Simple_Lookup_node.csv}{{}}
+        \addlegendentry{Workers}
+    } {
+        \plotColdstart{coldstart/js-sequential_coldstart_SHT_Simple_Lookup_deno.csv}{}
+        \addlegendentry{JS Seq.}
+        \pgfplotsset{cycle list shift=3}
+        \plotColdstart{coldstart/js-workers_coldstart_SHT_Simple_Lookup_deno.csv}{{}}
+        \addlegendentry{Workers}
+    }
+\caption{Wyniki pomiarów pierwszych czasów wykonania algorytmu SHT \textit{LUT} znormalizowane do przedziału $\left[0, 1\right]$ dla $S_\theta=1$.}
+\label{plot:coldstart-sht-lut}
+\end{figure}
