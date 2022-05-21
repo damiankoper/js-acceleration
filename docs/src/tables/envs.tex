@@ -1,7 +1,7 @@
 
 \newcommand{\comma}{, }
 \begin{table}
-    \caption{Porównanie zaimplementowanych metod akceleracji dla badanych środowisk. Wykonanie dla SHT przy $S_\theta = 1$, dla CHT przy $n=10$.}
+    \caption{Porównanie zaimplementowanych metod akceleracji dla badanych środowisk. Wykonanie dla SHT przy $S_\theta = 1$, dla CHT przy $n=10$. Wykonanie dla CHT WebGL nie zostało uwzględnione.}
     \label{tab:envs}
     \setlength{\tabcolsep}{0.25em}
 
@@ -14,11 +14,40 @@
             head to column names,
             before first line= \\\hline,
             late after line= \\,
-            late after last line= \\\hline
+            late after last line= \\\hline,
+            filter expr={
+                test{\ifnumless{\thecsvinputline}{9}}
+            }
         ]{../../benchmark/environments/envs.csv}{}% use head of csv as column names
         {
         \lookup                    & \alg           & \name\                                           & \chrome\ (\chromeF) & \firefox\ (\firefoxF) & \node\ (\nodeF) & \deno\ (\denoF)
         }% specify your coloumns here 
+
+        \csvreader[
+            head to column names,
+            late after line= \\,
+            late after last line= \\\hline,
+            filter expr={
+                test{\ifnumgreater{\thecsvinputline}{8}}
+            and test{\ifnumless{\thecsvinputline}{17}}
+            }
+        ]{../../benchmark/environments/envs.csv}{}% use head of csv as column names
+        {
+        \lookup                    & \alg           & \name\                                           & \chrome\ (\chromeF) & \firefox\ (\firefoxF) & \node\ (\nodeF) & \deno\ (\denoF)
+        }% specify your coloumns here 
+
+        \csvreader[
+            head to column names,
+            late after line= \\,
+            late after last line= \\\hline,
+            filter expr={
+                test{\ifnumgreater{\thecsvinputline}{16}}
+            }
+        ]{../../benchmark/environments/envs.csv}{}% use head of csv as column names
+        {
+        \lookup                    & \alg           & \name\                                           & \chrome\ (\chromeF) & \firefox\ (\firefoxF) & \node\ (\nodeF) & \deno\ (\denoF)
+        }% specify your coloumns here 
+
 
         % \csvreader[
         %     head to column names,
