@@ -30,9 +30,11 @@ readdir(testFolder, (err, files) => {
         const parsed = papaparse.parse(str, { header: true });
         methods.forEach((method) => {
           if (file.startsWith(method)) {
+            const alg = path.includes("SHT") ? "SHT" : "CHT";
             const lookup = file.includes("Lookup");
-            const key = method + (!lookup ? "" : "-lookup");
+            const key = alg + method + (!lookup ? "" : "-lookup");
             const methodResults = methodMap.get(key) || {
+              alg,
               lookup: lookup ? "\\cmark" : "",
               name: mapMethodName(method, lookup),
               chrome: "-",
@@ -51,12 +53,16 @@ readdir(testFolder, (err, files) => {
       }
     });
 
+  const chromeFs_cht = [];
   const chromeFs_nonlookup = [];
   const chromeFs_lookup = [];
+  const firefoxFs_cht = [];
   const firefoxFs_nonlookup = [];
   const firefoxFs_lookup = [];
+  const nodeFs_cht = [];
   const nodeFs_nonlookup = [];
   const nodeFs_lookup = [];
+  const denoFs_cht = [];
   const denoFs_nonlookup = [];
   const denoFs_lookup = [];
 
@@ -65,22 +71,30 @@ readdir(testFolder, (err, files) => {
     method.firefoxF = method.firefox / method.chrome || "-";
     method.denoF = method.deno / method.chrome || "-";
     if (typeof method.nodeF === "number") {
-      if (method.lookup) nodeFs_lookup.push(method.nodeF);
+      if (method.alg == "CHT" && method.name != "WebGL")
+        nodeFs_cht.push(method.nodeF);
+      else if (method.lookup) nodeFs_lookup.push(method.nodeF);
       else nodeFs_nonlookup.push(method.nodeF);
       method.nodeF = method.nodeF.toFixed(2);
     }
     if (typeof method.firefoxF === "number") {
-      if (method.lookup) firefoxFs_lookup.push(method.firefoxF);
+      if (method.alg == "CHT" && method.name != "WebGL")
+        firefoxFs_cht.push(method.firefoxF);
+      else if (method.lookup) firefoxFs_lookup.push(method.firefoxF);
       else firefoxFs_nonlookup.push(method.firefoxF);
       method.firefoxF = method.firefoxF.toFixed(2);
     }
     if (typeof method.denoF === "number") {
-      if (method.lookup) denoFs_lookup.push(method.denoF);
+      if (method.alg == "CHT" && method.name != "WebGL")
+        denoFs_cht.push(method.denoF);
+      else if (method.lookup) denoFs_lookup.push(method.denoF);
       else denoFs_nonlookup.push(method.denoF);
       method.denoF = method.denoF.toFixed(2);
     }
     if (method.chrome === "-") {
-      if (method.lookup) chromeFs_lookup.push(method.chromeF);
+      if (method.alg == "CHT" && method.name != "WebGL")
+        chromeFs_cht.push(method.chromeF);
+      else if (method.lookup) chromeFs_lookup.push(method.chromeF);
       else chromeFs_nonlookup.push(method.chromeF);
       method.chromeF = "-";
     }
@@ -92,7 +106,15 @@ readdir(testFolder, (err, files) => {
       [
         {
           lookup: "",
-          name: "Geometric mean (non-LUT)",
+          name: "Średnia geometryczna (CHT)",
+          chrome: ss.geometricMean(chromeFs_cht).toFixed(2),
+          firefox: ss.geometricMean(firefoxFs_cht).toFixed(2),
+          node: ss.geometricMean(nodeFs_cht).toFixed(2),
+          deno: ss.geometricMean(denoFs_cht).toFixed(2),
+        },
+        {
+          lookup: "",
+          name: "Średnia geometryczna (SHT \\textit{non-LUT})",
           chrome: ss.geometricMean(chromeFs_nonlookup).toFixed(2),
           firefox: ss.geometricMean(firefoxFs_nonlookup).toFixed(2),
           node: ss.geometricMean(nodeFs_nonlookup).toFixed(2),
@@ -100,7 +122,7 @@ readdir(testFolder, (err, files) => {
         },
         {
           lookup: "",
-          name: "Geometric mean (LUT)",
+          name: "Średnia geometryczna (SHT \\textit{LUT})",
           chrome: ss.geometricMean(chromeFs_lookup).toFixed(2),
           firefox: ss.geometricMean(firefoxFs_lookup).toFixed(2),
           node: ss.geometricMean(nodeFs_lookup).toFixed(2),
@@ -108,18 +130,34 @@ readdir(testFolder, (err, files) => {
         },
         {
           lookup: "",
-          name: "Geometric mean (all)",
+          name: "Średnia geometryczna (wszystkie)",
           chrome: ss
-            .geometricMean([...chromeFs_lookup, ...chromeFs_nonlookup])
+            .geometricMean([
+              ...chromeFs_lookup,
+              ...chromeFs_nonlookup,
+              ...chromeFs_cht,
+            ])
             .toFixed(2),
           firefox: ss
-            .geometricMean([...firefoxFs_lookup, ...firefoxFs_nonlookup])
+            .geometricMean([
+              ...firefoxFs_lookup,
+              ...firefoxFs_nonlookup,
+              ...firefoxFs_cht,
+            ])
             .toFixed(2),
           node: ss
-            .geometricMean([...nodeFs_lookup, ...nodeFs_nonlookup])
+            .geometricMean([
+              ...nodeFs_lookup,
+              ...nodeFs_nonlookup,
+              ...nodeFs_cht,
+            ])
             .toFixed(2),
           deno: ss
-            .geometricMean([...denoFs_lookup, ...denoFs_nonlookup])
+            .geometricMean([
+              ...denoFs_lookup,
+              ...denoFs_nonlookup,
+              ...denoFs_cht,
+            ])
             .toFixed(2),
         },
       ],
@@ -151,7 +189,16 @@ readdir(testFolder, (err, files) => {
           );
           const x = Math.sign(startsWithA - startsWithB);
 
-          return a.lookup && !b.lookup ? 1 : !a.lookup && b.lookup ? -1 : x;
+          // XD
+          return a.alg == "CHT" && b.alg == "SHT"
+            ? -1
+            : a.alg == "SHT" && b.alg == "CHT"
+            ? 1
+            : a.lookup && !b.lookup
+            ? 1
+            : !a.lookup && b.lookup
+            ? -1
+            : x;
         })
         .map((v) => {
           if (v.name.startsWith("asm.js")) {
@@ -167,8 +214,11 @@ readdir(testFolder, (err, files) => {
           if (v.name.startsWith("C++")) {
             v.node = `\\textcolor{green!70!black}{${v.node}}`;
           }
-          if (v.name.startsWith("WebGL")) {
+          if (v.name.startsWith("WebGL") && v.alg == "SHT") {
             v.chrome = `\\textbf{\\textcolor{green!70!black}{${v.chrome}}}`;
+          } else if (v.name.startsWith("WebGL") && v.alg == "CHT") {
+            v.chrome = `\\textcolor{gray}{${v.chrome}}`;
+            v.firefox = `\\textcolor{gray}{${v.firefox}}`;
           }
           return v;
         }),
@@ -202,12 +252,20 @@ function mapMethodName(name, lookup) {
 
 function processEnvs(file, parsed, methodResults) {
   if (file.endsWith("node.csv")) {
-    methodResults.node = Number(parsed.data[0].mean).toFixed(0);
+    if (file.includes("CHT"))
+      methodResults.node = Number(parsed.data[9].mean).toFixed(2);
+    else methodResults.node = Number(parsed.data[0].mean).toFixed(0);
   } else if (file.endsWith("deno.csv")) {
-    methodResults.deno = Number(parsed.data[0].mean).toFixed(0);
+    if (file.includes("CHT"))
+      methodResults.deno = Number(parsed.data[9].mean).toFixed(2);
+    else methodResults.deno = Number(parsed.data[0].mean).toFixed(0);
   } else if (file.endsWith("Chrome.csv")) {
-    methodResults.chrome = Number(parsed.data[0].mean).toFixed(0);
+    if (file.includes("CHT"))
+      methodResults.chrome = Number(parsed.data[9].mean).toFixed(2);
+    else methodResults.chrome = Number(parsed.data[0].mean).toFixed(0);
   } else if (file.endsWith("Firefox.csv")) {
-    methodResults.firefox = Number(parsed.data[0].mean).toFixed(0);
+    if (file.includes("CHT"))
+      methodResults.firefox = Number(parsed.data[9].mean).toFixed(2);
+    else methodResults.firefox = Number(parsed.data[0].mean).toFixed(0);
   }
 }

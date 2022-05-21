@@ -1,0 +1,39 @@
+
+\newcommand{\comma}{, }
+\begin{table}
+    \caption{Porównanie zaimplementowanych metod akceleracji dla badanych środowisk. Wykonanie dla SHT przy $S_\theta = 1$, dla CHT przy $n=10$.}
+    \label{tab:envs}
+    \setlength{\tabcolsep}{0.25em}
+
+    \begin{tabularx}{\linewidth}{c l X r r r r}%
+        \hline
+                                   &   &             & \multicolumn{4}{c}{\bfseries Czas [ms]}                                                                                   \\
+        \bfseries LUT              & \bfseries Alg. & \bfseries Metoda                                 & \bfseries Chrome    & \bfseries Firefox     & \bfseries Node  & \bfseries Deno
+
+        \csvreader[
+            head to column names,
+            before first line= \\\hline,
+            late after line= \\,
+            late after last line= \\\hline
+        ]{../../benchmark/environments/envs.csv}{}% use head of csv as column names
+        {
+        \lookup                    & \alg           & \name\                                           & \chrome\ (\chromeF) & \firefox\ (\firefoxF) & \node\ (\nodeF) & \deno\ (\denoF)
+        }% specify your coloumns here 
+
+        % \csvreader[
+        %     head to column names,
+        %     late after line=                                                                                                                                                             \\,
+        %     late after last line=                                                                                                                                                        \\\hline
+
+        % ]{../../benchmark/environments/geoMeans.csv}{}% use head of csv as column names
+        % {
+        %     \multicolumn{3}{l}{text} & (\chrome)      & (\firefox)                                       & (\node)             & (\deno)
+        % }% specify your coloumns here 
+
+        \multicolumn{3}{l}{Średnia geometryczna (CHT)}&(1.00)&(1.55)&(0.99)&(0.87) \\
+        \multicolumn{3}{l}{Średnia geometryczna (SHT \textit{non-LUT})}&(1.00)&(1.51)&(1.51)&(1.69)\\
+        \multicolumn{3}{l}{Średnia geometryczna (SHT \textit{LUT})}&(1.00)&(2.36)&(1.54)&(1.43)\\
+        \multicolumn{3}{l}{Średnia geometryczna (wszystkie)}&(1.00)&(1.76)&(1.32)&(1.28)\\\hline
+    \end{tabularx}
+
+\end{table}
