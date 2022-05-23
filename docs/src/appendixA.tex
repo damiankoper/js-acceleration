@@ -1,6 +1,31 @@
 \chapter{Opis załączonej płyty CD/DVD}
-Dołączona płyta zawiera wszystkie pliki wykorzystane do stworzenia projektu, dokumentacji i~niniejszej pracy. Pliki podzielono na następujące katalogi:
+Dołączona płyta zawiera wszystkie pliki wykorzystane do stworzenia projektu, dokumentacji i~niniejszej pracy. Na płycie znajduje się cała zawartość projektu zaimplementowanego w~strategii \textit{monorepo} i~w katalogu głównym znajdują się pliki odpowiedzialne za jej obsługę.  Pozostałe pliki podzielono na następujące katalogi:
 
-\begin{enumerate}
+\begin{itemize}
     \item \texttt{.vscode} - ustawienia środowiska VsCode,
-\end{enumerate}
+    \item \texttt{benchmark} - wyniki testów wydajności w~formacie \texttt{*.csv},
+    \item \texttt{docs} - notatki oraz treść i~materiały niniejszej pracy,
+    \begin{itemize}[topsep=0pt]
+        \item[\textbullet] \texttt{notes} - notatki
+        \item[\textbullet] \texttt{out} - pliki będące wynikiem kompilacji plików źródłowych pracy
+        \begin{itemize}[topsep=0pt]
+            \item[\textbullet] \texttt{W04N\_241292\_2022\_praca magisterska.pdf} - plik PDF z~zawartością pracy
+        \end{itemize}
+        \item[\textbullet] \texttt{src} - pliki źródłowe pracy
+    \end{itemize} 
+    \item \texttt{packages} - zbiór pakietów \textit{monorepo}
+    \begin{itemize}[topsep=0pt]
+        \item[\textbullet] \texttt{benchmark} - Biblioteka \textit{benchmark}
+        \item[\textbullet] \texttt{cpp-sequential} - Implementacja metody sekwencyjnej w~C++
+        \item[\textbullet] \texttt{frontend} - Rzeczywisty przykład użycia
+        \item[\textbullet] \texttt{js-benchmarks} - Przeprowadzanie pomiarów wydajności
+        \item[\textbullet] \texttt{js-gpu} - Implementacja metody WebGL
+        \item[\textbullet] \texttt{js-sequential} - Implementacja metody sekwencyjnej w~JavaScript
+        \item[\textbullet] \texttt{js-workers} - Implementacja metody Workers
+        \item[\textbullet] \texttt{meta} - Typy języka TypeScript współdzielone pomiędzy implementacje
+        \item[\textbullet] \texttt{node-cpp-sequential} - Implementacja metody Native C++ Addon w~NodeJS
+        \item[\textbullet] \texttt{test-simple} - Strona testowa dla implementowanych metod
+        \item[\textbullet] \texttt{wasm-sequential} - Implementacja metody WASM oraz jej wariantów
+    \end{itemize} 
+    \item \texttt{test} - zbiór testowych obrazów,
+\end{itemize}

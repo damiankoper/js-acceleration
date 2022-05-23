@@ -6,11 +6,11 @@ salt
 +      root             | Główny katalog projektu
 ++ benchmark            | Pliki *.csv z wynikami pomiarów
 ++ node_modules         | Zainstalowane zależności, w tym narzędzie <i>Lerna</i>
-++ packages             | Lokalizacja wszystkich paczek
+++ packages             | Lokalizacja wszystkich pakietów
 +++ benchmark           |\t Biblioteka <i>benchmark</i>
 +++ <color:red>cpp-sequential      |\t Implementacja metody sekwencyjnej w C++
 +++ frontend            |\t Rzeczywisty przykład użycia
-+++ js-benchmarks       |\t Testy
++++ js-benchmarks       |\t Przeprowadzanie pomiarów wydajności
 +++ <color:red>js-gpu              |\t Implementacja metody WebGL
 +++ <color:red>js-sequential       |\t Implementacja metody sekwencyjnej w JavaScript
 +++ <color:red>js-workers          |\t Implementacja metody Workers

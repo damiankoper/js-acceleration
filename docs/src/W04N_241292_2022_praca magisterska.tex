@@ -51,11 +51,11 @@
 %% Accorging to the rules the main font of the thesis should be Times.
 %% In order to achieve it we use tgtermes font that offers shapes: normal, bold, italic, italic bold.
 %% There is no slanted shape.
-%% If you use slanted font in the text (typing \textsl{} commnand), then LaTeX will substitute it with a standard font giving you a warning.
-%% Additionally tgtermes works for the running text. All maths (formulas, equations) will be rendered with a default font for math.
+%% If you use slanted font in the text (typing \textsl{} commnand), then LaTeX will substitute it with a~standard font giving you a~warning.
+%% Additionally tgtermes works for the running text. All maths (formulas, equations) will be rendered with a~default font for math.
 %% If you with to change the font for math, you must to do it yourself.
 
-%% After installation of tgtermes package there might be a need to update font and mapping information 
+%% After installation of tgtermes package there might be a~need to update font and mapping information 
 %% This can be don by running the following commands (as administrator)
 %% initexmf --admin --update-fndb
 %% initexmf --admin --mkmaps
@@ -70,7 +70,7 @@
 %\usepackage{newtxmath,tgtermes} 
 
 \usepackage{listings} % used to render the source code 
-% In UTF8 encoding there was a need to define the following mapping (otherwise the national characters were not recognized correctly)
+% In UTF8 encoding there was a~need to define the following mapping (otherwise the national characters were not recognized correctly)
 %%\lstset{literate=%-
 %%{ą}{{\k{a}}}1 {ć}{{\'c}}1 {ę}{{\k{e}}}1 {ł}{{\l{}}}1 {ń}{{\'n}}1 {ó}{{\'o}}1 {ś}{{\'s}}1 {ż}{{\.z}}1 {ź}{{\'z}}1 {Ą}{{\k{A}}}1 {Ć}{{\'C}}1 {Ę}{{\k{E}}}1 {Ł}{{\L{}}}1 {Ń}{{\'N}}1 {Ó}{{\'O}}1 {Ś}{{\'S}}1 {Ż}{{\.Z}}1 {Ź}{{\'Z}}1 
     %%{Ö}{{\"O}}1
@@ -359,7 +359,7 @@ Listing \thelstlisting: #1\hfill%\hfill%
 %\setlength\textfloatsep{12pt plus 2pt minus 2pt} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%  Pakiety i komendy zastosowane tylko do zamieszczenia informacji o użytych komendach i fontach
+%%  Pakiety i~komendy zastosowane tylko do zamieszczenia informacji o~użytych komendach i~fontach
 %%  Normalnie nie są potrzebne, można je zamarkować podczas redakcji pracy
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{./packages/memlays}     % extra layout diagrams, used only in template for 'debugging'. Is uses layouts package. Comment out them both if you edit your thesis
@@ -632,7 +632,7 @@ Listing \thelstlisting: #1\hfill%\hfill%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Metadane dokumentu 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{Autorska implementacja algorytmów transformacji Hough'a dla wybranych metod akceleracji obliczeń w środowiskach języka JavaScript}
+\title{Autorska implementacja algorytmów transformacji Hough'a dla wybranych metod akceleracji obliczeń w~środowiskach języka JavaScript}
 \titleShort{Implementacja algorytmów transformacji Hough'a}
 \titleEN{Propietary implementation of Hough transform algorithms for selected calculation acceleration methods in JavaScript language environments}
 \author{Damian Koper}
@@ -660,7 +660,7 @@ Listing \thelstlisting: #1\hfill%\hfill%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                  Beginning of the document 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\includeonly{abbreviations,chapter01} % uncomment it if you with to complile only selected latex files (this will speed up compilation, especially if you focuse on a specific part of the thesis)
+%\includeonly{abbreviations,chapter01} % uncomment it if you with to complile only selected latex files (this will speed up compilation, especially if you focuse on a~specific part of the thesis)
 
 \renewcommand{\abstractnamefont}{\normalfont\Large\bfseries}
 \renewcommand{\abstracttextfont}{\normalfont}
@@ -739,7 +739,7 @@ Listing \thelstlisting: #1\hfill%\hfill%
 \bibliographystyle{abbrv}
 % \bibliographystyle{plain}
 
-%Warning: References should be collected in a separate file. You can use the programm JabRef for editing. 
+%Warning: References should be collected in a~separate file. You can use the programm JabRef for editing. 
 %         But please remember, that not all JabRef types of entries are supported by BibTeX.
 %         File name below is given without extenion 
 %         (here BibTeX will look for "bibiography.bib" in the main directory)

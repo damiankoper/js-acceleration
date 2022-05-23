@@ -14,16 +14,16 @@ Jednym z~założeń tej pracy jest analiza metod budowania bibliotek, które wyk
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{diagrams/out/files.png}
-    \caption{Układ najważniejszych plików w~repozytorium projektu z~paczkami implementującymi metody akceleracji zaznaczonymi na czerwono.}
+    \caption{Układ najważniejszych plików w~repozytorium projektu z~pakietami implementującymi metody akceleracji zaznaczonymi na czerwono.}
     \label{fig:files}
 \end{figure}
 
-Na rysunku \ref{fig:files} przedstawiono drzewo, reprezentujące układ najważniejszych z~perspektywy organizacji repozytorium plików. Na czerwono zaznaczone zostały paczki, które implementują metody akceleracji. Oprócz nich w~paczce \textit{test-simple} zaimplementowano prostą stronę internetową, która importuje zbudowane biblioteki i~wyświetla wyniki przetwarzania dla testowego obrazu w~celu sprawdzenia poprawności zaimplementowanych algorytmów. Paczka \textit{frontend} implementuje stronę internetową, która symuluje realistyczny scenariusz przetwarzania obrazu w~przeglądarce internetowej. Paczka \textit{meta} zawiera definicje interfejsów w~języku TypeScript, z~których korzystają wszystkie zaimplementowane metody akceleracji. Daje to pewność spójności implementacji i~możliwości porównania koniecznych działań dla metod i~środowisk, aby taką spójność osiągnąć. Zależności pomiędzy paczkami zaprezentowana została na rysunku \ref{fig:deps}
+Na rysunku \ref{fig:files} przedstawiono drzewo, reprezentujące układ najważniejszych z~perspektywy organizacji repozytorium plików. Na czerwono zaznaczone zostały pakiety, które implementują metody akceleracji. Oprócz nich w~pakiecie \textit{test-simple} zaimplementowano prostą stronę internetową, która importuje zbudowane biblioteki i~wyświetla wyniki przetwarzania dla testowego obrazu w~celu sprawdzenia poprawności zaimplementowanych algorytmów. Pakiet \textit{frontend} implementuje stronę internetową, która symuluje realistyczny scenariusz przetwarzania obrazu w~przeglądarce internetowej. Pakiet \textit{meta} zawiera definicje interfejsów w~języku TypeScript, z~których korzystają wszystkie zaimplementowane metody akceleracji. Daje to pewność spójności implementacji i~możliwości porównania koniecznych działań dla metod i~środowisk, aby taką spójność osiągnąć. Zależności pomiędzy pakietami zaprezentowana została na rysunku \ref{fig:deps}
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{diagrams/out/deps.png}
-    \caption{Zależności pomiędzy paczkami w~projekcie.}
+    \caption{Zależności pomiędzy pakietami w~projekcie.}
     \label{fig:deps}
 \end{figure}
 
