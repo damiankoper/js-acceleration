@@ -18,7 +18,6 @@ frontend ..>js_workers
 frontend ..>js_sequential
 frontend ..>wasm_sequential
 
-test_simple ..>meta
 test_simple ..>js_gpu
 test_simple ..>js_workers
 test_simple ..>js_sequential
@@ -29,11 +28,17 @@ js_benchmarks ..>js_gpu
 js_benchmarks ..>js_workers
 js_benchmarks ..>js_sequential
 js_benchmarks ..>wasm_sequential
-js_benchmarks ..>node_cpp_sequential
+js_benchmarks ...>node_cpp_sequential
 
 js_benchmarks ..> benchmark
 
 wasm_sequential ...>cpp_sequential
 node_cpp_sequential ..>cpp_sequential
+
+js_workers ..>meta
+wasm_sequential ..>meta
+js_gpu ..>meta
+node_cpp_sequential ..>meta
+
 
 @enduml
