@@ -3,7 +3,7 @@ Master's thesis and project.
 
 - **Thesis:** [W04_241292_2020_praca magisterska.pdf](https://github.com/damiankoper/js-acceleration/blob/main/docs/out/W04N_241292_2022_praca%20magisterska.pdf)
 - **Article:** [Performance Analysis and Comparison of Acceleration Methods in JavaScript Environments Based on Simplified Standard Hough Transform Algorithm](https://link.springer.com/chapter/10.1007/978-3-031-06746-4_13)
-- 
+
 ### What's in here?
 
 For my Master's thesis, I've implemented popular acceleration methods in JavaScript execution environments. I examined the performance of browser environments of Google Chrome and Mozilla Firefox, as well as the server ones - NodeJS and Deno. The algorithms used for benchmarking were Standard Hough Transform and Circle Hough Transform, which were used for pattern detection in images. Acceleration methods implemented are sequential execution improvement, NodeJS native addons, WebAssembly with asm.js, and SIMD variants. Parallel implemented methods are the usage of Workers and GPU with WebGL API. 
